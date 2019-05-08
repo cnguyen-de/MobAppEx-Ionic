@@ -1,5 +1,7 @@
 {
   "name": "MobAppEx-Ionic",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
