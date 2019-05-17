@@ -1,0 +1,16 @@
+ion-slide {
+  height: 100vh;
+  flex-direction: column;
+}
+
+.slide-one {
+  background: var(--ion-color-success)
+}
+
+.slide-two {
+  background: var(--ion-color-warning)
+}
+
+.slide-three {
+  background: var(--ion-color-danger)
+}

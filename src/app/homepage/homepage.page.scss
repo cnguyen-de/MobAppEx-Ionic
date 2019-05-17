@@ -1,13 +1,14 @@
 .homepage {
-  background: no-repeat center fixed url(../../assets/images/homepage-background.jpg);
+  background: white;
+          //no-repeat center fixed url(../../assets/images/homepage-background.jpg);
   background-position: center;
   height: 100%;
   width: 100%;
 
   .container {
-    padding-top: 30vh;
+    //padding-top: 30vh;
     font-family: 'Open Sans', sans-serif;
-    color: white;
+    color: black;
     text-align: center;
   }
 
