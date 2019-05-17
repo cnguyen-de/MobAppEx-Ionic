@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { SlidesGuard } from './guards/slides.guard';
 
 const routes: Routes = [
-    { path: 'test', redirectTo: 'slides', pathMatch: 'full' },
-  { path: 'homepage', loadChildren: './homepage/homepage.module#HomepagePageModule' },
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
+  { path: 'tabs', redirectTo: 'tabs/tab1', pathMatch: 'full' },
   { path: 'slides', loadChildren: './slides/slides.module#SlidesPageModule' },
-  { path: 'registration', loadChildren: './registration/registration.module#RegistrationPageModule' },  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: '', loadChildren: './homepage/homepage.module#HomepagePageModule', canActivate: [SlidesGuard] },
+  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' }, // when path isn't '', the whole app breaks????
+  { path: 'registration', loadChildren: './registration/registration.module#RegistrationPageModule' },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
 
 
 ];
