@@ -1,9 +1,42 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>registration</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registration</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div class="container">
+    <ion-text color="dark" >
+      <h5 class="sign-up-text">Create your account</h5>
+    </ion-text>
 
+    <form>
+      <ion-list>
+        <ion-item class="item-container">
+          <ion-label class="label" position="floating">Email</ion-label>
+          <ion-input inputmode="email" name="email"
+                     [(ngModel)]="form.email" required></ion-input>
+        </ion-item>
+
+        <ion-item class="ion-padding-top item-container">
+          <ion-label class="label" position="floating">Password</ion-label>
+          <ion-input type="password" name="password"
+                     [(ngModel)]="form.password" required></ion-input>
+        </ion-item>
+
+        <ion-item class="ion-padding-top item-container">
+          <ion-label class="label" position="floating">Repeat Password</ion-label>
+          <ion-input type="password" name="repeat-password"
+                     [(ngModel)]="form.passwordRepeat" required></ion-input>
+        </ion-item>
+
+        <ion-button strong expand="block" color="primary"
+                    shape="round" class="sign-up-button ion-padding-horizontal" (click)="doSubmit()">Register</ion-button>
+
+      </ion-list>
+    </form>
+  </div>
 </ion-content>

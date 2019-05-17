@@ -3,14 +3,14 @@
     <div class="container">
       <img class="mb-1" src="../../assets/images/neublautransparent.png" alt="">
       <p>Sleep is for the weak!</p>
-      <div class="row align-items-start">
-        <div class="col">
-          <ion-button color="medium" fill="outline" shape="round" routerLink="/registration">Sign up</ion-button>
-        </div>
-        <div class="col">
-          <ion-button color="medium" fill="outline" shape="round" routerLink="/login">Log in</ion-button>
-        </div>
-      </div>
+      <ion-row class="align-items-start">
+        <ion-col>
+          <ion-button class="registration-button" expand="block" fill="solid" shape="round" routerLink="/registration">Sign up</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button class="login-button" expand="block" fill="outline" shape="round" routerLink="/login">Log in</ion-button>
+        </ion-col>
+      </ion-row>
     </div>
   </div>
 </ion-content>

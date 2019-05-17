@@ -6,7 +6,7 @@ const routes: Routes = [
   { path: 'tabs', redirectTo: 'tabs/tab1', pathMatch: 'full' },
   { path: 'slides', loadChildren: './slides/slides.module#SlidesPageModule' },
   { path: '', loadChildren: './homepage/homepage.module#HomepagePageModule', canActivate: [SlidesGuard] },
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' }, // when path isn't '', the whole app breaks????
+  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' }, // when path isn't '', the whole tabs site breaks????
   { path: 'registration', loadChildren: './registration/registration.module#RegistrationPageModule' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
 

@@ -1,9 +1,48 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>login</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Log in to Snooze</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [scrollY]="false">
+  <div class="background">
+    <div class="container">
+      <img class="logo" src="../../assets/images/neublautransparent.png" alt="" width="150px">
+      <ion-text color="dark">
+        <h2>Log in to Snooze</h2>
+      </ion-text>
+    </div>
 
+    <div class="login-form">
+      <form>
+        <ion-list>
+          <ion-item class="ion-padding-top">
+            <ion-label>Email</ion-label>
+            <ion-input type="email" name="email"></ion-input>
+          </ion-item>
+
+          <ion-item class="ion-padding-top">
+            <ion-label>Password</ion-label>
+            <ion-input type="password" name="password" class="label-password"></ion-input>
+          </ion-item>
+
+          <ion-button strong expand="block" color="primary"
+                      shape="round" class="login-button ion-padding-horizontal">Log in</ion-button>
+
+          <div class="container ion-padding-top">
+            <ion-text color="primary" routerLink="/registration">
+              Forgot password?
+            </ion-text>
+            ·
+            <ion-text color="primary" routerLink="/registration">
+              Sign up for Snooze
+            </ion-text>
+          </div>
+        </ion-list>
+      </form>
+    </div>
+  </div>
 </ion-content>
