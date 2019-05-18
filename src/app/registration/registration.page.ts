@@ -9,14 +9,19 @@ import { Api} from '../api/api';
 })
 export class RegistrationPage implements OnInit {
 
-  constructor(public toastController: ToastController) { }
+  constructor(public toastController: ToastController) {
+  }
 
   ngOnInit() {
   }
 
-  form = {};
+  form = {
+    email: "",
+    password: "",
+    passwordRepeat: ""
+  };
 
-  doSubmit() {
+  submit() {
     let status = "Empty field";
     if (this.form.email && this.form.password && this.form.passwordRepeat) {
       if (!this.form.email.includes("fra-uas.de")) {

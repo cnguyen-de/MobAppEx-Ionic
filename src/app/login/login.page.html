@@ -20,17 +20,22 @@
       <form>
         <ion-list>
           <ion-item class="ion-padding-top">
-            <ion-label>Email</ion-label>
-            <ion-input type="email" name="email"></ion-input>
+            <ion-label class="label" position="floating">Email</ion-label>
+            <ion-input type="email" name="email"
+                       [(ngModel)]="form.email" required></ion-input>
           </ion-item>
 
           <ion-item class="ion-padding-top">
-            <ion-label>Password</ion-label>
-            <ion-input type="password" name="password" class="label-password"></ion-input>
+            <ion-label class="label" position="floating">Password</ion-label>
+            <ion-input type="password" name="password"
+                       [(ngModel)]="form.password" required></ion-input>
           </ion-item>
 
-          <ion-button strong expand="block" color="primary"
-                      shape="round" class="login-button ion-padding-horizontal">Log in</ion-button>
+          <ion-button strong expand="block" color="primary" shape="round"
+                      class="login-button ion-padding-horizontal" (click)="submit()">
+            <ion-ripple-effect></ion-ripple-effect>
+            Log in
+          </ion-button>
 
           <div class="container ion-padding-top">
             <ion-text color="primary" routerLink="/registration">
