@@ -3,7 +3,6 @@ import { ToastController } from '@ionic/angular';
 import { Api } from '../api/api';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
-import {RequestOptions} from '@angular/http';
 
 @Component({
   selector: 'app-registration',
@@ -35,6 +34,7 @@ export class RegistrationPage implements OnInit {
           status = "Password don't match";
         } else {
           status = "OK"
+          //TODO encrypt password
         }
       }
     }
