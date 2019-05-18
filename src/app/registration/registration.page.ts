@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Api } from '../api/api';
-import {HttpClient} from '@angular/common/http';
-import {Http, RequestOptions, Headers} from '@angular/http';
+import {HttpClient, HttpHeaders } from '@angular/common/http';
 import {Router} from '@angular/router';
+import {RequestOptions} from '@angular/http';
 
 @Component({
   selector: 'app-registration',
@@ -47,12 +47,12 @@ export class RegistrationPage implements OnInit {
       }
 
       console.log(requestform);
-      var headers = new Headers();
+      let headers = new HttpHeaders();
       headers.append("Accept", 'application/json');
       headers.append('Content-Type', 'application/json' );
-      const requestOptions = new RequestOptions({ headers: headers });
 
-      let results = this.http.post("http://sass-it.de:3000/api/SnoozeUsers", requestform, requestOptions).subscribe((res : any) => {
+      // @ts-ignore
+      let results = this.http.post("http://sass-it.de:3000/api/SnoozeUsers", requestform, headers).subscribe((res : any) => {
         this.toast("Successfully registered");
         this.router.navigateByUrl('/login');
         console.log(res)
