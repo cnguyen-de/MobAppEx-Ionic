@@ -1,6 +1,9 @@
-import {Component, Injectable, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Api} from '../api/api';
+import { Api } from '../api/api';
+import {HttpClient} from '@angular/common/http';
+import {Http, RequestOptions, Headers} from '@angular/http';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -9,13 +12,14 @@ import { Api} from '../api/api';
 })
 export class RegistrationPage implements OnInit {
 
-  constructor(public toastController: ToastController) {
+  constructor(public toastController: ToastController, private http : HttpClient, private router : Router) {
   }
 
   ngOnInit() {
   }
 
   form = {
+    username: "",
     email: "",
     password: "",
     passwordRepeat: ""
@@ -23,7 +27,7 @@ export class RegistrationPage implements OnInit {
 
   submit() {
     let status = "Empty field";
-    if (this.form.email && this.form.password && this.form.passwordRepeat) {
+    if (this.form.username && this.form.email && this.form.password && this.form.passwordRepeat) {
       if (!this.form.email.includes("fra-uas.de")) {
         status = "Not fra-uas.de Domain";
       } else {
@@ -36,10 +40,34 @@ export class RegistrationPage implements OnInit {
     }
 
     if (status === "OK") {
-      console.log(this.form);
-      this.toast("Signing you up");
+      let requestform = {
+        username: this.form.username,
+        email: this.form.email,
+        password: this.form.password
+      }
+
+      console.log(requestform);
+      var headers = new Headers();
+      headers.append("Accept", 'application/json');
+      headers.append('Content-Type', 'application/json' );
+      const requestOptions = new RequestOptions({ headers: headers });
+
+      let results = this.http.post("http://sass-it.de:3000/api/SnoozeUsers", requestform, requestOptions).subscribe((res : any) => {
+        this.toast("Successfully registered");
+        this.router.navigateByUrl('/login');
+        console.log(res)
+      }, error => {
+        console.log(error.error.error.message)
+        this.toast(error.error.error.message)
+      })
     } else {
       this.toast(status);
+      this.form = {
+        username: "",
+        email: "",
+        password: "",
+        passwordRepeat: ""
+      };
     }
   }
 

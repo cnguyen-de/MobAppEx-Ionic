@@ -1,10 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * Api is a generic REST Api handler. Set your API url first.
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class Api {
     url: string = 'http://sass-it.de:3000/api';
 
