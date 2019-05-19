@@ -18,6 +18,7 @@ npm-debug.log*
 .sass-cache/
 .tmp/
 .versions/
+.firebase/
 coverage/
 www/
 node_modules/
@@ -25,6 +26,7 @@ tmp/
 temp/
 platforms/
 platforms/android/
+public/
 plugins/
 plugins/android.json
 plugins/ios.json
