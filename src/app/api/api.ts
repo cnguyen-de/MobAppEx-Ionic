@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-/**
- * Api is a generic REST Api handler. Set your API url first.
- */
+
 @Injectable({
     providedIn: 'root'
 })

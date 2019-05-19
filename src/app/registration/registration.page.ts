@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Api } from '../api/api';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import {Router} from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-registration',
@@ -11,11 +11,14 @@ import {Router} from '@angular/router';
 })
 export class RegistrationPage implements OnInit {
 
-  constructor(public toastController: ToastController, private http : HttpClient, private router : Router) {
-  }
+  constructor(public toastController: ToastController, private http : HttpClient, private router : Router, public storage : Storage) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
+
+  // @ts-ignore
+  server: string = this.storage.get('server').then((serverIP) => {
+    this.server = serverIP + "/SnoozeUsers"
+  });
 
   form = {
     username: "",
@@ -52,7 +55,7 @@ export class RegistrationPage implements OnInit {
       headers.append('Content-Type', 'application/json' );
 
       // @ts-ignore
-      let results = this.http.post("http://sass-it.de:3000/api/SnoozeUsers", requestform, headers).subscribe((res : any) => {
+      let results = this.http.post(this.server, requestform, headers).subscribe((res : any) => {
         this.toast("Successfully registered");
         this.router.navigateByUrl('/login');
         console.log(res)
@@ -62,19 +65,13 @@ export class RegistrationPage implements OnInit {
       })
     } else {
       this.toast(status);
-      this.form = {
-        username: "",
-        email: "",
-        password: "",
-        passwordRepeat: ""
-      };
     }
   }
 
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 2000
+      duration: 3000
     });
     toast.present();
   }

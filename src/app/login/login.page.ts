@@ -11,47 +11,64 @@ import { Storage } from '@ionic/storage';
 })
 export class LoginPage implements OnInit {
 
-  constructor(public toastController: ToastController, private http : HttpClient, private router : Router, private storage: Storage) { }
+  constructor(public toastController: ToastController, private http : HttpClient, private router : Router, private storage: Storage) {  }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
+
+  headers = new HttpHeaders();
+
+  // @ts-ignore
+  server: string = this.storage.get('server').then((serverIP) => {
+    this.server = serverIP + "/SnoozeUsers/login";
+    this.headers.append("Accept", 'application/json');
+    this.headers.append('Content-Type', 'application/json' );
+  });
 
   form = {
     username: "",
     password: ""
   };
 
+  session = {
+    id: "",
+    userId: ""
+  }
+
   submit() {
+
     let status = "Empty field";
     if (this.form.username && this.form.password) {
        //TODO encrypt password
         status = "OK"
+        console.log(this.form);
     }
 
     if (status === "OK") {
-      console.log(this.form);
-      let headers = new HttpHeaders();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json' );
-      // @ts-ignore
-      let results = this.http.post("http://sass-it.de:3000/api/SnoozeUsers/login", this.form, headers).subscribe((res : any) => {
-        console.log(res)
-        if (res.id) {
-          let session = {
-            id: res.id,
-            userId: res.userId
-          }
-          this.saveToStorage('session', session)
-
-          this.router.navigateByUrl('/tabs/tab1')
-        }
-      }, error => {
-        console.log(error)
-        this.toast(error.error.error.message)
-      })
+      if (this.requestAuthToken().id) {
+        this.toast("Authenticated, loading user " + this.session.userId)
+        //this.router.navigateByUrl('/tabs/tab1')
+      }
     } else {
       this.toast(status);
     }
+  }
+
+  requestAuthToken() {
+    // @ts-ignore
+    this.http.post(this.server, this.form, this.headers).subscribe((res : any) => {
+      console.log(res)
+      if (res.id) {
+        this.session = {
+          id: res.id,
+          userId: res.userId
+        }
+        this.saveToStorage('session', this.session)
+      }
+    }, error => {
+      console.log(error)
+      this.toast(error.error.error.message)
+    })
+    return this.session
   }
 
   async saveToStorage(key: string, value: any) {
@@ -61,7 +78,7 @@ export class LoginPage implements OnInit {
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 2000
+      duration: 3000
     });
     toast.present();
   }
