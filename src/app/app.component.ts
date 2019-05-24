@@ -29,6 +29,6 @@ export class AppComponent {
     ;
   }
   async initializeDB() {
-    await this.storage.set('server', 'http://sass-it.de:3000/api')
+    await this.storage.set('server', 'https://platania.info:3000/api')
   }
 }

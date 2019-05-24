@@ -10,7 +10,7 @@
 <ion-content [scrollY]="false">
   <div class="background">
     <div class="container">
-      <img class="logo" src="../../assets/images/neublautransparent.png" alt="" width="150px">
+      <img class="logo" src="../../../assets/images/neublautransparent.png" alt="" width="150px">
       <!--
       <ion-text color="dark">
         <h2>Log in to Snooze</h2>
@@ -34,7 +34,8 @@
             <ion-button strong expand="block" color="primary" shape="round"
                         class="login-button ion-padding-horizontal" (click)="submit()">
               <ion-ripple-effect></ion-ripple-effect>
-              Log in
+              <ion-text *ngIf="!loginPressed">Log in</ion-text>
+              <ion-spinner name="crescent" *ngIf="loginPressed"></ion-spinner>
             </ion-button>
           </ion-list>
         </form>

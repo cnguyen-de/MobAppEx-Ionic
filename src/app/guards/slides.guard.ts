@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 })
 
 export class SlidesGuard implements CanActivate {
-  constructor (private storage: Storage, private router: Router) {}
+  constructor(private storage: Storage, private router: Router) {}
 
   async canActivate(
       next: ActivatedRouteSnapshot,

@@ -11,7 +11,10 @@ import { Storage } from '@ionic/storage';
 })
 export class LoginPage implements OnInit {
 
-  constructor(public toastController: ToastController, private http : HttpClient, private router : Router, private storage: Storage) {  }
+  constructor(public toastController: ToastController, private http : HttpClient,
+              private router : Router, private storage: Storage ) {
+
+  }
 
   ngOnInit() { }
 
@@ -32,21 +35,25 @@ export class LoginPage implements OnInit {
   session = {
     id: "",
     userId: ""
-  }
+  };
+
+  loginPressed = false;
 
   submit() {
-
     let status = "Empty field";
     if (this.form.username && this.form.password) {
        //TODO encrypt password
-        status = "OK"
+        status = "OK";
         console.log(this.form);
     }
 
     if (status === "OK") {
-      if (this.requestAuthToken().id) {
+      this.loginPressed = !this.loginPressed;
+      setTimeout(() => { this.loginPressed = false }, 1500);
+      let session = this.requestAuthToken();
+      if (session.id) {
         this.toast("Authenticated, loading user " + this.session.userId)
-        //this.router.navigateByUrl('/tabs/tab1')
+        this.router.navigateByUrl('/tabs/tab1')
       }
     } else {
       this.toast(status);
@@ -56,18 +63,18 @@ export class LoginPage implements OnInit {
   requestAuthToken() {
     // @ts-ignore
     this.http.post(this.server, this.form, this.headers).subscribe((res : any) => {
-      console.log(res)
+      console.log(res);
       if (res.id) {
         this.session = {
           id: res.id,
           userId: res.userId
-        }
+        };
         this.saveToStorage('session', this.session)
       }
     }, error => {
-      console.log(error)
+      console.log(error);
       this.toast(error.error.error.message)
-    })
+    });
     return this.session
   }
 
