@@ -17,12 +17,14 @@ export class TabsGuard implements CanActivate {
       state: RouterStateSnapshot
   ): Promise<boolean> {
 
-    const user = await this.storage.get('user');
-    if (!user) {
+    const session = await this.storage.get('session');
+    if (!session.id) {
       this.router.navigateByUrl('/login');
-      this.toast('Please log in again')
+      this.toast('Please log in again');
+      return false;
+    } else {
+      return true;
     }
-    return user;
   }
 
 

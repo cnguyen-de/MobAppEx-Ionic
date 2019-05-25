@@ -39,7 +39,7 @@ export class LoginPage implements OnInit {
 
   loginPressed = false;
 
-  submit() {
+  async submit() {
     let status = "Empty field";
     if (this.form.username && this.form.password) {
        //TODO encrypt password
@@ -50,17 +50,13 @@ export class LoginPage implements OnInit {
     if (status === "OK") {
       this.loginPressed = !this.loginPressed;
       setTimeout(() => { this.loginPressed = false }, 1500);
-      let session = this.requestAuthToken();
-      if (session.id) {
-        this.toast("Authenticated, loading user " + this.session.userId)
-        this.router.navigateByUrl('/tabs/tab1')
-      }
+      await this.requestAuthToken();
     } else {
       this.toast(status);
     }
   }
 
-  requestAuthToken() {
+  async requestAuthToken() {
     // @ts-ignore
     this.http.post(this.server, this.form, this.headers).subscribe((res : any) => {
       console.log(res);
@@ -70,10 +66,14 @@ export class LoginPage implements OnInit {
           userId: res.userId
         };
         this.saveToStorage('session', this.session)
+        this.toast("Authenticated, loading user " + this.session.userId)
+        this.router.navigateByUrl('/tabs/tab1')
       }
     }, error => {
       console.log(error);
-      this.toast(error.error.error.message)
+      if (error.error.error.message) {
+        this.toast(error.error.error.message)
+      }
     });
     return this.session
   }
