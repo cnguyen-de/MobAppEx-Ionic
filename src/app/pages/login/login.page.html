@@ -16,29 +16,27 @@
         <h2>Log in to Snooze</h2>
       </ion-text>
       -->
-      <div class="login-form">
-        <form>
+      <div>
+        <form [formGroup]="loginForm">
           <ion-list>
             <ion-item class="ion-padding-top">
               <ion-label class="label" position="floating">Username</ion-label>
-              <ion-input type="text" name="email"
-                         [(ngModel)]="form.username" required></ion-input>
+              <ion-input type="text" formControlName="username" required></ion-input>
             </ion-item>
 
             <ion-item>
               <ion-label class="label" position="floating">Password</ion-label>
-              <ion-input type="password" name="password"
-                         [(ngModel)]="form.password" required></ion-input>
+              <ion-input type="password" formControlName="password" required></ion-input>
             </ion-item>
 
             <ion-button strong expand="block" color="primary" shape="round"
-                        class="login-button ion-padding-horizontal" (click)="submit()">
-              <ion-ripple-effect></ion-ripple-effect>
+                        class="login-button ion-padding-horizontal" (click)="onSubmit()" [disabled]="!loginForm.valid">
               <ion-text *ngIf="!loginPressed">Log in</ion-text>
               <ion-spinner name="crescent" *ngIf="loginPressed"></ion-spinner>
             </ion-button>
           </ion-list>
         </form>
+
       </div>
     </div>
     <div class="container">

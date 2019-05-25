@@ -13,35 +13,32 @@
       <h5 class="sign-up-text">Create your account</h5>
     </ion-text>
 
-    <form>
+    <form [formGroup]="registrationForm">
       <ion-list>
         <ion-item>
           <ion-label class="label" position="floating">Username</ion-label>
-          <ion-input type="text" name="username"
-                     [(ngModel)]="form.username" required></ion-input>
+          <ion-input type="text" formControlName="username"></ion-input>
         </ion-item>
+
         <ion-item>
           <ion-label class="label" position="floating">Email</ion-label>
-          <ion-input type="email" name="email"
-                     [(ngModel)]="form.email" required></ion-input>
+          <ion-input type="email" formControlName="email"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label class="label" position="floating">Password</ion-label>
-          <ion-input type="password" name="password"
-                     [(ngModel)]="form.password" required></ion-input>
+          <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label class="label" position="floating">Repeat Password</ion-label>
-          <ion-input type="password" name="repeat-password"
-                     [(ngModel)]="form.passwordRepeat" required></ion-input>
+          <ion-input type="password" formControlName="repeatPassword"></ion-input>
         </ion-item>
 
         <ion-button strong expand="block" color="primary" shape="round"
-                    class="sign-up-button ion-padding-horizontal" (click)="submit()">
-          <ion-ripple-effect></ion-ripple-effect>
-          Register
+                    class="sign-up-button ion-padding-horizontal" (click)="submit()" [disabled]="registrationForm.invalid">
+          <ion-text *ngIf="!buttonPressed">Register</ion-text>
+          <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
         </ion-button>
 
       </ion-list>

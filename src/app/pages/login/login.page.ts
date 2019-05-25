@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../auth/auth.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -11,35 +14,47 @@ import { Storage } from '@ionic/storage';
 })
 export class LoginPage implements OnInit {
 
+  loginForm: FormGroup;
+  loginPressed = false;
+
   constructor(public toastController: ToastController, private http : HttpClient,
-              private router : Router, private storage: Storage ) {
+              private router : Router, private storage: Storage,
+              private authenticationService : AuthService, private formBuilder: FormBuilder ) {
 
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
 
-  headers = new HttpHeaders();
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+    this.loginPressed = !this.loginPressed;
+    this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
+        .pipe(first())
+        .subscribe(
+            data => {
+              this.storage.get('session').then((session) => this.toast('Authenticated, loading user ' + session.userId));
+              this.router.navigateByUrl('/tabs/tab1');
+              this.loginPressed = !this.loginPressed;
+            },
+            error => {
+              console.log(error);
+              if (error.error.error.message) {
+                this.toast(error.error.error.message)
+              }
+              this.loginPressed = !this.loginPressed;
+            });
+  }
 
-  // @ts-ignore
-  server: string = this.storage.get('server').then((serverIP) => {
-    this.server = serverIP + "/SnoozeUsers/login";
-    this.headers.append("Accept", 'application/json');
-    this.headers.append('Content-Type', 'application/json' );
-  });
-
-  form = {
-    username: "",
-    password: ""
-  };
-
-  session = {
-    id: "",
-    userId: ""
-  };
-
-  loginPressed = false;
-
-  async submit() {
+  /*
+  OLD CODE: Manually log in
+  submit() {
     let status = "Empty field";
     if (this.form.username && this.form.password) {
        //TODO encrypt password
@@ -49,8 +64,8 @@ export class LoginPage implements OnInit {
 
     if (status === "OK") {
       this.loginPressed = !this.loginPressed;
-      setTimeout(() => { this.loginPressed = false }, 1500);
-      await this.requestAuthToken();
+      setTimeout(() => { this.loginPressed = false }, 2000);
+      this.requestAuthToken();
     } else {
       this.toast(status);
     }
@@ -58,7 +73,7 @@ export class LoginPage implements OnInit {
 
   async requestAuthToken() {
     // @ts-ignore
-    this.http.post(this.server, this.form, this.headers).subscribe((res : any) => {
+    this.http.post(this.server, this.form).subscribe((res : any) => {
       console.log(res);
       if (res.id) {
         this.session = {
@@ -77,6 +92,7 @@ export class LoginPage implements OnInit {
     });
     return this.session
   }
+ */
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
@@ -89,4 +105,5 @@ export class LoginPage implements OnInit {
     });
     toast.present();
   }
+
 }

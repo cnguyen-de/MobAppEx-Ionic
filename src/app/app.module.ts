@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -30,6 +30,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       AppRoutingModule,
       IonicStorageModule.forRoot(),
       FormsModule,
+      ReactiveFormsModule,
       TranslateModule.forRoot({
           loader: {
               provide: TranslateLoader,

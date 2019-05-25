@@ -1,8 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../auth/auth.service';
+import { first } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-registration',
@@ -11,61 +15,66 @@ import { Storage } from '@ionic/storage';
 })
 export class RegistrationPage implements OnInit {
 
-  constructor(public toastController: ToastController, private http : HttpClient, private router : Router, public storage : Storage) { }
+  registrationForm: FormGroup;
+  buttonPressed = false;
 
-  ngOnInit() { }
+  constructor(public toastController: ToastController, private http : HttpClient,
+              private router : Router, public storage : Storage,
+              private authenticationService: AuthService, private formBuilder: FormBuilder) { }
 
-  // @ts-ignore
-  server: string = this.storage.get('server').then((serverIP) => {
-    this.server = serverIP + "/SnoozeUsers"
-  });
+  ngOnInit() {
+    this.registrationForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      email: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      repeatPassword: ['', [Validators.required, Validators.minLength(6)]]
+    }, {
+      validator: this.checkPasswords('password', 'repeatPassword')
+    });
+  }
 
-  form = {
-    username: "",
-    email: "",
-    password: "",
-    passwordRepeat: ""
-  };
+
+  checkPasswords(controlName: string, matchingControlName: string) {
+    return (formGroup: FormGroup) => {
+      const control = formGroup.controls[controlName];
+      const matchingControl = formGroup.controls[matchingControlName];
+
+      if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+        // return if another validator has already found an error on the matchingControl
+        return;
+      }
+
+      // set error on matchingControl if validation fails
+      if (control.value !== matchingControl.value) {
+        matchingControl.setErrors({ mustMatch: true });
+      } else {
+        matchingControl.setErrors(null);
+      }
+    }
+  }
 
   submit() {
-    let status = "Empty field";
-    if (this.form.username && this.form.email && this.form.password && this.form.passwordRepeat) {
-      if (!this.form.email.includes("fra-uas.de")) {
-        status = "Not fra-uas.de Domain";
-      } else {
-        if (!(this.form.password === this.form.passwordRepeat)) {
-          status = "Password don't match";
-        } else {
-          status = "OK"
-          //TODO encrypt password
-        }
-      }
+    if (this.registrationForm.invalid) {
+      return;
     }
-
-    if (status === "OK") {
-      let requestform = {
-        username: this.form.username,
-        email: this.form.email,
-        password: this.form.password
-      }
-
-      console.log(requestform);
-      let headers = new HttpHeaders();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json' );
-
-      // @ts-ignore
-      let results = this.http.post(this.server, requestform, headers).subscribe((res : any) => {
-        this.toast("Successfully registered");
-        this.router.navigateByUrl('/login');
-        console.log(res)
-      }, error => {
-        console.log(error.error.error.message)
-        this.toast(error.error.error.message)
-      })
-    } else {
-      this.toast(status);
-    }
+    this.buttonPressed = !this.buttonPressed;
+    this.authenticationService.register(this.registrationForm.value.username,
+                                        this.registrationForm.value.email,
+                                        this.registrationForm.value.password)
+        .pipe(first())
+        .subscribe(
+            data => {
+              this.toast('Successfully registered');
+              this.router.navigateByUrl('/login');
+              this.buttonPressed = !this.buttonPressed;
+            },
+            error => {
+              console.log(error);
+              if (error.error.error.message) {
+                this.toast(error.error.error.message)
+              }
+              this.buttonPressed = !this.buttonPressed;
+            });
   }
 
   async toast(message: any) {

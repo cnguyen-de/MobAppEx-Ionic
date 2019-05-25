@@ -1,59 +1,55 @@
 import { Injectable } from  '@angular/core';
-import { HttpClient, HttpHeaders } from  '@angular/common/http';
-import { tap } from  'rxjs/operators';
+import { HttpClient} from  '@angular/common/http';
+import {  map } from  'rxjs/operators';
 import { Observable, BehaviorSubject } from  'rxjs';
 
 import { Storage } from  '@ionic/storage';
 import { User } from  './user';
-import { AuthResponse } from  './auth-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private currentUserSubject: BehaviorSubject<User>;
+  public currentUser: Observable<User>;
 
-  constructor(private httpClient: HttpClient, private storage: Storage, private httpHeaders: HttpHeaders) { }
+  constructor(private httpClient: HttpClient, private storage: Storage) {
+    // @ts-ignore
+    this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
-  authSubject  =  new  BehaviorSubject(false);
 
-  headers = new HttpHeaders();
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
-    this.headers.append("Accept", 'application/json');
-    this.headers.append('Content-Type', 'application/json' );
   })
 
-  register(user: User): Observable<AuthResponse> {
-    // @ts-ignore
-    return this.httpClient.post<AuthResponse>(`${this.server}/SnoozeUsers`, user, this.headers).pipe(
-        tap(async (res:  AuthResponse ) => {
+  async getUser() {
+    return await this.storage.get('currentUser')
+  }
+
+  public get currentUserValue() : User {
+    return this.currentUserSubject.value;
+  }
+
+  register(username: string, email: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers`, {username, email, password}).pipe(
+        map(async (res) => {
           console.log(res)
-
-          if (res.user) {
-            this.authSubject.next(true);
-          }
-        })
-
-    );
-  }
-
-  login(user: User): Observable<AuthResponse> {
-    // @ts-ignore
-    return this.httpClient.post(`${this.server}/SnoozeUsers/login`, user, this.headers).pipe(
-        tap(async (res: AuthResponse) => {
-
-          if (res.user) {
-            await this.storage.set("ACCESS_TOKEN", res.user.id);
-            await this.storage.set("EXPIRES_IN", res.user.ttl);
-            await this.storage.set("USER_ID", res.user.user_id);
-            this.authSubject.next(true);
-          }
         })
     );
   }
 
-  isLoggedIn() {
-    return this.authSubject.asObservable();
+  login(username: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
+        map( (res) => {
+          this.saveToStorage('session', res)
+        })
+    );
+  }
+
+  async saveToStorage(key: string, value: any) {
+    await this.storage.set(key, value);
   }
 
 }
