@@ -52,48 +52,6 @@ export class LoginPage implements OnInit {
             });
   }
 
-  /*
-  OLD CODE: Manually log in
-  submit() {
-    let status = "Empty field";
-    if (this.form.username && this.form.password) {
-       //TODO encrypt password
-        status = "OK";
-        console.log(this.form);
-    }
-
-    if (status === "OK") {
-      this.loginPressed = !this.loginPressed;
-      setTimeout(() => { this.loginPressed = false }, 2000);
-      this.requestAuthToken();
-    } else {
-      this.toast(status);
-    }
-  }
-
-  async requestAuthToken() {
-    // @ts-ignore
-    this.http.post(this.server, this.form).subscribe((res : any) => {
-      console.log(res);
-      if (res.id) {
-        this.session = {
-          id: res.id,
-          userId: res.userId
-        };
-        this.saveToStorage('session', this.session)
-        this.toast("Authenticated, loading user " + this.session.userId)
-        this.router.navigateByUrl('/tabs/tab1')
-      }
-    }, error => {
-      console.log(error);
-      if (error.error.error.message) {
-        this.toast(error.error.error.message)
-      }
-    });
-    return this.session
-  }
- */
-
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
   }
@@ -101,7 +59,9 @@ export class LoginPage implements OnInit {
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 3000
+      duration: 3000,
+      position: 'top',
+      color: "dark"
     });
     toast.present();
   }

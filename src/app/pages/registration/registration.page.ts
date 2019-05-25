@@ -53,7 +53,7 @@ export class RegistrationPage implements OnInit {
     }
   }
 
-  submit() {
+  onSubmit() {
     if (this.registrationForm.invalid) {
       return;
     }

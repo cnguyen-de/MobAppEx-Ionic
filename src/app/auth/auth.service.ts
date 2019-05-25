@@ -22,7 +22,7 @@ export class AuthService {
 
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
-  })
+  });
 
   async getUser() {
     return await this.storage.get('currentUser')
@@ -43,6 +43,7 @@ export class AuthService {
   login(username: string, password: string) {
     return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
         map( (res) => {
+          console.log(res)
           this.saveToStorage('session', res)
         })
     );

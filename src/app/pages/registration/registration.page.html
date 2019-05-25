@@ -32,11 +32,12 @@
 
         <ion-item>
           <ion-label class="label" position="floating">Repeat Password</ion-label>
-          <ion-input type="password" formControlName="repeatPassword"></ion-input>
+          <ion-input type="password" formControlName="repeatPassword" (keyup.enter)="onSubmit()"></ion-input>
         </ion-item>
 
         <ion-button strong expand="block" color="primary" shape="round"
-                    class="sign-up-button ion-padding-horizontal" (click)="submit()" [disabled]="registrationForm.invalid">
+                    class="sign-up-button ion-padding-horizontal" (click)="onSubmit()"
+                    [disabled]="registrationForm.invalid">
           <ion-text *ngIf="!buttonPressed">Register</ion-text>
           <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
         </ion-button>
@@ -48,7 +49,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-text color="primary" routerLink="/registration">
+          <ion-text color="primary" routerLink="/recovery">
             Forgot password?
           </ion-text>
         </ion-col>

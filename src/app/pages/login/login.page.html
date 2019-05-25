@@ -21,12 +21,12 @@
           <ion-list>
             <ion-item class="ion-padding-top">
               <ion-label class="label" position="floating">Username</ion-label>
-              <ion-input type="text" formControlName="username" required></ion-input>
+              <ion-input type="text" formControlName="username"></ion-input>
             </ion-item>
 
             <ion-item>
               <ion-label class="label" position="floating">Password</ion-label>
-              <ion-input type="password" formControlName="password" required></ion-input>
+              <ion-input type="password" formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
             </ion-item>
 
             <ion-button strong expand="block" color="primary" shape="round"
@@ -43,7 +43,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-text color="primary" routerLink="/registration">
+            <ion-text color="primary" routerLink="/recovery">
               Forgot password?
             </ion-text>
           </ion-col>
