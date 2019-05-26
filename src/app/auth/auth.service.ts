@@ -43,7 +43,7 @@ export class AuthService {
   login(username: string, password: string) {
     return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
         map( (res) => {
-          console.log(res)
+          console.log(res);
           this.saveToStorage('session', res)
         })
     );

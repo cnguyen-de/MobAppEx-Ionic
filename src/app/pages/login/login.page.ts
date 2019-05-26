@@ -44,11 +44,13 @@ export class LoginPage implements OnInit {
               this.loginPressed = !this.loginPressed;
             },
             error => {
+              this.loginPressed = !this.loginPressed;
               console.log(error);
-              if (error.error.error.message) {
+              if (error.status === 0) {
+                this.toast("Unable to communicate with server")
+              } else if (error.error.error.message) {
                 this.toast(error.error.error.message)
               }
-              this.loginPressed = !this.loginPressed;
             });
   }
 

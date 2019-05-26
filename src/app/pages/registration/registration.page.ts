@@ -69,18 +69,22 @@ export class RegistrationPage implements OnInit {
               this.buttonPressed = !this.buttonPressed;
             },
             error => {
+              this.buttonPressed = !this.buttonPressed;
               console.log(error);
-              if (error.error.error.message) {
+              if (error.status === 0) {
+                this.toast("Unable to communicate with server")
+              } else if (error.error.error.message) {
                 this.toast(error.error.error.message)
               }
-              this.buttonPressed = !this.buttonPressed;
             });
   }
 
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 3000
+      duration: 3000,
+      position: 'top',
+      color: "dark"
     });
     toast.present();
   }

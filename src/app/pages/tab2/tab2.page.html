@@ -1,1 +1,41 @@
-<ion-content></ion-content>
+<ion-header>
+    <ion-toolbar>
+        <ion-item>
+            <ion-searchbar class="search-bar" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)"></ion-searchbar>
+            <ion-icon class="grid" name="apps" slot="end"></ion-icon>
+        </ion-item>
+    </ion-toolbar>
+    <ion-toolbar>
+        <ion-segment (ionChange)="segmentChanged($event)" #segment>
+            <ion-segment-button value="0" checked #button0>
+                <ion-label>Map</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="1" #button1>
+                <ion-label>List</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="2" #button2>
+                <ion-label>Favorites</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="3" #button3>
+                <ion-label>By Time</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-slides pager="false" (ionSlideDidChange)="onSlideDidChange($event)" #slides>
+        <ion-slide class="slide">
+            Map
+        </ion-slide>
+        <ion-slide class="slide">
+            List
+        </ion-slide>
+        <ion-slide class="slide">
+            Fav
+        </ion-slide>
+        <ion-slide class="slide">
+            By
+        </ion-slide>
+
+    </ion-slides>
+</ion-content>
