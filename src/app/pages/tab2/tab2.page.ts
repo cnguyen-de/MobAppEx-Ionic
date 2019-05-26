@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import { Observable } from 'rxjs';
-import {IonSegment, IonSegmentButton, IonSlides} from '@ionic/angular';
+import {IonSearchbar, IonSegment, IonSegmentButton, IonSlides} from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -12,12 +12,22 @@ export class Tab2Page {
   searchTerm: string = '';
   @ViewChild('slides') slides : IonSlides;
   @ViewChild('segment') segment: IonSegment;
+  @ViewChild('searchbar') searchbar: IonSearchbar;
 
-  searchChanged($event: any) {
+  //Search bar controller
+  onSearchChange($event: any) {
     console.log(this.searchTerm)
   }
 
-  segmentChanged($event: any) {
+
+  //Fab controller
+  onFabSelect() {
+    console.log("Fab Pressed")
+    this.searchbar.setFocus();
+  }
+
+  //Segments-Slides controller
+  onSegmentChange($event: any) {
     this.slides.slideTo($event.detail.value);
     //console.log(this.segment.value);
   }

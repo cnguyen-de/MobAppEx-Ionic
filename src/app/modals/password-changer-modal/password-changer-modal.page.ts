@@ -1,31 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth/auth.service';
-import { first } from 'rxjs/operators';
-
+import {Component, Input, OnInit} from '@angular/core';
+import {ModalController, NavParams, ToastController} from '@ionic/angular';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {Storage} from '@ionic/storage';
+import {ApiService} from '../../_services/api.service';
+import {first} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-registration',
-  templateUrl: './registration.page.html',
-  styleUrls: ['./registration.page.scss'],
+  selector: 'app-password-changer-modal',
+  templateUrl: './password-changer-modal.page.html',
+  styleUrls: ['./password-changer-modal.page.scss'],
 })
-export class RegistrationPage implements OnInit {
+export class PasswordChangerModalPage implements OnInit {
 
-  registrationForm: FormGroup;
+  @Input() value: number;
+
+  passwordChangeForm: FormGroup;
   buttonPressed = false;
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, public storage : Storage,
-              private authenticationService: AuthService, private formBuilder: FormBuilder) { }
+              private apiService: ApiService, private formBuilder: FormBuilder,
+              private navParams: NavParams, private modalController: ModalController) {
+    this.value = this.navParams.get('value')
+  }
 
   ngOnInit() {
-    this.registrationForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      email: ['', Validators.required],
+    this.passwordChangeForm = this.formBuilder.group({
+      oldPassword: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       repeatPassword: ['', [Validators.required, Validators.minLength(6)]]
     }, {
@@ -54,18 +57,16 @@ export class RegistrationPage implements OnInit {
   }
 
   onSubmit() {
-    if (this.registrationForm.invalid) {
+    if (this.passwordChangeForm.invalid) {
       return;
     }
     this.buttonPressed = !this.buttonPressed;
-    this.authenticationService.register(this.registrationForm.value.username,
-                                        this.registrationForm.value.email,
-                                        this.registrationForm.value.password)
+    this.apiService.changePassword(this.passwordChangeForm.value.oldPassword,
+        this.passwordChangeForm.value.password)
         .pipe(first())
         .subscribe(
             data => {
-              this.toast('Successfully registered');
-              this.router.navigateByUrl('/login');
+              this.toast('Password successfully changed');
               this.buttonPressed = !this.buttonPressed;
             },
             error => {
@@ -79,6 +80,11 @@ export class RegistrationPage implements OnInit {
             });
   }
 
+
+  dismiss() {
+    this.modalController.dismiss();
+  }
+
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
@@ -88,4 +94,5 @@ export class RegistrationPage implements OnInit {
     });
     toast.present();
   }
+
 }

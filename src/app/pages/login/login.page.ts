@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 
 @Component({

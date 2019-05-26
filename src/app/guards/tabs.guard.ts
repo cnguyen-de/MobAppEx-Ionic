@@ -27,11 +27,12 @@ export class TabsGuard implements CanActivate {
     }
   }
 
-
   async toast(message: any) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 3000
+      duration: 3000,
+      position: 'top',
+      color: "dark"
     });
     toast.present();
   }

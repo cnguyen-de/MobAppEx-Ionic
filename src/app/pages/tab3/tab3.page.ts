@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { PasswordChangerModalPage } from '../../modals/password-changer-modal/password-changer-modal.page';
 
 @Component({
   selector: 'app-tab3',
@@ -12,15 +13,18 @@ export class Tab3Page {
 
 
   changePasswordModal() {
-    //this.presentModal();
+    this.presentModal();
   }
-  /*
+
   async presentModal() {
     const modal = await this.modalController.create({
-      component: Tab3Page,
-      componentProps: { value: 123 }
+      component: PasswordChangerModalPage,
+      componentProps: {
+        value: 123
+      },
+      cssClass: 'password-changer-modal'
     });
     return await modal.present();
   }
-  */
+
 }

@@ -21,3 +21,18 @@ $font-family-base: 'Roboto', sans-serif;
   border: 1px solid transparent !important;
   box-shadow: none !important;
 }
+
+@media (min-height: 700px) {
+  .password-changer-modal .modal-wrapper {
+    top: 55% !important;
+    min-height: 45% !important;
+  }
+}
+.password-changer-modal .modal-wrapper {
+  top: 40%;
+  min-height: 60%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}

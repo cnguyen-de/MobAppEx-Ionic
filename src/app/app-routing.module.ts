@@ -10,8 +10,7 @@ const routes: Routes = [
   { path: '', loadChildren: './pages/tabs/tabs.module#TabsPageModule', canActivate: [TabsGuard] }, // see pages/tabs/tabs.router.module.ts
   { path: 'registration', loadChildren: './pages/registration/registration.module#RegistrationPageModule' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
-  { path: 'recovery', loadChildren: './pages/password-recovery/password-recovery.module#PasswordRecoveryPageModule' },  { path: 'password-change', loadChildren: './modals/password-change/password-change.module#PasswordChangePageModule' },
-
+  { path: 'recovery', loadChildren: './pages/password-recovery/password-recovery.module#PasswordRecoveryPageModule' },
 
 
 

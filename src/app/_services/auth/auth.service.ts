@@ -4,7 +4,7 @@ import {  map } from  'rxjs/operators';
 import { Observable, BehaviorSubject } from  'rxjs';
 
 import { Storage } from  '@ionic/storage';
-import { User } from  './user';
+import { User } from './user';
 
 @Injectable({
   providedIn: 'root'
