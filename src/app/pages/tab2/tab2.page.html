@@ -1,11 +1,9 @@
 <ion-header>
     <ion-toolbar>
         <ion-item>
-            <ion-searchbar class="search-bar" [(ngModel)]="searchTerm" (ionChange)="searchChanged($event)"></ion-searchbar>
+            <ion-searchbar (ionChange)="searchChanged($event)" class="search-bar" [(ngModel)]="searchTerm" ></ion-searchbar>
             <ion-icon class="grid" name="apps" slot="end"></ion-icon>
         </ion-item>
-    </ion-toolbar>
-    <ion-toolbar>
         <ion-segment (ionChange)="segmentChanged($event)" #segment>
             <ion-segment-button value="0" checked #button0>
                 <ion-label>Map</ion-label>

@@ -18,7 +18,7 @@ export class TabsGuard implements CanActivate {
   ): Promise<boolean> {
 
     const session = await this.storage.get('session');
-    if (!session.id) {
+    if (session == null) {
       this.router.navigateByUrl('/login');
       this.toast('Please log in again');
       return false;

@@ -13,11 +13,7 @@ export class Tab2Page {
   @ViewChild('slides') slides : IonSlides;
   @ViewChild('segment') segment: IonSegment;
 
-  intval : number;
-  strval : string;
-
-  searchChanged() {
-    this.getActiveSlide();
+  searchChanged($event: any) {
     console.log(this.searchTerm)
   }
 
@@ -33,6 +29,7 @@ export class Tab2Page {
   }
 
   clickSegment(index: number) {
+    // @ts-ignore
     this.segment.value = index;
   }
 }
