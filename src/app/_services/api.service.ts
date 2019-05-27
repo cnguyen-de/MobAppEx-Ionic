@@ -8,17 +8,9 @@ import {AuthService} from './auth/auth.service';
   providedIn: 'root'
 })
 export class ApiService {
-  token: any = this.storage.get('access_token').then(token => {
-    if (token != null) {
-      this.token = token;
-    }
-  });
+  token:string;
 
-  userId = this.storage.get('session').then(session => {
-    if (session != null) {
-      this.userId = session.userId;
-    }
-  });
+  userId: number;
 
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
@@ -26,10 +18,20 @@ export class ApiService {
 
 
   constructor(private httpClient: HttpClient, private storage: Storage, private authService: AuthService) {
+    this.storage.get('access_token').then(token => {
+      if (token != null) {
+        this.token = token;
+      }
+    });
+    this.storage.get('session').then(session => {
+      if (session != null) {
+        this.userId = session.userId;
+      }
+    });
   }
 
   changePassword(oldPassword: string, newPassword: string) {
-    let params = this.setParamToken()
+    let params = this.setParamToken(this.token)
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
           console.log(res);
