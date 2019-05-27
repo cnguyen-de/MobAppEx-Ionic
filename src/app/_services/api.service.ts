@@ -19,7 +19,7 @@ export class ApiService {
   });
 
   changePassword(oldPassword: string, newPassword: string) {
-    return this.httpClient.post(`${this.server}/SnoozeUsers/change-password?access_token=${this.token}`, {oldPassword, newPassword}).pipe(
+    return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`, {oldPassword, newPassword}).pipe(
         map( (res) => {
           console.log(res);
         })

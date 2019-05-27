@@ -45,6 +45,8 @@ export class AuthService {
         map( (res) => {
           console.log(res);
           this.saveToStorage('session', res)
+          // @ts-ignore
+          this.saveToStorage('roundcube_sessid', res.id)
         })
     );
   }

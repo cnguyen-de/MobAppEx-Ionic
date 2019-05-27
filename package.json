@@ -36,6 +36,7 @@
     "cordova-android": "^8.0.0",
     "cordova-sqlite-storage": "3.2.0",
     "core-js": "^2.5.4",
+    "ngx-cookie-service": "^2.2.0",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.29"

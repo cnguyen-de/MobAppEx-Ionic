@@ -6,6 +6,8 @@ import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
+import { User } from '../../_services/auth/user';
+import {CookieService} from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +18,12 @@ export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
   loginPressed = false;
+  user : User;
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
-              private authenticationService : AuthService, private formBuilder: FormBuilder ) {
+              private authenticationService : AuthService, private formBuilder: FormBuilder,
+              private cookieService: CookieService) {
 
   }
 
@@ -39,7 +43,10 @@ export class LoginPage implements OnInit {
         .pipe(first())
         .subscribe(
             data => {
-              this.storage.get('session').then((session) => this.toast('Authenticated, loading user ' + session.userId));
+              this.storage.get('session').then((session) => {
+                this.toast('Authenticated, loading user ' + session.userId)
+                this.setCookie(session.id)
+              });
               this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
             },
@@ -66,6 +73,10 @@ export class LoginPage implements OnInit {
       color: "dark"
     });
     toast.present();
+  }
+  setCookie(sessId) {
+    this.cookieService.set('roundcube_sessid', sessId)
+    console.log(this.cookieService.get('roundcube_sessid'))
   }
 
 }
