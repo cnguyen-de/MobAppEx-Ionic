@@ -40,6 +40,7 @@ export class ApiService {
   }
 
   getUser(userId, token) {
+    this.token = token;
     let params = this.setParamToken(token)
     return this.httpClient.get(`${this.server}/SnoozeUsers/${userId}`, {params: params}).pipe(
         map((res) => {
