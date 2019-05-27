@@ -8,14 +8,13 @@ import {AuthService} from './auth/auth.service';
   providedIn: 'root'
 })
 export class ApiService {
-  token:string;
+  token: string;
 
   userId: number;
 
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
   });
-
 
   constructor(private httpClient: HttpClient, private storage: Storage, private authService: AuthService) {
     this.storage.get('access_token').then(token => {

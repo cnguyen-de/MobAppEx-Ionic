@@ -41,6 +41,11 @@
                     <ion-icon name="globe" slot="start"></ion-icon>
                     <ion-label>Change Language</ion-label>
                 </ion-item>
+                <ion-item lines="full" button="true" (click)="switchTheme()">
+                    <ion-icon name="color-wand" slot="start"></ion-icon>
+                    <ion-label *ngIf="!darkMode">Enable Dark Mode</ion-label>
+                    <ion-label *ngIf="darkMode">Enable Light Mode</ion-label>
+                </ion-item>
             </ion-item-group>
 
             <ion-item-group>
