@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams } from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {map} from 'rxjs/operators';
 
@@ -7,19 +7,21 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiService {
-
-  constructor(private httpClient: HttpClient, private storage: Storage) {}
-
+  token: string;
+  constructor(private httpClient: HttpClient, private storage: Storage) {
+    this.setToken()
+  }
+  async setToken() {
+    this.token = await this.storage.get('access_token')
+  }
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
   });
 
-  token = this.storage.get('session').then(session => {
-    this.token = session.id;
-  });
-
   changePassword(oldPassword: string, newPassword: string) {
-    return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`, {oldPassword, newPassword}).pipe(
+    let params = new HttpParams();
+    params = params.append('access_token', this.token);
+    return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
           console.log(res);
         })

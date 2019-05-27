@@ -4,12 +4,11 @@ import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
 
 import { AuthService} from './auth/auth.service';
-import {CookieService} from 'ngx-cookie-service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   sessionId: string;
-  constructor(private storage: Storage, private authService : AuthService) {
+  constructor(private storage: Storage) {
 
   }
 
@@ -27,17 +26,21 @@ export class TokenInterceptor implements HttpInterceptor {
       });
     }
     */
-    request = request.clone({
-      setHeaders: ({
-            "Content-Type": "application/json"
-          }),
-      withCredentials: true,
-    });
+    this.setSessId().then(done => {
+      request = request.clone({
+        setParams: {
+          access_token: this.sessionId
+        },
+        withCredentials: true,
+      });
+    })
+
     return next.handle(request);
   }
 
   async setSessId() {
-    this.sessionId = await this.storage.get('roundcube_sessid');
+    this.sessionId = await this.storage.get('access_token');
+    return true
   }
 
 }
