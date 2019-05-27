@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { Tab3Page } from './tab3.page';
 import {PasswordChangerModalPage} from '../../modals/password-changer-modal/password-changer-modal.page';
+import {PasswordChangerModalPageModule} from '../../modals/password-changer-modal/password-changer-modal.module';
 
 @NgModule({
   imports: [
@@ -13,13 +14,12 @@ import {PasswordChangerModalPage} from '../../modals/password-changer-modal/pass
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild([{ path: '', component: Tab3Page }]),
+    PasswordChangerModalPageModule
   ],
   declarations: [
     Tab3Page,
-    PasswordChangerModalPage
   ],
   entryComponents: [
-    PasswordChangerModalPage
   ]
 })
 export class Tab3PageModule {}

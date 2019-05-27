@@ -20,7 +20,7 @@ export class TabsGuard implements CanActivate {
     const session = await this.storage.get('session');
     if (session == null) {
       this.router.navigateByUrl('/login');
-      this.toast('Please log in again');
+      this.toast('Please log in');
       return false;
     } else {
       return true;

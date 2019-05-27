@@ -22,8 +22,7 @@ export class LoginPage implements OnInit {
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
-              private authenticationService : AuthService, private formBuilder: FormBuilder,
-              private cookieService: CookieService) {
+              private authenticationService : AuthService, private formBuilder: FormBuilder) {
 
   }
 
@@ -43,10 +42,6 @@ export class LoginPage implements OnInit {
         .pipe(first())
         .subscribe(
             data => {
-              this.storage.get('session').then((session) => {
-                this.toast('Authenticated, loading user ' + session.userId)
-                this.setCookie(session.id)
-              });
               this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
             },
@@ -73,10 +68,6 @@ export class LoginPage implements OnInit {
       color: "dark"
     });
     toast.present();
-  }
-  setCookie(sessId) {
-    this.cookieService.set('roundcube_sessid', sessId)
-    console.log(this.cookieService.get('roundcube_sessid'))
   }
 
 }

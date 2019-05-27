@@ -28,6 +28,9 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     */
     request = request.clone({
+      setHeaders: ({
+            "Content-Type": "application/json"
+          }),
       withCredentials: true,
     });
     return next.handle(request);

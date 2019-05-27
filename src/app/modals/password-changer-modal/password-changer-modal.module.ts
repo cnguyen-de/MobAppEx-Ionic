@@ -20,8 +20,5 @@ import { PasswordChangerModalPage } from './password-changer-modal.page';
   entryComponents: [
       PasswordChangerModalPage
   ],
-  exports: [
-      PasswordChangerModalPage
-  ]
 })
 export class PasswordChangerModalPageModule {}

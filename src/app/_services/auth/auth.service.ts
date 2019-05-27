@@ -5,6 +5,8 @@ import { Observable, BehaviorSubject } from  'rxjs';
 
 import { Storage } from  '@ionic/storage';
 import { User } from './user';
+import {CookieService} from 'ngx-cookie-service';
+import {ToastController} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  constructor(private httpClient: HttpClient, private storage: Storage) {
+  constructor(private httpClient: HttpClient, private storage: Storage,
+              private cookieService: CookieService, private toastController: ToastController) {
     // @ts-ignore
     this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
     this.currentUser = this.currentUserSubject.asObservable();
@@ -47,12 +50,28 @@ export class AuthService {
           this.saveToStorage('session', res)
           // @ts-ignore
           this.saveToStorage('roundcube_sessid', res.id)
+          this.setCookie(res.id)
+          this.toast('Authenticated, loading user ' + res.userId)
         })
     );
   }
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
+  }
+  setCookie(sessId) {
+    this.cookieService.set('roundcube_sessid', sessId)
+    console.log(this.cookieService.get('roundcube_sessid'))
+  }
+
+  async toast(message: any) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      position: 'top',
+      color: "dark"
+    });
+    toast.present();
   }
 
 }
