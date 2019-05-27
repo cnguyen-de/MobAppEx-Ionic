@@ -7,6 +7,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
+import {ApiService} from '../../_services/api.service';
+
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,8 @@ export class LoginPage implements OnInit {
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
-              private authenticationService : AuthService, private formBuilder: FormBuilder) {
+              private authenticationService : AuthService, private formBuilder: FormBuilder,
+              private apiService: ApiService) {
 
   }
 
@@ -43,6 +46,16 @@ export class LoginPage implements OnInit {
             data => {
               this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
+              console.log(data.id)
+              this.apiService.getUser(data.userId, data.id.toString())
+                  .pipe(first())
+                  .subscribe(
+                      data => {
+                        console.log(data)
+                      },
+                      error => {
+                        console.log(error);
+                      });
             },
             error => {
               this.loginPressed = !this.loginPressed;
@@ -54,6 +67,8 @@ export class LoginPage implements OnInit {
               }
             });
   }
+
+
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);

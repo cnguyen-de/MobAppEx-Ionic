@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PasswordChangerModalPage } from '../../modals/password-changer-modal/password-changer-modal.page';
+import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
@@ -9,8 +11,21 @@ import { PasswordChangerModalPage } from '../../modals/password-changer-modal/pa
 })
 export class Tab3Page {
 
-  constructor(public modalController: ModalController) {}
+  username: string;
+  email: string;
 
+  constructor(public modalController: ModalController, private storage: Storage,
+              private router: Router) {
+    this.getUserInfo();
+  }
+
+  logOut() {
+    this.storage.remove('user');
+    this.storage.remove('session');
+    this.storage.remove('access_token');
+    this.router.navigateByUrl('/')
+
+  }
 
   changePasswordModal() {
     this.presentModal();
@@ -25,6 +40,13 @@ export class Tab3Page {
       cssClass: 'password-changer-modal'
     });
     return await modal.present();
+  }
+
+  getUserInfo() {
+    this.storage.get('user').then(user => {
+      this.username = user.username;
+      this.email = user.email;
+    })
   }
 
 }

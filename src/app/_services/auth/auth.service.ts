@@ -13,6 +13,8 @@ import {ToastController} from '@ionic/angular';
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
+  token: any;
+  userId: number;
 
   constructor(private httpClient: HttpClient, private storage: Storage, private toastController: ToastController) {
     // @ts-ignore
@@ -36,7 +38,8 @@ export class AuthService {
   register(username: string, email: string, password: string) {
     return this.httpClient.post(`${this.server}/SnoozeUsers`, {username, email, password}).pipe(
         map(async (res) => {
-          console.log(res)
+          console.log(res);
+          return res;
         })
     );
   }
@@ -45,11 +48,15 @@ export class AuthService {
     return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
         map( (res) => {
           console.log(res);
-          this.saveToStorage('session', res)
           // @ts-ignore
-          this.saveToStorage('access_token', res.id)
+          this.token = res.id;
           // @ts-ignore
-          this.toast('Authenticated, loading user ' + res.userId)
+          this.userId = res.userId;
+          this.saveToStorage('session', res);
+          this.saveToStorage('access_token', this.token);
+          this.toast('Authenticated, loading user ' + this.userId)
+
+          return res;
         })
     );
   }
