@@ -40,7 +40,8 @@ export class LanguageChooserModalPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark"
+      color: "dark",
+      keyboardClose: true
     });
     toast.present();
   }

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ModalController, ToastController} from '@ionic/angular';
+import {Component, Input, OnInit} from '@angular/core';
+import {ModalController, NavParams} from '@ionic/angular';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {ApiService} from '../../_services/api.service';
@@ -11,32 +11,25 @@ import {ApiService} from '../../_services/api.service';
 })
 export class LightModalPage implements OnInit {
 
-  constructor(public toastController: ToastController, private http : HttpClient,
+  sliderValue: number;
+  @Input() value: number;
+
+
+  constructor(private http : HttpClient,
               public storage : Storage, private apiService: ApiService,
-              private modalController: ModalController) {
+              private navParams: NavParams, private modalController: ModalController) {
+    this.value = this.navParams.get('value');
   }
 
   ngOnInit() {
+    this.sliderValue = this.value;
   }
 
-
-  onSubmit() {
-
+  onChange() {
+    this.value = this.sliderValue;
   }
-
 
   dismiss() {
-    this.modalController.dismiss();
+    this.modalController.dismiss(this.value);
   }
-
-  async toast(message: any) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 3000,
-      position: 'top',
-      color: "dark"
-    });
-    toast.present();
-  }
-
 }

@@ -1,3 +1,11 @@
 ion-list-header {
   color: var(--ion-text-color)
 }
+ion-range {
+  --knob-background: var(--ion-color-primary);
+  //--knob-size: 30px;
+  //--bar-height: 7px;
+}
+.container {
+  text-align: center;
+}

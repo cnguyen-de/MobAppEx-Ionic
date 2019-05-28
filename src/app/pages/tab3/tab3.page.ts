@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AlertController, ModalController} from '@ionic/angular';
+import {AlertController, ModalController, ToastController} from '@ionic/angular';
 import { PasswordChangerModalPage } from '../../modals/password-changer-modal/password-changer-modal.page';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
@@ -18,9 +18,12 @@ export class Tab3Page {
   username: string;
   email: string;
   darkMode: boolean = false;
+  lightPref: number = 12; //TODO get value from server
+  volumePref: number = 50;
+
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
-              private alertController: AlertController
+              private alertController: AlertController, private toastController: ToastController
               ) {
     this.getUserInfo();
   }
@@ -107,10 +110,18 @@ export class Tab3Page {
     const modal = await this.modalController.create({
       component: VolumeModalPage,
       componentProps: {
-        value: 1234
+        value: this.volumePref
       },
       cssClass: 'language-chooser-modal'
     });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'number') {
+        this.volumePref = value.data;
+        this.toast("Light preference set to: " + this.volumePref)
+      }
+    });
+
     return await modal.present();
   }
 
@@ -122,10 +133,31 @@ export class Tab3Page {
     const modal = await this.modalController.create({
       component: LightModalPage,
       componentProps: {
-        value: 1234
+        value: this.lightPref
       },
       cssClass: 'language-chooser-modal'
     });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'number') {
+        this.lightPref = value.data;
+        this.toast("Light preference set to: " + this.lightPref)
+      }
+    });
+
     return await modal.present();
   }
+
+  //Toast Handler
+  async toast(message: any) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      position: 'top',
+      color: "dark",
+      keyboardClose: true,
+    });
+    toast.present();
+  }
+
 }
