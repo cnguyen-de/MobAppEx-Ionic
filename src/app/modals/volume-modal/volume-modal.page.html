@@ -7,7 +7,10 @@
 
       <ion-item lines="none">
         <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
-          <ion-icon size="small" slot="start" name="volume-mute"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-off" *ngIf="sliderValue==0"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-mute" *ngIf="sliderValue!=0 && sliderValue<30"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-low" *ngIf="sliderValue>=30 && sliderValue<60"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-high" *ngIf="sliderValue>=60"></ion-icon>
           <ion-icon slot="end" name="volume-high"></ion-icon>
         </ion-range>
       </ion-item>

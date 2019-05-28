@@ -118,7 +118,7 @@ export class Tab3Page {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.volumePref = value.data;
-        this.toast("Light preference set to: " + this.volumePref)
+        this.toast("Volume preference set to: " + this.volumePref)
       }
     });
 
