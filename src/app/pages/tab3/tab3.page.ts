@@ -7,6 +7,8 @@ import {ThemeService} from '../../_services/theme/theme.service';
 import {LanguageChooserModalPage} from '../../modals/language-chooser-modal/language-chooser-modal.page';
 import {VolumeModalPage} from '../../modals/volume-modal/volume-modal.page';
 import {LightModalPage} from '../../modals/light-modal/light-modal.page';
+import {first} from 'rxjs/operators';
+import {ApiService} from '../../_services/api.service';
 
 @Component({
   selector: 'app-tab3',
@@ -23,8 +25,8 @@ export class Tab3Page {
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
-              private alertController: AlertController, private toastController: ToastController
-              ) {
+              private alertController: AlertController, private toastController: ToastController,
+              private apiService: ApiService) {
     this.getUserInfo();
   }
   // User Info
@@ -70,10 +72,18 @@ export class Tab3Page {
         }, {
           text: 'Log out',
           handler: () => {
-            this.storage.remove('user');
-            this.storage.remove('session');
-            this.storage.remove('access_token');
-            this.router.navigateByUrl('/')
+            this.apiService.logOut()
+                .pipe(first())
+                .subscribe(
+                    data => {
+                      this.storage.remove('user');
+                      this.storage.remove('session');
+                      this.storage.remove('access_token');
+                      this.router.navigateByUrl('/');
+                    },
+                    error => {
+                      console.log(error);
+                    });
           }
         }
       ]

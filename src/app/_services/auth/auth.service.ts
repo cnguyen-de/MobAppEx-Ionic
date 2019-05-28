@@ -54,8 +54,6 @@ export class AuthService {
           this.userId = res.userId;
           this.saveToStorage('session', res);
           this.saveToStorage('access_token', this.token);
-          this.toast('Authenticated, loading user ' + this.userId)
-
           return res;
         })
     );
