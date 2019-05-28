@@ -33,7 +33,8 @@ export class ApiService {
     let params = this.setParamToken(this.token)
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
-          console.log(res);
+          //console.log(res);
+          return res;
         })
     );
   }
@@ -43,8 +44,9 @@ export class ApiService {
     let params = this.setParamToken(token)
     return this.httpClient.get(`${this.server}/SnoozeUsers/${userId}`, {params: params}).pipe(
         map((res) => {
-          console.log(res);
-          this.saveToStorage('user', res)
+          //console.log(res);
+          this.saveToStorage('user', res);
+          return res;
         })
     )
   }

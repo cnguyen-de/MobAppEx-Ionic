@@ -48,7 +48,7 @@ export class LoginPage implements OnInit {
               this.loginPressed = !this.loginPressed;
 
               // @ts-ignore
-              console.log(data.id)
+              console.log(data.id);
               // @ts-ignore
               this.apiService.getUser(data.userId, data.id.toString())
                   .pipe(first())
