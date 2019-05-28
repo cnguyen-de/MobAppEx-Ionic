@@ -1,0 +1,19 @@
+<ion-content>
+  <div>
+    <ion-list class="ion-padding-top">
+      <ion-list-header>
+        <ion-label>Change Language</ion-label>
+      </ion-list-header>
+      <ion-item-group>
+        <ion-item lines="full" button="true" (click)="chooseEnglish()">
+          <ion-icon src="/assets/united-kingdom.svg" slot="start"></ion-icon>
+          <ion-label>English</ion-label>
+        </ion-item>
+        <ion-item lines="full" button="true" (click)="chooseGerman()">
+          <ion-icon src="/assets/germany.svg" slot="start"></ion-icon>
+          <ion-label>German</ion-label>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </div>
+</ion-content>

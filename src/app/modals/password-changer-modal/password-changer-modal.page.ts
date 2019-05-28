@@ -68,6 +68,7 @@ export class PasswordChangerModalPage implements OnInit {
             data => {
               this.toast('Password successfully changed');
               this.buttonPressed = !this.buttonPressed;
+              this.dismiss();
             },
             error => {
               this.buttonPressed = !this.buttonPressed;
