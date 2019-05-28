@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
 
     <ion-toolbar>
         <ion-item lines="none">
@@ -43,4 +43,57 @@
         </ion-slide>
 
     </ion-slides>
+</ion-content> -->
+
+<ion-content>
+  <div>
+    <agm-map
+      [latitude]="latMapCenter + 0.0003"
+      [longitude]="lngMapCenter"
+      [zoom]="mapZoomLevel"
+      [zoomControl]="false"
+      (boundsChange)="onBoundsChanged($event)"
+    >
+      <agm-marker
+        *ngFor="let item of capsules; let i = index"
+        [latitude]="item.lat"
+        [longitude]="item.lng"
+        [label]="item.label"
+        [iconUrl]="item.icon"
+        (markerClick)="clickedMarker(item.label, i)"
+      >
+        <agm-info-window [isOpen]="item.isOpen">
+          <strong id="colorWorkaround">{{ item.name }}</strong>
+        </agm-info-window>
+      </agm-marker>
+      <agm-marker
+        [latitude]="latMapCenter"
+        [longitude]="lngMapCenter"
+        [iconUrl]="personIcon"
+      >
+      </agm-marker>
+    </agm-map>
+  </div>
+
+  <ion-slides
+    #slider
+    [options]="slidesConfig"
+    (ionSlideDidChange)="onSlideChanged()"
+  >
+    <ion-slide *ngFor="let item of capsules; let i = index">
+      <ion-card (click)="cardClicked(i)">
+        <ion-card-header>
+          <ion-card-title>
+            {{ item.name }}
+          </ion-card-title>
+          <ion-card-subtitle>
+            {{ item.lat }}
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-button shape="round">book this one</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
 </ion-content>

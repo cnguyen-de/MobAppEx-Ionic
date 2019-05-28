@@ -5,6 +5,7 @@
 :root {
 
   //Default white theme
+  --background-surface-color: #efefef;
   --ion-background-color: #fff;
   --ion-border-color: #d8d8d8;
   --ion-text-color-step-400: #222;
@@ -84,6 +85,7 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
+      --background-surface-color: #000;
       --ion-background-color: #171717;
       --ion-item-background-color: #171717;
       --ion-item-divider: #171717;

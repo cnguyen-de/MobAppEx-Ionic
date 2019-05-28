@@ -7,3 +7,33 @@
 .slide {
   min-height: calc(80vh - (94px + 50px));
 }
+
+agm-map {
+  height: 100%;
+}
+
+div {
+    height: calc(100% - 188px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+ion-slides {
+  height: 188px;
+}
+ion-content {
+--background: var(--background-surface-color);
+}
+
+ion-card {
+--background: var(--ion-background-color);
+border-radius: 10px;
+width: 90%;
+height: 148px;
+}
+
+
+
+#colorWorkaround {
+  color: black;
+}
+
