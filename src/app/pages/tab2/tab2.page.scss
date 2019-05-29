@@ -13,12 +13,12 @@ agm-map {
 }
 
 div {
-    height: calc(100% - 188px);
+    height: calc(100% - 186px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 ion-slides {
-  height: 188px;
+  height: 186px;
 }
 
 ion-content {
@@ -29,8 +29,15 @@ ion-card {
 --background: var(--ion-background-color);
 border-radius: 8px;
 width: 100%;
-height: 168px;
+height: 160px;
 margin: 0;
+}
+ion-card-title {
+  color: var(--ion-text-color);
+}
+
+ion-button {
+  margin-top: 12px;
 }
 
 
