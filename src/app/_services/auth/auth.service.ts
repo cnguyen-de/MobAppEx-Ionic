@@ -54,8 +54,6 @@ export class AuthService {
           this.userId = res.userId;
           this.saveToStorage('session', res);
           this.saveToStorage('access_token', this.token);
-          this.toast('Authenticated, loading user ' + this.userId)
-
           return res;
         })
     );
@@ -70,7 +68,8 @@ export class AuthService {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark"
+      color: "dark",
+      keyboardClose: true
     });
     toast.present();
   }

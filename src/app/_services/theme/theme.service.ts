@@ -28,6 +28,7 @@ export class ThemeService {
   getDarkTheme() {
     return `
       ${this.currentTheme}
+      --background-surface-color: #000;
       --ion-background-color: #171717;
       --ion-item-background-color: #171717;
       --ion-toolbar-background: #171717;
@@ -41,6 +42,7 @@ export class ThemeService {
   getLightTheme() {
     return `
       ${this.currentTheme}
+      --background-surface-color: #efefef;
       --ion-background-color: #fff;
       --ion-item-background-color: #fff;
       --ion-toolbar-background: #fff;
