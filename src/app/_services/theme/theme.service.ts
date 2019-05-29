@@ -28,11 +28,12 @@ export class ThemeService {
   getDarkTheme() {
     return `
       ${this.currentTheme}
-      --background-surface-color: #000;
-      --ion-background-color: #171717;
-      --ion-item-background-color: #171717;
-      --ion-toolbar-background: #171717;
-      --ion-border-color: #444;
+      --background-surface-color: #243447;
+      --ion-background-color: #141d26;
+      --ion-item-background-color: #243447;
+      --ion-toolbar-background: #243447;
+      --ion-border-color: #243447;
+      --ion-color-primary: #0084b4;
       --ion-text-color: #fff;
       --ion-text-color-step-400: #fff;
       --ion-text-color-step-600: #fff;
@@ -47,6 +48,7 @@ export class ThemeService {
       --ion-item-background-color: #fff;
       --ion-toolbar-background: #fff;
       --ion-border-color: #d8d8d8;
+      --ion-color-primary: #08a0e9;
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;

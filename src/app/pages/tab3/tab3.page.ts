@@ -21,7 +21,7 @@ export class Tab3Page {
 
   username: string;
   email: string;
-  darkMode: boolean = false;
+  darkMode: boolean;
   lightPref: number = 12; //TODO get value from server
   volumePref: number = 50;
   languagePref: string;
@@ -32,9 +32,8 @@ export class Tab3Page {
               private apiService: ApiService,
               private translateService: TranslateService) {
     this.getUserInfo();
-    this.getLanguagePref()
+    this.getDarkValue();
   }
-
 
   // User Info
   getUserInfo() {
@@ -113,7 +112,7 @@ export class Tab3Page {
 
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'string') {
-        this.translateService.use('de');
+        this.translateService.use(value.data);
         this.saveToStorage('language', value.data);
         switch (value.data) {
           case 'en': this.toast("Language set to English!"); break;
@@ -128,7 +127,8 @@ export class Tab3Page {
   //Switch Light-Dark Theme
   switchTheme() {
     this.darkMode = !this.darkMode;
-    this.themeService.enableDarkMode(this.darkMode)
+    this.themeService.enableDarkMode(this.darkMode);
+    this.saveToStorage('dark', this.darkMode);
   }
 
   //Choose Volume Preference
@@ -194,15 +194,8 @@ export class Tab3Page {
     await this.storage.set(key, value);
   }
 
-  async getLanguagePref() {
-    this.storage.get('language').then(pref => {
-      if (typeof pref == 'string') {
-        this.languagePref = pref;
-        this.translateService.use(this.languagePref);
-      } else {
-        this.translateService.setDefaultLang('en')
-      }
-    })
+  async getDarkValue() {
+    this.darkMode = await this.storage.get('dark')
   }
 
 }

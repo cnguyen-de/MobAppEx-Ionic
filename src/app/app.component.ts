@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import {TranslateService} from '@ngx-translate/core';
+import {ThemeService} from './_services/theme/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +16,14 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    public storage : Storage, private translateService: TranslateService
+    private storage : Storage,
+    private translateService: TranslateService,
+    private themeService: ThemeService
   ) {
     this.initializeApp();
     this.initializeDB();
     this.getLanguagePref();
+    this.setTheme();
   }
 
   initializeApp() {
@@ -40,6 +44,14 @@ export class AppComponent {
         this.translateService.use(pref);
       } else {
         this.translateService.setDefaultLang('en')
+      }
+    })
+  }
+
+  async setTheme() {
+    this.storage.get('dark').then(dark => {
+      if (typeof dark == 'boolean') {
+        this.themeService.enableDarkMode(dark);
       }
     })
   }
