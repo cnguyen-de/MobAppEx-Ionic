@@ -9,6 +9,8 @@ import {VolumeModalPage} from '../../modals/volume-modal/volume-modal.page';
 import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {first} from 'rxjs/operators';
 import {ApiService} from '../../_services/api.service';
+import {TranslateService} from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-tab3',
@@ -22,13 +24,18 @@ export class Tab3Page {
   darkMode: boolean = false;
   lightPref: number = 12; //TODO get value from server
   volumePref: number = 50;
+  languagePref: string;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
               private alertController: AlertController, private toastController: ToastController,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private translateService: TranslateService) {
     this.getUserInfo();
+    this.getLanguagePref()
   }
+
+
   // User Info
   getUserInfo() {
     this.storage.get('user').then(user => {
@@ -99,10 +106,22 @@ export class Tab3Page {
     const modal = await this.modalController.create({
       component: LanguageChooserModalPage,
       componentProps: {
-        value: 1234
+        value: 'en'
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        this.translateService.use('de');
+        this.saveToStorage('language', value.data);
+        switch (value.data) {
+          case 'en': this.toast("Language set to English!"); break;
+          case 'de': this.toast("Sprache als Deutsch gesetzt!"); break;
+        }
+      }
+    });
+
     return await modal.present();
   }
 
@@ -122,7 +141,7 @@ export class Tab3Page {
       componentProps: {
         value: this.volumePref
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
@@ -145,12 +164,13 @@ export class Tab3Page {
       componentProps: {
         value: this.lightPref
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.lightPref = value.data;
+
         this.toast("Light preference set to: " + this.lightPref)
       }
     });
@@ -168,6 +188,21 @@ export class Tab3Page {
       keyboardClose: true,
     });
     toast.present();
+  }
+
+  async saveToStorage(key, value) {
+    await this.storage.set(key, value);
+  }
+
+  async getLanguagePref() {
+    this.storage.get('language').then(pref => {
+      if (typeof pref == 'string') {
+        this.languagePref = pref;
+        this.translateService.use(this.languagePref);
+      } else {
+        this.translateService.setDefaultLang('en')
+      }
+    })
   }
 
 }

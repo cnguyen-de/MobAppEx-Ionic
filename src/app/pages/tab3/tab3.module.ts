@@ -8,6 +8,9 @@ import {PasswordChangerModalPageModule} from '../../modals/password-changer-moda
 import {LanguageChooserModalPageModule} from '../../modals/language-chooser-modal/language-chooser-modal.module';
 import {LightModalPageModule} from '../../modals/light-modal/light-modal.module';
 import {VolumeModalPageModule} from '../../modals/volume-modal/volume-modal.module';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {HttpLoaderFactory} from '../../app.module';
+import {HttpClient} from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -19,7 +22,15 @@ import {VolumeModalPageModule} from '../../modals/volume-modal/volume-modal.modu
     PasswordChangerModalPageModule,
     LanguageChooserModalPageModule,
     LightModalPageModule,
-    VolumeModalPageModule
+    VolumeModalPageModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+
   ],
   declarations: [
     Tab3Page,
