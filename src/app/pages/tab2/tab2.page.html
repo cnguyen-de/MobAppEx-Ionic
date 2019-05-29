@@ -61,7 +61,7 @@
         [latitude]="item.lat"
         [longitude]="item.lng"
         [label]="item.label"
-        [iconUrl]="item.icon"
+        [iconUrl]="capsuleIcon"
         (markerClick)="clickedMarker(item.label, i)"
       >
         <agm-info-window [isOpen]="item.isOpen">
@@ -86,14 +86,22 @@
       <ion-card *ngIf="item"  (click)="cardClicked(i)">
         <ion-card-header>
           <ion-card-title>
-            {{ item.name }}
+            <h4>
+                {{ item.name }}
+            </h4>
           </ion-card-title>
-          <ion-card-subtitle>{{ getDistanceFromLatLonInKm(latMapCenter, lngMapCenter, item.lat, item.lng) }} meters
+          <ion-card-subtitle>
+            <h6>
+                {{ getDistance(latMapCenter, lngMapCenter, item.lat, item.lng) }} meters
+            </h6>
           </ion-card-subtitle>
+          <ion-card-subtitle>
+              <h6>
+                  next slot bla
+              </h6>
+            </ion-card-subtitle>
+            <ion-button shape="round" size="medium" expand="block">book this one</ion-button>
         </ion-card-header>
-        <ion-card-content>
-          <ion-button shape="round">book this one</ion-button>
-        </ion-card-content>
       </ion-card>
     </ion-slide>
   </ion-slides>

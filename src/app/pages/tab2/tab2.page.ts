@@ -6,7 +6,7 @@ import {
   IonSegmentButton,
   IonSlides
 } from "@ionic/angular";
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { LocationService } from '../../_services/location.service'
 
 @Component({
   selector: "app-tab2",
@@ -16,7 +16,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
-  constructor(private geolocation: Geolocation) {}
+  constructor(private locationService: LocationService) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
@@ -25,7 +25,7 @@ export class Tab2Page implements OnInit {
   latMapCenter: number = 50.1303316;
   lngMapCenter: number = 8.69238764;
   personIcon: string = '../../../assets/images/icons/LocationPerson.svg';
-
+  capsuleIcon: string = '../../../assets/images/icons/SnoozeMarker.svg';
   capsules = [];
 
   slidesConfig = {
@@ -40,24 +40,18 @@ export class Tab2Page implements OnInit {
       {
         lat: 50.13017685,
         lng: 8.69303674,
-        label: "",
-        icon: "../../../assets/images/icons/SnoozeMarker.svg",
         isOpen: true,
         name: "Gebäude 1"
       },
       {
         lat: 50.13122569,
         lng: 8.69226426,
-        label: "",
-        icon: "../../../assets/images/icons/SnoozeMarker.svg",
         isOpen: false,
         name: "Bibliothek"
       },
       {
         lat: 50.12887008,
         lng: 8.69176537,
-        label: "",
-        icon: "../../../assets/images/icons/SnoozeMarker.svg",
         isOpen: false,
         name: "BCN"
       }
@@ -67,22 +61,21 @@ export class Tab2Page implements OnInit {
      * Retrieve Current Position
      */
     if (!this.fixedLocation) {
-      this.geolocation.getCurrentPosition().then((resp) => {
-        this.latMapCenter = resp.coords.latitude
-        this.lngMapCenter = resp.coords.longitude
-       }).catch((error) => {
-         console.log('Error getting location', error);
-       });
+      this.locationService.getCurrentPosition().then(data => {
+        console.log('Result getting location in Component', data);
+        this.latMapCenter = data.coords.latitude;
+        this.lngMapCenter = data.coords.longitude;
+      });
     }
 
-    
+
   }
 
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`);
     this.hideAll();
     this.slider.slideTo(index);
-    }
+  }
 
   onBoundsChanged(event?) {
     console.log(event);
@@ -107,24 +100,8 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  // https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = this.deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; // Distance in km
-    //return d;
-    return Math.round(d * 1000);
-  }
-  
-  deg2rad(deg) {
-    return deg * (Math.PI/180)
+  getDistance(lat1, lng1, lat2, lng2) {
+    return this.locationService.getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
   }
 
   // results: Observable<any>;
