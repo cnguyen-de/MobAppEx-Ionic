@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@angular/core'
 import { DOCUMENT } from '@angular/common'
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import { NavigationBarColor } from 'ionic-plugin-navigation-bar-color';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,12 @@ export class ThemeService {
 
   private currentTheme = ''
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(@Inject(DOCUMENT) private document: Document,
+              private statusBar: StatusBar,
+              private navigationBarColor: NavigationBarColor
+  ) {
+    this.statusBar.overlaysWebView(true);
+  }
 
   setPrimaryColor(color: string) {
     this.setVariable('--ion-color-primary', color)
@@ -20,8 +27,15 @@ export class ThemeService {
   }
 
   enableDarkMode(enableDarkMode: boolean) {
-    let theme = this.getLightTheme()
-    if (enableDarkMode) theme = this.getDarkTheme()
+    let theme = this.getLightTheme();
+    if (enableDarkMode) {
+      this.statusBar.backgroundColorByHexString('#141d26');
+      this.navigationBarColor.backgroundColorByHexString('#141d26');
+      theme = this.getDarkTheme();
+    } else {
+      this.statusBar.backgroundColorByHexString('#ffffff');
+      this.navigationBarColor.backgroundColorByHexString('#000000');
+    }
     this.document.documentElement.style.cssText = theme
   }
 
