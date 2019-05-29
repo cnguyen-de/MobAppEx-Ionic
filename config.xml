@@ -3,7 +3,7 @@
     <name>Snooze App</name>
     <description>A MobAppEx Project by Group 9</description>
     <author>Group 9 - MobAppEx</author>
-    <content original-src="index.html" src="http://192.168.2.12:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://*/*" />
     <allow-intent href="http://*/*" />
@@ -87,5 +87,5 @@
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <allow-navigation href="http://192.168.2.12:8100" sessionid="6a5d89f9" />
+    <allow-navigation href="http://192.168.2.12:8100" sessionid="13d6713e" />
 </widget>

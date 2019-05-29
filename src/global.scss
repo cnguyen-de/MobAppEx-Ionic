@@ -31,12 +31,25 @@ $font-family-base: 'Roboto', sans-serif;
   --color: var(--ion-text-color);
   --background: var(--modal-color)
 }
+//Huge phones
+@media (min-height: 800px) {
+  .password-changer-modal .modal-wrapper {
+    min-height: 30% !important;
+    top: 63% !important;
+  }
+
+  .chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 77% !important;
+  }
+}
 
 //Big phones
-@media (min-height: 700px) {
+@media (min-height: 700px) and (max-height: 799px){
+
   .password-changer-modal .modal-wrapper {
-    min-height: 45% !important;
-    top: 55% !important;
+    min-height: 42% !important;
+    top: 58% !important;
   }
 
   .chooser-modal .modal-wrapper {
