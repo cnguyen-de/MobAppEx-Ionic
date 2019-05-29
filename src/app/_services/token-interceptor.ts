@@ -12,9 +12,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
   }
 
-  ngOnInit() {
-
-  }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     /*
     let currentUser = this.authenticationService.currentUserValue;
