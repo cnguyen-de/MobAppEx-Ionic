@@ -4,7 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PasswordChangerModalPage } from './password-changer-modal.page';
+import { LanguageChooserModalPage } from './language-chooser-modal.page';
 
 @NgModule({
   imports: [
@@ -12,12 +12,13 @@ import { PasswordChangerModalPage } from './password-changer-modal.page';
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+
   ],
   declarations: [
-      PasswordChangerModalPage
+      LanguageChooserModalPage
   ],
   entryComponents: [
-      PasswordChangerModalPage
-  ],
+      LanguageChooserModalPage
+  ]
 })
-export class PasswordChangerModalPageModule {}
+export class LanguageChooserModalPageModule {}

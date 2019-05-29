@@ -68,6 +68,7 @@ export class PasswordChangerModalPage implements OnInit {
             data => {
               this.toast('Password successfully changed');
               this.buttonPressed = !this.buttonPressed;
+              this.dismiss();
             },
             error => {
               this.buttonPressed = !this.buttonPressed;
@@ -90,7 +91,8 @@ export class PasswordChangerModalPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark"
+      color: "dark",
+      keyboardClose: true
     });
     toast.present();
   }

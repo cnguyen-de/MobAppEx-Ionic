@@ -15,9 +15,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+
 import { TokenInterceptor} from './_services/token-interceptor';
+import {ErrorInterceptor} from './_services/error-interceptor';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -30,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       BrowserModule,
       HttpClientModule,
       IonicModule.forRoot({
-        mode: 'ios'
+        //mode: 'ios'
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -51,6 +54,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     Geolocation,
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+
   ],
   bootstrap: [AppComponent]
 })
