@@ -52,6 +52,8 @@ export class AppComponent {
     this.storage.get('dark').then(dark => {
       if (typeof dark == 'boolean') {
         this.themeService.enableDarkMode(dark);
+      } else {
+        this.themeService.enableDarkMode(false);
       }
     })
   }

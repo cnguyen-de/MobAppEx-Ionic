@@ -84,7 +84,7 @@ export class RegistrationPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark",
+      cssClass: 'toast-container',
       keyboardClose: true
     });
     toast.present();

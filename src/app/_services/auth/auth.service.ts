@@ -5,7 +5,6 @@ import { Observable, BehaviorSubject } from  'rxjs';
 
 import { Storage } from  '@ionic/storage';
 import { User } from './user';
-import {ToastController} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,7 @@ export class AuthService {
   token: any;
   userId: number;
 
-  constructor(private httpClient: HttpClient, private storage: Storage, private toastController: ToastController) {
+  constructor(private httpClient: HttpClient, private storage: Storage) {
     // @ts-ignore
     this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
     this.currentUser = this.currentUserSubject.asObservable();
@@ -62,16 +61,4 @@ export class AuthService {
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
   }
-
-  async toast(message: any) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 3000,
-      position: 'top',
-      color: "dark",
-      keyboardClose: true
-    });
-    toast.present();
-  }
-
 }

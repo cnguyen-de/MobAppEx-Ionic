@@ -22,6 +22,16 @@ $font-family-base: 'Roboto', sans-serif;
   box-shadow: none !important;
 }
 
+.toast-container {
+  --color: var(--ion-text-color);
+  --background: var(--modal-color) !important;
+}
+
+.alert-dialog {
+  --color: var(--ion-text-color);
+  --background: var(--modal-color)
+}
+
 //Big phones
 @media (min-height: 700px) {
   .password-changer-modal .modal-wrapper {
@@ -33,10 +43,6 @@ $font-family-base: 'Roboto', sans-serif;
     min-height: 25% !important;
     top: 75% !important;
   }
-}
-
-.alert-dialog {
-  --background: var(--ion-background-color)
 }
 
 //Small phones

@@ -82,7 +82,7 @@ export class LoginPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark",
+      cssClass: 'toast-container',
       keyboardClose: true,
 
     });
