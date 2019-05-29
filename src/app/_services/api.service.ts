@@ -61,10 +61,30 @@ export class ApiService {
     )
   }
 
+  getCapsules() {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.post(`${this.server}/Capsules`, {}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
+  getCapsuleById(id) {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.post(`${this.server}/Capsules/${id}`, {}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
 
   async getToken() {
     this.token = await this.storage.get('access_token')
   }
+
   setParamToken(token) {
     let params = new HttpParams();
     params = params.append('access_token', token);
