@@ -20,7 +20,6 @@ import { TokenInterceptor} from './_services/token-interceptor';
 import {ErrorInterceptor} from './_services/error-interceptor';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import {NavigationBarColor} from 'ionic-plugin-navigation-bar-color';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -55,8 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     Geolocation,
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    NavigationBarColor,
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
 
   ],
   bootstrap: [AppComponent]
