@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
               // @ts-ignore
               console.log(data.id);
               // @ts-ignore
-              this.apiService.getUser(data.userId, data.id.toString())
+              this.apiService.getUser(data.id.toString())
                   .pipe(first())
                   .subscribe(
                       data => {

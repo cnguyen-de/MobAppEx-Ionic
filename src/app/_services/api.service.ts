@@ -39,10 +39,10 @@ export class ApiService {
     );
   }
 
-  getUser(userId, token) {
+  getUser(token) {
     this.token = token;
     let params = this.setParamToken(token)
-    return this.httpClient.get(`${this.server}/SnoozeUsers/${userId}`, {params: params}).pipe(
+    return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
           //console.log(res);
           this.saveToStorage('user', res);
