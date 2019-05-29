@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@angular/core'
 import { DOCUMENT } from '@angular/common'
+import {StatusBar} from '@ionic-native/status-bar/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,8 @@ export class ThemeService {
 
   private currentTheme = ''
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(@Inject(DOCUMENT) private document: Document,
+              private statusBar: StatusBar) {}
 
   setPrimaryColor(color: string) {
     this.setVariable('--ion-color-primary', color)
@@ -21,7 +23,12 @@ export class ThemeService {
 
   enableDarkMode(enableDarkMode: boolean) {
     let theme = this.getLightTheme()
-    if (enableDarkMode) theme = this.getDarkTheme()
+    if (enableDarkMode) {
+      theme = this.getDarkTheme();
+      this.statusBar.backgroundColorByHexString('#141d26');
+    } else {
+      this.statusBar.backgroundColorByHexString('#ffffff');
+    }
     this.document.documentElement.style.cssText = theme
   }
 
