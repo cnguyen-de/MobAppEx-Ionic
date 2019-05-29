@@ -52,6 +52,8 @@
       [longitude]="lngMapCenter"
       [zoom]="mapZoomLevel"
       [zoomControl]="false"
+      [streetViewControl]="false"
+      [fitBounds]="false"
       (boundsChange)="onBoundsChanged($event)"
     >
       <agm-marker

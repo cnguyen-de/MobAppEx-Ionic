@@ -18,6 +18,9 @@ export class Tab2Page implements OnInit {
 
   constructor(private geolocation: Geolocation) {}
 
+  // set to false to use GPS location!
+  fixedLocation: boolean = true;
+
   mapZoomLevel: number = 17;
   latMapCenter: number = 50.1303316;
   lngMapCenter: number = 8.69238764;
@@ -60,15 +63,19 @@ export class Tab2Page implements OnInit {
       }
     ];
 
-    /** Retrieve Current Position
-     *      Simply Dismiss Location Permission in Browser for Debug Purposes!
+    /** 
+     * Retrieve Current Position
      */
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.latMapCenter = resp.coords.latitude
-      this.lngMapCenter = resp.coords.longitude
-     }).catch((error) => {
-       console.log('Error getting location', error);
-     });
+    if (!this.fixedLocation) {
+      this.geolocation.getCurrentPosition().then((resp) => {
+        this.latMapCenter = resp.coords.latitude
+        this.lngMapCenter = resp.coords.longitude
+       }).catch((error) => {
+         console.log('Error getting location', error);
+       });
+    }
+
+    
   }
 
   clickedMarker(label: string, index: number) {
