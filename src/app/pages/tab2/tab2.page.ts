@@ -6,6 +6,7 @@ import {
   IonSegmentButton,
   IonSlides
 } from "@ionic/angular";
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: "app-tab2",
@@ -15,7 +16,7 @@ import {
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
-  constructor() {}
+  constructor(private geolocation: Geolocation) {}
 
   mapZoomLevel: number = 17;
   latMapCenter: number = 50.1303316;
@@ -31,6 +32,7 @@ export class Tab2Page implements OnInit {
   };
 
   ngOnInit() {
+    // Demo Data
     this.capsules = [
       {
         lat: 50.13017685,
@@ -57,6 +59,16 @@ export class Tab2Page implements OnInit {
         name: "BCN"
       }
     ];
+
+    /** Retrieve Current Position
+     *      Simply Dismiss Location Permission in Browser for Debug Purposes!
+     */
+    this.geolocation.getCurrentPosition().then((resp) => {
+      this.latMapCenter = resp.coords.latitude
+      this.lngMapCenter = resp.coords.longitude
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
   }
 
   clickedMarker(label: string, index: number) {
