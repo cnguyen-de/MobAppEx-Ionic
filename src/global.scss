@@ -22,17 +22,37 @@ $font-family-base: 'Roboto', sans-serif;
   box-shadow: none !important;
 }
 
+//Big phones
 @media (min-height: 700px) {
   .password-changer-modal .modal-wrapper {
-    top: 55% !important;
     min-height: 45% !important;
+    top: 55% !important;
+  }
+  .language-chooser-modal .modal-wrapper {
+    min-height: 25% !important;
+    top: 75% !important;
   }
 }
+
+//Small phones
 .password-changer-modal .modal-wrapper {
-  top: 40%;
   min-height: 60%;
+  top: 40%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
+}
+
+.language-chooser-modal .modal-wrapper {
+  min-height: 30%;
+  top: 70%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}
+
+.alert-dialog {
+  --background: var(--ion-background-color)
 }

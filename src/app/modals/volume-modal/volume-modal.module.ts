@@ -4,7 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PasswordChangerModalPage } from './password-changer-modal.page';
+import { VolumeModalPage } from './volume-modal.page';
 
 @NgModule({
   imports: [
@@ -14,10 +14,10 @@ import { PasswordChangerModalPage } from './password-changer-modal.page';
     ReactiveFormsModule,
   ],
   declarations: [
-      PasswordChangerModalPage
+      VolumeModalPage
   ],
   entryComponents: [
-      PasswordChangerModalPage
-  ],
+      VolumeModalPage
+  ]
 })
-export class PasswordChangerModalPageModule {}
+export class VolumeModalPageModule {}

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams } from '@angular/common/http';
-import {Storage} from '@ionic/storage';
-import {map} from 'rxjs/operators';
-import {AuthService} from './auth/auth.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
+import { map } from 'rxjs/operators';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,8 @@ export class ApiService {
     let params = this.setParamToken(this.token)
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
-          console.log(res);
+          //console.log(res);
+          return res;
         })
     );
   }
@@ -43,17 +44,27 @@ export class ApiService {
     let params = this.setParamToken(token)
     return this.httpClient.get(`${this.server}/SnoozeUsers/${userId}`, {params: params}).pipe(
         map((res) => {
-          console.log(res);
-          this.saveToStorage('user', res)
+          //console.log(res);
+          this.saveToStorage('user', res);
+          return res;
+        })
+    )
+  }
+
+  logOut() {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.post(`${this.server}/SnoozeUsers/logout`, {}, {params: params}).pipe(
+        map((res) => {
+          return res;
         })
     )
   }
 
 
-  async setUserId() {
-
+  async getToken() {
+    this.token = await this.storage.get('access_token')
   }
-
   setParamToken(token) {
     let params = new HttpParams();
     params = params.append('access_token', token);
