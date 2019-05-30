@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
 import {first} from 'rxjs/operators';
 
 @Component({

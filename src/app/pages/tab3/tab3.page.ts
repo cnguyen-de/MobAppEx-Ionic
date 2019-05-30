@@ -8,7 +8,7 @@ import {LanguageChooserModalPage} from '../../modals/language-chooser-modal/lang
 import {VolumeModalPage} from '../../modals/volume-modal/volume-modal.page';
 import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {first} from 'rxjs/operators';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 
 
@@ -83,7 +83,6 @@ export class Tab3Page {
                 .subscribe(
                     data => {
                       this.storage.remove('user');
-                      this.storage.remove('session');
                       this.storage.remove('access_token');
                       this.router.navigateByUrl('/');
                     },

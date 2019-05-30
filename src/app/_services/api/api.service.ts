@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { map } from 'rxjs/operators';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,9 @@ export class ApiService {
         this.token = token;
       }
     });
-    this.storage.get('session').then(session => {
-      if (session != null) {
-        this.userId = session.userId;
+    this.storage.get('user').then(user => {
+      if (user != null) {
+        this.userId = user.id;
       }
     });
   }

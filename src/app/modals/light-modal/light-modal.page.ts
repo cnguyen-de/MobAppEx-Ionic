@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, NavParams} from '@ionic/angular';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
 
 @Component({
   selector: 'app-light-modal',

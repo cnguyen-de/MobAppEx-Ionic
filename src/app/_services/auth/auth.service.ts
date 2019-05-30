@@ -51,7 +51,6 @@ export class AuthService {
           this.token = res.id;
           // @ts-ignore
           this.userId = res.userId;
-          this.saveToStorage('session', res);
           this.saveToStorage('access_token', this.token);
           return res;
         })

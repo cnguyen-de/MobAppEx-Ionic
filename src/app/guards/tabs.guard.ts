@@ -15,8 +15,8 @@ export class TabsGuard implements CanActivate {
       state: RouterStateSnapshot
   ): Promise<boolean> {
 
-    const session = await this.storage.get('session');
-    if (session == null) {
+    const token = await this.storage.get('access_token');
+    if (!(typeof token == 'string')) {
       this.router.navigateByUrl('/login');
       return false;
     } else {

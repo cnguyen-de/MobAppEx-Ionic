@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
 
 
 @Component({

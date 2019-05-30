@@ -7,7 +7,7 @@ import { AuthService} from './auth/auth.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  sessionId: string;
+  token: string;
   constructor(private storage: Storage) {
 
   }
@@ -26,17 +26,17 @@ export class TokenInterceptor implements HttpInterceptor {
     this.setSessId().then(done => {
       request = request.clone({
         setParams: {
-          access_token: this.sessionId
+          access_token: this.token
         },
         withCredentials: true,
       });
-    })
+    });
 
     return next.handle(request);
   }
 
   async setSessId() {
-    this.sessionId = await this.storage.get('access_token');
+    this.token = await this.storage.get('access_token');
     return true
   }
 

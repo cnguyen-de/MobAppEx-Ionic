@@ -24,12 +24,13 @@ $font-family-base: 'Roboto', sans-serif;
 
 .toast-container {
   --color: var(--ion-text-color);
-  --background: var(--modal-color) !important;
+  --background: var(--toast-color) !important;
 }
 
 .alert-dialog {
-  --color: var(--ion-text-color);
-  --background: var(--modal-color)
+  color: var(--ion-text-color);
+  --ion-color-step-550: var(--ion-text-color);
+  --background: var(--modal-color);
 }
 //Huge phones
 @media (min-height: 800px) {

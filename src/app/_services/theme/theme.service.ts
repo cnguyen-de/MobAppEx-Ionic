@@ -42,6 +42,7 @@ export class ThemeService {
       --ion-background-color: #141d26;
       --ion-item-background-color: #243447;
       --modal-color: #243447;
+      --toast-color: #243447;
       --ion-toolbar-background: #243447;
       --ion-border-color: #243447;
       --ion-color-primary: #0084b4;
@@ -58,6 +59,7 @@ export class ThemeService {
       --ion-background-color: #fff;
       --ion-item-background-color: #fff;
       --modal-color: #fff;
+      --toast-color: #000;
       --ion-toolbar-background: #fff;
       --ion-border-color: #d8d8d8;
       --ion-color-primary: #08a0e9;
