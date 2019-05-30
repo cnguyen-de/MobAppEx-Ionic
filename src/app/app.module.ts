@@ -33,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       BrowserModule,
       HttpClientModule,
       IonicModule.forRoot({
-        //mode: 'ios'
+        mode: 'ios'
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),

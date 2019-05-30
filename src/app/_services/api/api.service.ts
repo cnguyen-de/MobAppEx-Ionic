@@ -9,7 +9,6 @@ import { AuthService } from '../auth/auth.service';
 })
 export class ApiService {
   token: string;
-
   userId: number;
 
   server = this.storage.get('server').then((serverIP) => {
@@ -17,13 +16,18 @@ export class ApiService {
   });
 
   constructor(private httpClient: HttpClient, private storage: Storage, private authService: AuthService) {
+    this.storage.get('server').then((serverIP) => {
+      this.server = serverIP;
+    });
+
     this.storage.get('access_token').then(token => {
-      if (token != null) {
+      if (typeof token == 'string') {
         this.token = token;
       }
     });
+
     this.storage.get('user').then(user => {
-      if (user != null) {
+      if  (user != null) {
         this.userId = user.id;
       }
     });
@@ -42,6 +46,17 @@ export class ApiService {
   getUser(token) {
     this.token = token;
     let params = this.setParamToken(token)
+    return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
+        map((res) => {
+          //console.log(res);
+          this.saveToStorage('user', res);
+          return res;
+        })
+    )
+  }
+
+  getUserInfo() {
+    let params = this.setParamToken(this.token);
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
           //console.log(res);
@@ -81,8 +96,11 @@ export class ApiService {
     )
   }
 
-  async getToken() {
-    this.token = await this.storage.get('access_token')
+  getToken() {
+    return this.storage.get('access_token').then(token => {
+      this.token = token;
+      return token;
+    })
   }
 
   setParamToken(token) {
@@ -95,5 +113,4 @@ export class ApiService {
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
   }
-
 }

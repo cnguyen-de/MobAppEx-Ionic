@@ -6,24 +6,30 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import {TranslateService} from '@ngx-translate/core';
 import {ThemeService} from './_services/theme/theme.service';
+import {ApiService} from './_services/api/api.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+  access_token: string;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private storage : Storage,
     private translateService: TranslateService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private apiService: ApiService
   ) {
     this.initializeApp();
     this.initializeDB();
     this.getLanguagePref();
     this.setTheme();
+    this.getUserInfo();
   }
 
   initializeApp() {
@@ -31,11 +37,10 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-
-    ;
   }
+
   async initializeDB() {
-    await this.storage.set('server', 'https://platania.info:3000/api')
+    this.setData('server', 'https://platania.info:3000/api');
   }
 
   async getLanguagePref() {
@@ -56,5 +61,25 @@ export class AppComponent {
         this.themeService.enableDarkMode(false);
       }
     })
+  }
+
+  getUserInfo() {
+    this.apiService.getToken().then(data => {
+      if (data != null) {
+        this.apiService.getUser(data).pipe(first()).subscribe(
+            data => {
+              this.setData('user', data);
+              console.log("User loaded successfully")
+            }, err => console.log(err))
+      }
+    })
+  }
+
+  async setData(key, value) {
+    await this.storage.set(key, value);
+  }
+
+  async getToken() {
+    this.access_token = await this.storage.get("access_token")
   }
 }

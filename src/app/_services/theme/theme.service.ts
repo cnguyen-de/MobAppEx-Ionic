@@ -40,6 +40,7 @@ export class ThemeService {
       ${this.currentTheme}
       --background-surface-color: #243447;
       --ion-background-color: #141d26;
+      --darker-color: #141d26;
       --ion-item-background-color: #243447;
       --modal-color: #243447;
       --toast-color: #243447;
@@ -57,6 +58,7 @@ export class ThemeService {
       ${this.currentTheme}
       --background-surface-color: #efefef;
       --ion-background-color: #fff;
+      --darker-color: #efefef;
       --ion-item-background-color: #fff;
       --modal-color: #fff;
       --toast-color: #000;

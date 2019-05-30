@@ -12,8 +12,6 @@ import { User } from './user';
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
-  token: any;
-  userId: number;
 
   constructor(private httpClient: HttpClient, private storage: Storage) {
     // @ts-ignore
@@ -21,13 +19,12 @@ export class AuthService {
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-
   server = this.storage.get('server').then((serverIP) => {
     this.server = serverIP;
   });
 
   async getUser() {
-    return await this.storage.get('currentUser')
+    return await this.storage.get('user')
   }
 
   public get currentUserValue() : User {
@@ -48,10 +45,7 @@ export class AuthService {
         map( (res) => {
           console.log(res);
           // @ts-ignore
-          this.token = res.id;
-          // @ts-ignore
-          this.userId = res.userId;
-          this.saveToStorage('access_token', this.token);
+          this.saveToStorage('access_token', res.id);
           return res;
         })
     );

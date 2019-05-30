@@ -46,9 +46,6 @@ export class LoginPage implements OnInit {
             data => {
               this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
-
-              // @ts-ignore
-              console.log(data.id);
               // @ts-ignore
               this.apiService.getUser(data.id.toString())
                   .pipe(first())
