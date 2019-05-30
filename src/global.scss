@@ -23,7 +23,7 @@ $font-family-base: 'Roboto', sans-serif;
 }
 
 .toast-container {
-  --color: var(--ion-text-color);
+  --color: var(--ion-inverted-color);
   --background: var(--toast-color) !important;
 }
 
@@ -78,3 +78,7 @@ $font-family-base: 'Roboto', sans-serif;
   overflow: auto;
 }
 
+.checkout-modal .modal-wrapper {
+  max-height: 56px;
+  top: calc(100%)
+}

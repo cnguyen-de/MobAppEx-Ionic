@@ -50,6 +50,7 @@ export class ThemeService {
       --ion-text-color: #fff;
       --ion-text-color-step-400: #fff;
       --ion-text-color-step-600: #fff;
+      --ion-inverted-color: #fff;
     `
   }
 
@@ -68,6 +69,7 @@ export class ThemeService {
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;
+      --ion-inverted-color: #fff;
     `
   }
 }
