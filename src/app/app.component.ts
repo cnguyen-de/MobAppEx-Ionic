@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-
+import { Component,OnDestroy } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -8,6 +7,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {ThemeService} from './_services/theme/theme.service';
 import {ApiService} from './_services/api/api.service';
 import {first} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {User} from './_services/auth/user';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,8 @@ import {first} from 'rxjs/operators';
 })
 export class AppComponent {
   access_token: string;
+  user: User;
+  currentUserSubscription: Subscription;
 
   constructor(
     private platform: Platform,
@@ -30,6 +33,13 @@ export class AppComponent {
     this.getLanguagePref();
     this.setTheme();
     this.getUserInfo();
+    this.currentUserSubscription = this.apiService.currentUser.subscribe(user => {
+      this.user = user;
+    })
+  }
+
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 
   initializeApp() {
@@ -68,7 +78,8 @@ export class AppComponent {
       if (data != null) {
         this.apiService.getUser(data).pipe(first()).subscribe(
             data => {
-              console.log("Successfully reloaded")
+              // @ts-ignore
+              this.user = data;
             }, err => console.log(err))
       }
     })
@@ -76,9 +87,5 @@ export class AppComponent {
 
   async setData(key, value) {
     await this.storage.set(key, value);
-  }
-
-  async getToken() {
-    this.access_token = await this.storage.get("access_token")
   }
 }

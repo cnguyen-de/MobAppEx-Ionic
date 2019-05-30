@@ -3,19 +3,24 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {User} from '../auth/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   token: string;
-  userId: number;
+  server: string;
 
-  server = this.storage.get('server').then((serverIP) => {
-    this.server = serverIP;
-  });
+  private currentUserSubject: BehaviorSubject<User>;
+  public currentUser: Observable<User>;
 
   constructor(private httpClient: HttpClient, private storage: Storage, private authService: AuthService) {
+    // @ts-ignore
+    this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
+    this.currentUser = this.currentUserSubject.asObservable();
+
     this.storage.get('server').then((serverIP) => {
       this.server = serverIP;
     });
@@ -25,19 +30,13 @@ export class ApiService {
         this.token = token;
       }
     });
-
-    this.storage.get('user').then(user => {
-      if  (user != null) {
-        this.userId = user.id;
-      }
-    });
   }
 
+  //API METHODS
   changePassword(oldPassword: string, newPassword: string) {
-    let params = this.setParamToken(this.token)
+    let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
-          //console.log(res);
           return res;
         })
     );
@@ -49,6 +48,8 @@ export class ApiService {
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
           this.saveToStorage('user', res);
+          // @ts-ignore
+          this.currentUserSubject.next(res);
           return res;
         })
     )
@@ -64,6 +65,11 @@ export class ApiService {
     )
   }
 
+  logOutLocally() {
+    this.storage.remove('user');
+    this.storage.remove('access_token');
+    return true
+  }
   getCapsules() {
     this.getToken();
     let params = this.setParamToken(this.token);
@@ -84,19 +90,29 @@ export class ApiService {
     )
   }
 
-  getToken() {
-    return this.storage.get('access_token').then(token => {
-      this.token = token;
-      return token;
-    })
-  }
-
+  //HELPER METHODS
   setParamToken(token) {
     let params = new HttpParams();
     params = params.append('access_token', token);
     return params
   }
 
+  getCurrentUser() {
+    return this.storage.get('user').then(user => {
+      return user;
+    })
+  }
+
+  public get currentUserValue() : User {
+    return this.currentUserSubject.value;
+  }
+
+  getToken() {
+    return this.storage.get('access_token').then(token => {
+      this.token = token;
+      return token;
+    })
+  }
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);

@@ -82,8 +82,7 @@ export class Tab3Page {
                 .pipe(first())
                 .subscribe(
                     data => {
-                      this.storage.remove('user');
-                      this.storage.remove('access_token');
+                      this.apiService.logOutLocally();
                       this.router.navigateByUrl('/');
                     },
                     error => {
