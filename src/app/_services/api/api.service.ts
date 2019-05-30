@@ -45,21 +45,9 @@ export class ApiService {
 
   getUser(token) {
     this.token = token;
-    let params = this.setParamToken(token)
+    let params = this.setParamToken(token);
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
-          //console.log(res);
-          this.saveToStorage('user', res);
-          return res;
-        })
-    )
-  }
-
-  getUserInfo() {
-    let params = this.setParamToken(this.token);
-    return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
-        map((res) => {
-          //console.log(res);
           this.saveToStorage('user', res);
           return res;
         })

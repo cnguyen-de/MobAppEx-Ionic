@@ -68,8 +68,7 @@ export class AppComponent {
       if (data != null) {
         this.apiService.getUser(data).pipe(first()).subscribe(
             data => {
-              this.setData('user', data);
-              console.log("User loaded successfully")
+              console.log("Successfully reloaded")
             }, err => console.log(err))
       }
     })
