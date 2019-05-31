@@ -1,10 +1,13 @@
+import { SlidesPage } from './../slides/slides.page';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import {
   IonSearchbar,
   IonSegment,
   IonSegmentButton,
-  IonSlides
+  IonSlides,
+  ModalController,
+  PopoverController
 } from "@ionic/angular";
 import { LocationService } from '../../_services/location.service'
 
@@ -16,7 +19,9 @@ import { LocationService } from '../../_services/location.service'
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
-  constructor(private locationService: LocationService) { }
+  constructor(private locationService: LocationService,
+    public modalController: ModalController,
+    public popoverController: PopoverController) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
@@ -102,6 +107,25 @@ export class Tab2Page implements OnInit {
 
   getDistance(lat1, lng1, lat2, lng2) {
     return this.locationService.getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
+  }
+
+  
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: SlidesPage,
+      componentProps: { value: 123 }
+    });
+    return await modal.present();
+  }
+
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SlidesPage,
+      event: ev,
+      translucent: true
+    });
+    
+    return await popover.present();
   }
 
   // results: Observable<any>;
