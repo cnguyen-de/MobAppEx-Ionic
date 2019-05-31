@@ -73,8 +73,8 @@ export class RegistrationPage implements OnInit {
               console.log(error);
               if (error.status === 0 || error.status === 504) {
                 this.toast("Unable to communicate with server")
-              } else if (error.error.error.message) {
-                this.toast(error.error.error.message)
+              } else if (error) {
+                this.toast(error)
               }
             });
   }
