@@ -10,6 +10,7 @@ import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {first} from 'rxjs/operators';
 import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
+import {CheckoutModalPage} from '../../modals/checkout-modal/checkout-modal.page';
 
 
 @Component({
@@ -173,6 +174,28 @@ export class Tab3Page {
         this.lightPref = value.data;
 
         this.toast("Light preference set to: " + this.lightPref)
+      }
+    });
+
+    return await modal.present();
+  }
+
+  checkout() {
+    this.presentCheckOutModal();
+  }
+  async presentCheckOutModal() {
+    const modal = await this.modalController.create({
+      component: CheckoutModalPage,
+      componentProps: {
+        value: '10.05'
+      },
+      cssClass: 'chooser-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'number') {
+        console.log(value.data);
+        //this.toast("Light preference set to: " + this.lightPref)
       }
     });
 

@@ -78,5 +78,14 @@
                     <ion-label>{{ 'LEGAL' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
+        <ion-list>
+            <ion-list-header>
+                <ion-label>TEST</ion-label>
+            </ion-list-header>
+            <ion-item lines="full" button="true" (click)="checkout()">
+                <ion-icon name="book" slot="start"></ion-icon>
+                <ion-label>CHECK OUT</ion-label>
+            </ion-item>
+        </ion-list>
     </div>
 </ion-content>

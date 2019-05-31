@@ -20,6 +20,7 @@ import { TokenInterceptor} from './_services/token-interceptor';
 import {ErrorInterceptor} from './_services/error-interceptor';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {PayPal} from '@ionic-native/paypal/ngx';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -53,9 +54,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     Geolocation,
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
-
+    PayPal
   ],
   bootstrap: [AppComponent]
 })

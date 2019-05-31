@@ -70,6 +70,7 @@ export class ApiService {
     this.storage.remove('access_token');
     return true
   }
+
   getCapsules() {
     this.getToken();
     let params = this.setParamToken(this.token);
