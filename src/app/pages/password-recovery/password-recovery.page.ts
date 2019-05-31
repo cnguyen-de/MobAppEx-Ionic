@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {ApiService} from '../../_services/api/api.service';
 
 @Component({
   selector: 'app-password-recovery',
@@ -8,18 +10,27 @@ import { ToastController } from '@ionic/angular';
 })
 export class PasswordRecoveryPage implements OnInit {
 
+  resetForm: FormGroup;
   buttonPressed = false;
   requestSuccess = false;
 
-  constructor(private toastController: ToastController) { }
+  constructor(private apiService: ApiService, private toastController: ToastController, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.resetForm = this.formBuilder.group({
+      email: ['', Validators.required]
+    });
   }
 
   onSubmit() {
-    //No server logic
-    this.buttonPressed = true;
-    this.requestSuccess = true;
+
+    if (this.resetForm.invalid) {
+      return;
+    }
+    this.buttonPressed = !this.buttonPressed;
+    this.apiService.recoverPassword(this.resetForm.value.email).subscribe(data =>{
+      // no response from server
+    })
   }
 
 
