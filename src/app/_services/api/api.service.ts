@@ -42,6 +42,15 @@ export class ApiService {
     );
   }
 
+  recoverPassword(email: string){
+    // let params = this.setParamToken(this.token);
+    return this.httpClient.post(`${this.server}/SnoozeUsers/reset`,  {email}).pipe(
+        map( (res) => {
+          return res;
+        })
+    );
+  }
+
   getUser(token) {
     this.token = token;
     let params = this.setParamToken(token);
@@ -84,6 +93,16 @@ export class ApiService {
     this.getToken();
     let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/Capsules/${id}`, {}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
+  bookCapsule(Capsule_id: number, Pin: number, Date: string, FirstTimeFrame: number, LastTimeFrame: number, Vendor: string, Amount: number, IsVerified: boolean, PayerEmail: string, PayedAmount: number, PayedDate: string) {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.post(`${this.server}/Bookings/`, {Capsule_id, Pin, Date, FirstTimeFrame, LastTimeFrame, Vendor, Amount, IsVerified, PayerEmail, PayedAmount, PayedDate}, {params: params}).pipe(
         map((res) => {
           return res;
         })
