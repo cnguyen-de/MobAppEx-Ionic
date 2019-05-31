@@ -13,7 +13,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 $font-family-base: 'Roboto', sans-serif;
 
-
+//Search bar
 .searchbar-input {
   background: #f4f5f8 !important;
   border-radius: 12px !important;
@@ -22,16 +22,24 @@ $font-family-base: 'Roboto', sans-serif;
   box-shadow: none !important;
 }
 
+//Toast color
 .toast-container {
   --color: var(--ion-inverted-color);
   --background: var(--toast-color) !important;
 }
 
+// log in fields login.page.html
+.login-input .native-input {
+  margin-left: 40px;
+}
+// Alert dialogs color
 .alert-dialog {
   color: var(--ion-text-color);
   --ion-color-step-550: var(--ion-text-color);
   --background: var(--modal-color);
 }
+
+//CSS for variant of display sizes
 //Huge phones
 @media (min-height: 800px) {
   .password-changer-modal .modal-wrapper {
@@ -76,13 +84,4 @@ $font-family-base: 'Roboto', sans-serif;
   display: block;
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
-}
-
-.checkout-modal .modal-wrapper {
-  max-height: 56px;
-  top: calc(100%)
-}
-
-.login-input .native-input {
-  margin-left: 40px;
 }

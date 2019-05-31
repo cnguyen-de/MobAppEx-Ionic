@@ -1,3 +1,5 @@
 ion-tab-bar {
   height: 56px;
+  --ion-background-color: var(--ion-item-background-color);
+  --ion-border-color: var(--darker-color);
 }

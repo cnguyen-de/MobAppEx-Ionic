@@ -38,38 +38,42 @@ export class ThemeService {
   getDarkTheme() {
     return `
       ${this.currentTheme}
-      --background-surface-color: #243447;
       --ion-background-color: #141d26;
-      --darker-color: #141d26;
       --ion-item-background-color: #243447;
-      --modal-color: #243447;
-      --toast-color: #243447;
       --ion-toolbar-background: #243447;
       --ion-border-color: #243447;
+      
+      --darker-color: #141d26;
+      --background-surface-color: #243447;
+      --modal-color: #243447;
+      --toast-color: #243447;
+      --ion-inverted-color: #fff;
+
       --ion-color-primary: #0084b4;
       --ion-text-color: #fff;
       --ion-text-color-step-400: #fff;
       --ion-text-color-step-600: #fff;
-      --ion-inverted-color: #fff;
     `
   }
 
   getLightTheme() {
     return `
       ${this.currentTheme}
-      --background-surface-color: #efefef;
       --ion-background-color: #fff;
-      --darker-color: #efefef;
       --ion-item-background-color: #fff;
-      --modal-color: #fff;
-      --toast-color: #000;
       --ion-toolbar-background: #fff;
       --ion-border-color: #d8d8d8;
+      
+      --darker-color: #efefef;
+      --background-surface-color: #efefef;
+      --modal-color: #fff;
+      --toast-color: #000;
+      --ion-inverted-color: #fff;
+
       --ion-color-primary: #08a0e9;
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;
-      --ion-inverted-color: #fff;
     `
   }
 }
