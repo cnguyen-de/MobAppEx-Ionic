@@ -22,9 +22,8 @@ export class Tab3Page {
   username: string;
   email: string;
   darkMode: boolean;
-  lightPref: number = 12; //TODO get value from server
-  volumePref: number = 50;
-  languagePref: string;
+  lightPref: number = 0;
+  volumePref: number = 0;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
@@ -40,6 +39,10 @@ export class Tab3Page {
     this.storage.get('user').then(user => {
       this.username = user.username;
       this.email = user.email;
+      if (user.capsulePreference != null) {
+        this.lightPref = user.capsulePreference.LightLevel;
+        this.volumePref = user.capsulePreference.VolumenLevel;
+      }
     })
   }
 

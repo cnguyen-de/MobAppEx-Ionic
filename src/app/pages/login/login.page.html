@@ -1,7 +1,7 @@
-<ion-header>
+<ion-header translucent="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button class="button"></ion-back-button>
     </ion-buttons>
     <ion-title>Log in</ion-title>
   </ion-toolbar>
@@ -10,31 +10,31 @@
 <ion-content [scrollY]="false">
   <div class="background">
     <div class="container">
-      <img class="logo" src="../../../assets/images/all_blue_logo.png" alt="" width="200px">
+      <img class="logo" src="../../../assets/images/all_blue_logo.png" alt="" width="300px">
       <!--
       <ion-text color="dark">
         <h2>Log in to Snooze</h2>
       </ion-text>
       -->
-      <div>
+      <div class="login-form ion-padding-top">
         <form [formGroup]="loginForm">
           <ion-list>
-            <ion-item>
-              <ion-label class="label" position="floating">Username</ion-label>
-              <ion-input type="text" formControlName="username"></ion-input>
+            <ion-item lines="none">
+              <ion-icon name="contact" class="login-icon"></ion-icon>
+              <ion-input class="login-input" type="text" formControlName="username"></ion-input>
             </ion-item>
 
-            <ion-item>
-              <ion-label class="label" position="floating">Password</ion-label>
-              <ion-input type="password" formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
+            <ion-item lines="none">
+              <ion-icon name="key" class="login-icon"></ion-icon>
+              <ion-input class="login-input" type="password" formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
             </ion-item>
-
-            <ion-button strong expand="block" color="primary" shape="round"
-                        class="login-button ion-padding-horizontal" (click)="onSubmit()" [disabled]="!loginForm.valid">
-              <ion-text *ngIf="!loginPressed">Log in</ion-text>
-              <ion-spinner name="crescent" *ngIf="loginPressed"></ion-spinner>
-            </ion-button>
           </ion-list>
+
+          <ion-button strong expand="block" color="primary" shape="round"
+                      class="login-button ion-padding-horizontal" (click)="onSubmit()" [disabled]="!loginForm.valid">
+            <ion-text *ngIf="!loginPressed">Log in</ion-text>
+            <ion-spinner name="crescent" *ngIf="loginPressed"></ion-spinner>
+          </ion-button>
         </form>
 
       </div>
