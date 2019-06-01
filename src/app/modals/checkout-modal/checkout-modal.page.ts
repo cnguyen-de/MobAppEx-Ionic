@@ -15,6 +15,12 @@ export class CheckoutModalPage implements OnInit {
   currency: string = 'EUR';
   currencyIcon: string = '€';
 
+  capsule: string = 'Capsule BCN'
+  date: string = '2019-11-09';
+  timeStart: string = '9:00';
+  timeEnd: string = '11:00';
+
+
   constructor(private http : HttpClient,
               public storage : Storage, private apiService: ApiService,
               private navParams: NavParams, private modalController: ModalController,
@@ -35,7 +41,8 @@ export class CheckoutModalPage implements OnInit {
       })).then(() => {
         let payment = new PayPalPayment(this.paymentAmount, this.currency, 'Description', 'sale');
         this.payPal.renderSinglePaymentUI(payment).then((res) => {
-          console.log(res)
+          console.log(res);
+          this.dismiss();
         }, (err) => {
           console.log("ERROR rendering")
         })

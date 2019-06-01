@@ -3,3 +3,6 @@ ion-tab-bar {
   --ion-background-color: var(--ion-item-background-color);
   --ion-border-color: var(--darker-color);
 }
+ion-tab-button {
+  --ripple-color: var(--darker-color);
+}

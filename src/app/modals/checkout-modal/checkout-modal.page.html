@@ -1,6 +1,23 @@
 <ion-content>
-  <ion-text>TEST CHECKOUT MODAL</ion-text>
-  {{value}}
-  <ion-button (click)="payWithPayPal()">PAY NOW BITCH</ion-button>
-  <ion-button (click)="dismiss()">Dismiss</ion-button>
+    <ion-list-header>
+        BOOKING INFORMATION
+    </ion-list-header>
+    <ion-item class="payment-info" lines="full">
+        <ion-label class="label" slot="start">
+            {{capsule}}
+            <p>{{date}}</p>
+            <p>{{timeStart}} to {{timeEnd}}</p>
+        </ion-label>
+        <ion-label slot="end">
+            {{paymentAmount}} {{currencyIcon}}
+        </ion-label>
+    </ion-item>
+
+    <!--<ion-text class="paypal-text">Checkout with</ion-text>-->
+
+    <ion-button class="paypal-button ion-padding-horizontal" expand="block" (click)="payWithPayPal()">
+        <div class="container">
+             <img class="paypal-logo" src="../../../assets/images/PayPal-logo.png" alt="">
+        </div>
+    </ion-button>
 </ion-content>
