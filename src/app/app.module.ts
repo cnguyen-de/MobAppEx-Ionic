@@ -52,6 +52,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
+    PayPal,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

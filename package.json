@@ -40,6 +40,7 @@
     "com.paypal.cordova.mobilesdk": "3.5.0",
     "com.telerik.plugins.nativepagetransitions": "0.6.5",
     "cordova-android": "8.0.0",
+    "cordova-browser": "^6.0.0",
     "cordova-plugin-geolocation": "4.0.1",
     "cordova-sqlite-storage": "3.2.0",
     "core-js": "^2.5.4",
@@ -97,6 +98,7 @@
       "com.paypal.cordova.mobilesdk": {}
     },
     "platforms": [
+      "browser",
       "android"
     ]
   }
