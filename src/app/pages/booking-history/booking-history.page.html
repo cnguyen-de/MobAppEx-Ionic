@@ -1,0 +1,17 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Booking History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let booking of bookings">
+      <!-- <ion-label>{{booking.Date}}</ion-label> -->
+      <ion-label>Capsule Name: {{booking.capsule.Name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

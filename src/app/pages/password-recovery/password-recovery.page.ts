@@ -30,7 +30,7 @@ export class PasswordRecoveryPage implements OnInit {
     this.buttonPressed = !this.buttonPressed;
     this.apiService.recoverPassword(this.resetForm.value.email).subscribe(
       data => {
-        console.log(data)
+        this.toast("Reset Email was sent to your address");
         this.buttonPressed = !this.buttonPressed;
       },
       error => {

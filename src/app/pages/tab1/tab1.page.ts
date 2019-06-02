@@ -23,9 +23,9 @@ export class Tab1Page {
   }
 
   getBookings(){
-    this.apiService.getBookings().subscribe(data =>{
-      console.log(data);
-    })
+    this.apiService.currentUser.subscribe(data =>{
+      console.log(data.bookings);
+    });
   }
 
 }

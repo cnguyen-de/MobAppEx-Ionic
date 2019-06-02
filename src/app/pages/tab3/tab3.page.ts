@@ -180,7 +180,8 @@ export class Tab3Page {
   }
 
   bookingHistory(){
-    console.log("Bla");
+    // console.log("Bla");
+    this.router.navigate(['/booking-history']);
   }
 
   //Toast Handler
