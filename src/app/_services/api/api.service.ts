@@ -25,6 +25,10 @@ export class ApiService {
       this.server = serverIP;
     });
 
+    // this.storage.get('user').then((user) => {
+    //   this.currentUser = user;
+    // });
+
     this.storage.get('access_token').then(token => {
       if (typeof token == 'string') {
         this.token = token;
@@ -100,9 +104,29 @@ export class ApiService {
   }
 
   bookCapsule(Capsule_id: number, Pin: number, Date: string, FirstTimeFrame: number, LastTimeFrame: number, Vendor: string, Amount: number, IsVerified: boolean, PayerEmail: string, PayedAmount: number, PayedDate: string) {
-    this.getToken();
+    var SnoozeUser_id;
+
+    this.currentUser.subscribe(data =>{
+      SnoozeUser_id = data.id;
+    });
+
     let params = this.setParamToken(this.token);
-    return this.httpClient.post(`${this.server}/Bookings/`, {Capsule_id, Pin, Date, FirstTimeFrame, LastTimeFrame, Vendor, Amount, IsVerified, PayerEmail, PayedAmount, PayedDate}, {params: params}).pipe(
+    return this.httpClient.post(`${this.server}/Bookings/`, {SnoozeUser_id, Capsule_id, Pin, Date, FirstTimeFrame, LastTimeFrame, Vendor, Amount, IsVerified, PayerEmail, PayedAmount, PayedDate}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    ) 
+  }
+
+  getBookings(){
+    var id;
+    this.currentUser.subscribe(data =>{
+      id = data.id;
+    });
+    this.getToken();
+    this.token="KwyrCfYFxf8sItVTo6fx98FDKVySMFewmbPfI0ISKA6JLCgCPhHXh4XDZsv4o52C";
+    let params = this.setParamToken(this.token);
+    return this.httpClient.get(`${this.server}/SnoozeUsers/${id}/bookings`, {params: params}).pipe(
         map((res) => {
           return res;
         })
