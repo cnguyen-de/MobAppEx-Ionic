@@ -28,9 +28,16 @@ export class PasswordRecoveryPage implements OnInit {
       return;
     }
     this.buttonPressed = !this.buttonPressed;
-    this.apiService.recoverPassword(this.resetForm.value.email).subscribe(data =>{
-      // no response from server
-    })
+    this.apiService.recoverPassword(this.resetForm.value.email).subscribe(
+      data => {
+        console.log(data)
+        this.buttonPressed = !this.buttonPressed;
+      },
+      error => {
+        console.log(error);
+        this.toast(error);
+        this.buttonPressed = !this.buttonPressed;
+    });
   }
 
 
