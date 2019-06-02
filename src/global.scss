@@ -37,6 +37,12 @@ $font-family-base: 'Roboto', sans-serif;
   color: var(--ion-text-color);
   --ion-color-step-550: var(--ion-text-color);
   --background: var(--modal-color);
+  .alert-button {
+    color: var(--ion-color-danger);
+  }
+  .secondary {
+    color: var(--ion-color-primary);
+  }
 }
 
 //CSS for variant of display sizes

@@ -67,6 +67,7 @@ export class Tab3Page {
   }
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
+      mode: 'md',
       cssClass: 'alert-dialog',
       header: 'Are you sure?',
       message: 'Your preferences are saved, you will need to log in again to use the app',

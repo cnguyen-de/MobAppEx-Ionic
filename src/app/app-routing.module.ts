@@ -12,6 +12,8 @@ const routes: Routes = [
   { path: 'registration', loadChildren: './pages/registration/registration.module#RegistrationPageModule', canActivate: [SlidesGuard]  },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule', canActivate: [SlidesGuard]  },
   { path: 'recovery', loadChildren: './pages/password-recovery/password-recovery.module#PasswordRecoveryPageModule', canActivate: [SlidesGuard]  },
+  { path: 'this-app', loadChildren: './pages/this-app/this-app.module#ThisAppPageModule' },
+
 
 ];
 @NgModule({

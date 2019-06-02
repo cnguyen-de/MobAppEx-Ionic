@@ -1,0 +1,24 @@
+ion-header {
+  background: var(--ion-background-color)
+}
+ion-toolbar {
+  --background: var(--ion-background-color)
+}
+.container {
+  //padding: 8px 8px 0px 8px;
+}
+ion-content {
+  --background: var(--darker-color);
+}
+ion-card {
+  color: var(--ion-text-color);
+  --background: var(--ion-item-background-color)
+}
+.dev-list {
+  padding-right: 8px;
+  padding-bottom: 8px;
+}
+ion-item {
+  --background: var(--ion-item-background-color);
+  --ion-border-color: var(--darker-color);
+}

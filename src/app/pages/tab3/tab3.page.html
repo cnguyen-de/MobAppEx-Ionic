@@ -17,7 +17,7 @@
                     </ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true" (click)="changePasswordModal()">
-                    <ion-icon name="key" slot="start"></ion-icon>
+                    <ion-icon name="md-key" slot="start"></ion-icon>
                     <ion-label>{{ 'CHANGE_PASSWORD' | translate }}</ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true" (click)="logOut()">
@@ -30,7 +30,7 @@
             <ion-list-header>
                 <ion-label>{{ 'POWERNAP_INFO' | translate }}</ion-label>
             </ion-list-header>
-                <ion-item lines="full" button="true">
+                <ion-item lines="full" button="true" href="https://www.sleepfoundation.org/articles/napping">
                     <ion-icon name="pulse" slot="start"></ion-icon>
                     <ion-label>{{ 'ABOUT_POWERNAP' | translate }}</ion-label>
                 </ion-item>
@@ -69,6 +69,10 @@
             <ion-list-header>
                 <ion-label>{{ 'ABOUT' | translate }}</ion-label>
             </ion-list-header>
+                <ion-item lines="full" button="true" routerLink="/this-app">
+                    <ion-icon name="phone-portrait" slot="start"></ion-icon>
+                    <ion-label>{{ 'THIS_APP' | translate }}</ion-label>
+                </ion-item>
                 <ion-item lines="full" button="true">
                     <ion-icon name="book" slot="start"></ion-icon>
                     <ion-label>{{ 'CONTACT' | translate }}</ion-label>

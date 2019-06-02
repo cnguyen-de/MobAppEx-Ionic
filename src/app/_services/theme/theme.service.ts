@@ -42,9 +42,8 @@ export class ThemeService {
       --ion-item-background-color: #243447;
       --ion-toolbar-background: #243447;
       --ion-border-color: #243447;
-      --darker-ripple-color: #141d26;
-
       
+      --darker-ripple-color: #141d26;    
       --darker-color: #141d26;
       --background-surface-color: #243447;
       --modal-color: #243447;
@@ -65,8 +64,8 @@ export class ThemeService {
       --ion-item-background-color: #fff;
       --ion-toolbar-background: #fff;
       --ion-border-color: #d8d8d8;
-      --darker-ripple-color: #cecece
       
+      --darker-ripple-color: #cecece;
       --darker-color: #efefef;
       --background-surface-color: #efefef;
       --modal-color: #fff;
