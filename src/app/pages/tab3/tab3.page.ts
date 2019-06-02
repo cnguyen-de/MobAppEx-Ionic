@@ -185,6 +185,10 @@ export class Tab3Page {
     return await modal.present();
   }
 
+  bookingHistory(){
+    console.log("Bla");
+  }
+
   //Toast Handler
   async toast(message: any) {
     const toast = await this.toastController.create({

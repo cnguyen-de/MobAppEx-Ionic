@@ -13,15 +13,19 @@ export class Tab1Page {
   }
 
   ngOnInit(){
+
   }
 
   bookCapsule(){
-    console.log("booking started");
+    this.apiService.bookCapsule(1, 0, "2019-05-31T12:37:36.358Z", 0, 0, "string", 0, true, "string", 0, "2019-06-20T12:37:36.358Z")
+    .subscribe(data =>{
+    });
+  }
 
-    this.apiService.bookCapsule(1, 0, "2019-05-31T12:37:36.358Z", 0, 0, "string", 0, true, "string", 0, "2019-06-20T12:37:36.358Z").subscribe(data =>{
+  getBookings(){
+    this.apiService.getBookings().subscribe(data =>{
       console.log(data);
     })
-
   }
 
 }

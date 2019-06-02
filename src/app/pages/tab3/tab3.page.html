@@ -16,6 +16,10 @@
                         <ion-text>{{email}}</ion-text>
                     </ion-label>
                 </ion-item>
+                <ion-item lines="full" button="true" (click)="bookingHistory()">
+                    <ion-icon name="filing" slot="start"></ion-icon>
+                    <ion-label>{{ 'BOOKING_HISTORY' | translate }}</ion-label>
+                </ion-item>
                 <ion-item lines="full" button="true" (click)="changePasswordModal()">
                     <ion-icon name="md-key" slot="start"></ion-icon>
                     <ion-label>{{ 'CHANGE_PASSWORD' | translate }}</ion-label>
