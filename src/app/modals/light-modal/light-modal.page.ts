@@ -3,6 +3,7 @@ import {ModalController, NavParams} from '@ionic/angular';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {ApiService} from '../../_services/api/api.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-light-modal',
@@ -13,7 +14,7 @@ export class LightModalPage implements OnInit {
 
   sliderValue: number;
   @Input() value: number;
-
+  buttonPressed: boolean = false;
 
   constructor(private http : HttpClient,
               public storage : Storage, private apiService: ApiService,
@@ -27,6 +28,22 @@ export class LightModalPage implements OnInit {
 
   onChange() {
     this.value = this.sliderValue;
+  }
+
+  confirm() {
+    this.buttonPressed = !this.buttonPressed;
+    this.apiService.setLightPreference(this.value)
+        .pipe(first())
+        .subscribe(
+            data => {
+              this.dismiss();
+              this.buttonPressed = !this.buttonPressed;
+            },
+            error => {
+              this.buttonPressed = !this.buttonPressed;
+              console.log(error);
+
+            });
   }
 
   dismiss() {

@@ -74,15 +74,10 @@ export class ApiService {
     )
   }
 
-  logOutLocally() {
-    this.storage.remove('user');
-    this.storage.remove('access_token');
-    return true
-  }
   getCapsules() {
     this.getToken();
     let params = this.setParamToken(this.token);
-    return this.httpClient.post(`${this.server}/Capsules`, {}, {params: params}).pipe(
+    return this.httpClient.get(`${this.server}/Capsules`, {params: params}).pipe(
         map((res) => {
           return res;
         })
@@ -92,7 +87,7 @@ export class ApiService {
   getCapsuleById(id) {
     this.getToken();
     let params = this.setParamToken(this.token);
-    return this.httpClient.post(`${this.server}/Capsules/${id}`, {}, {params: params}).pipe(
+    return this.httpClient.get(`${this.server}/Capsules/${id}`, {params: params}).pipe(
         map((res) => {
           return res;
         })
@@ -109,7 +104,32 @@ export class ApiService {
     )
   }
 
+  setLightPreference(lightLevel: number) {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.patch(`${this.server}/CapsulePreferences`, {"LightLevel": lightLevel}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
+  setVolumePreference(volume: number) {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.patch(`${this.server}/CapsulePreferences`, {"VolumenLevel": volume}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
   //HELPER METHODS
+  logOutLocally() {
+    this.storage.remove('user');
+    this.storage.remove('access_token');
+    return true
+  }
+
   setParamToken(token) {
     let params = new HttpParams();
     params = params.append('access_token', token);

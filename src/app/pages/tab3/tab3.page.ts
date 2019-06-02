@@ -10,6 +10,7 @@ import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {first} from 'rxjs/operators';
 import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
+import {User} from '../../_services/auth/user';
 
 
 @Component({
@@ -18,7 +19,7 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-
+  user: User;
   username: string;
   email: string;
   darkMode: boolean;
@@ -37,6 +38,7 @@ export class Tab3Page {
   // User Info
   getUserInfo() {
     this.storage.get('user').then(user => {
+      this.user = user;
       this.username = user.username;
       this.email = user.email;
       if (user.capsulePreference != null) {
@@ -149,6 +151,8 @@ export class Tab3Page {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.volumePref = value.data;
+        this.user.capsulePreference.VolumenLevel = this.volumePref;
+        this.saveToStorage('user', this.user);
         this.toast("Volume preference set to: " + this.volumePref)
       }
     });
@@ -172,7 +176,8 @@ export class Tab3Page {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.lightPref = value.data;
-
+        this.user.capsulePreference.LightLevel = this.lightPref;
+        this.saveToStorage('user', this.user);
         this.toast("Light preference set to: " + this.lightPref)
       }
     });
