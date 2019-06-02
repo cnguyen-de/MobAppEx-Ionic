@@ -1,4 +1,21 @@
-.welcome-card ion-img {
-  max-height: 35vh;
-  overflow: hidden;
+ion-content {
+  --background: var(--darker-color);
+}
+ion-card {
+  color: var(--ion-text-color);
+  --background: var(--ion-item-background-color)
+}
+
+.header {
+  text-align: right;
+  background: var(--ion-color-warning)
+}
+.close-icon {
+  color: var(--toast-color);
+  padding-top: 4px;
+  padding-right: 2px;
+}
+ion-item {
+  --background: var(--ion-item-background-color);
+  --ion-border-color: var(--darker-color);
 }

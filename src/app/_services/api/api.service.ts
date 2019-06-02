@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { map } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../auth/user';
 
@@ -16,7 +15,7 @@ export class ApiService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  constructor(private httpClient: HttpClient, private storage: Storage, private authService: AuthService) {
+  constructor(private httpClient: HttpClient, private storage: Storage) {
     // @ts-ignore
     this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
     this.currentUser = this.currentUserSubject.asObservable();
@@ -147,6 +146,7 @@ export class ApiService {
         })
     )
   }
+
   //HELPER METHODS
   logOutLocally() {
     this.storage.remove('user');

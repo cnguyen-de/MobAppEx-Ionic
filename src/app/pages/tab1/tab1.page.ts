@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../../_services/api/api.service';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'app-tab1',
@@ -7,25 +8,24 @@ import { ApiService } from '../../_services/api/api.service';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  myDate = new Date();
+  empty: boolean = true;
+  hide: boolean = false;
+  bookings: [];
 
-  constructor(private apiService: ApiService){
+  constructor(private apiService: ApiService, private storage: Storage){
   }
 
   ngOnInit(){
 
   }
 
-  bookCapsule(){
-    this.apiService.bookCapsule(1, 0, "2019-05-31T12:37:36.358Z", 0, 0, "string", 0, true, "string", 0, "2019-06-20T12:37:36.358Z")
-    .subscribe(data =>{
-    });
+  hideCard() {
+    this.hide = true;
   }
 
-  getBookings(){
-    this.apiService.currentUser.subscribe(data =>{
-      console.log(data.bookings);
-    });
+  getBookings() {
+    this.storage.get('user').then(user => {
+      this.bookings = user.bookings;
+    })
   }
-
 }
