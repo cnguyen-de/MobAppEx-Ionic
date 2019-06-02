@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class TimeService {
-  slots: {
+  slots = {
     1: "9:00",
     2: "9:20",
     3: "9:40",
@@ -41,18 +41,15 @@ export class TimeService {
     return this.slots[startTime] + " - " + this.slots[endTime + 1]
   }
 
-  getDuration(startTime: number, endTime: number) {
-    let range = (endTime - startTime + 1) * 20;
-    let minute = range % 60;
-    let hour = Math.floor(range / 60);
-    return hour + ":" + "minute";
-  }
-
   getStartTime(int: number) {
     return this.slots[int];
   }
 
   getEndTime(int: number) {
     return this.slots[int + 1];
+  }
+
+  getIntSlot(time: string) {
+    return Object.keys(this.slots).find(key => this.slots[key] === time);
   }
 }
