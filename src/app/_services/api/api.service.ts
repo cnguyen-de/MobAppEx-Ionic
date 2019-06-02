@@ -98,6 +98,20 @@ export class ApiService {
     )
   }
 
+  getCapsuleAvailability(id: number, date: string) {
+
+    this.getToken();
+    let params = new HttpParams();
+    params = params.append('access_token', this.token);
+    params = params.append('date', date);
+
+    return this.httpClient.get(`${this.server}/Capsules/${id}/available`, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
   bookCapsule(Capsule_id: number, Pin: number, Date: string, FirstTimeFrame: number, LastTimeFrame: number, Vendor: string, Amount: number, IsVerified: boolean, PayerEmail: string, PayedAmount: number, PayedDate: string) {
     var SnoozeUser_id;
 
