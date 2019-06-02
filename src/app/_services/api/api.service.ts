@@ -127,20 +127,6 @@ export class ApiService {
     ) 
   }
 
-  getBookings(){
-    var id;
-    this.currentUser.subscribe(data =>{
-      id = data.id;
-    });
-    this.getToken();
-    this.token="KwyrCfYFxf8sItVTo6fx98FDKVySMFewmbPfI0ISKA6JLCgCPhHXh4XDZsv4o52C";
-    let params = this.setParamToken(this.token);
-    return this.httpClient.get(`${this.server}/SnoozeUsers/${id}/bookings`, {params: params}).pipe(
-        map((res) => {
-          return res;
-        })
-    )
-  }
 
   setLightPreference(lightLevel: number) {
     this.getToken();

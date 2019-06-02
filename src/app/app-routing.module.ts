@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule', canActivate: [SlidesGuard]  },
   { path: 'recovery', loadChildren: './pages/password-recovery/password-recovery.module#PasswordRecoveryPageModule', canActivate: [SlidesGuard]  },
   { path: 'this-app', loadChildren: './pages/this-app/this-app.module#ThisAppPageModule' },
+  { path: 'booking-history', loadChildren: './pages/booking-history/booking-history.module#BookingHistoryPageModule', canActivate: [TabsGuard] },
 
 
 ];
