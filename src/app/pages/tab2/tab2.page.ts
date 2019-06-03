@@ -103,7 +103,9 @@ export class Tab2Page implements OnInit {
 
     this.apiService.getCapsules().subscribe(data => {
       this.capsules = data;
-      console.log(data);
+
+      //Open marker-popup for first marker
+      this.capsules[0].isOpen = true;
     });
 
     /** 
