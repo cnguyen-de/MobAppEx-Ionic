@@ -73,8 +73,8 @@ export class RegistrationPage implements OnInit {
               console.log(error);
               if (error.status === 0 || error.status === 504) {
                 this.toast("Unable to communicate with server")
-              } else if (error.error.error.message) {
-                this.toast(error.error.error.message)
+              } else if (error) {
+                this.toast(error)
               }
             });
   }
@@ -84,7 +84,7 @@ export class RegistrationPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark",
+      cssClass: 'toast-container',
       keyboardClose: true
     });
     toast.present();

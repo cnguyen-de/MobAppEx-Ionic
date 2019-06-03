@@ -1,10 +1,37 @@
+ion-header {
+  background: var(--ion-background-color)
+}
+ion-toolbar {
+  --background: var(--ion-background-color)
+}
 .container {
   text-align: center;
   padding: 8px 32px 0px 32px;
 }
 
 .login-button {
-  padding-top: 16px;
-  height: 60px;
+  height: 45px;
   text-transform: none;
+}
+ion-item {
+  padding-bottom: 8px;
+}
+ion-icon {
+  position: absolute;
+  color: var(--ion-text-color-step-400);
+  z-index: 2;
+}
+ion-input {
+  --background: var(--ion-item-background-color);
+  border-radius: 25px;
+  z-index: 1;
+  border:1px solid var(--ion-border-color);
+}
+.login-icon {
+  padding-left: 8px;
+}
+@media (min-height: 700px) {
+  .login-form {
+    padding-top: 60px
+  }
 }

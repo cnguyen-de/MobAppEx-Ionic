@@ -1,7 +1,14 @@
 export interface User {
-    id: number;
     username: string;
     email: string;
-    password: string;
-    token: string;
+    id: number;
+    capsulePreference: {
+        BedBackAngle: number,
+        BedLegAngle: number,
+        LightLevel: number,
+        SnoozeUser_id: number,
+        VolumenLevel: number,
+        id: number
+    };
+    bookings: [];
 }

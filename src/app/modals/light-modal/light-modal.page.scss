@@ -9,3 +9,6 @@ ion-range {
 .container {
   text-align: center;
 }
+ion-content {
+  --ion-background-color: var(--modal-color);
+}

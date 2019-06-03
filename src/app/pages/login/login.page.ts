@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
 
 
 @Component({
@@ -46,9 +46,6 @@ export class LoginPage implements OnInit {
             data => {
               this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
-
-              // @ts-ignore
-              console.log(data.id);
               // @ts-ignore
               this.apiService.getUser(data.id.toString())
                   .pipe(first())
@@ -62,11 +59,12 @@ export class LoginPage implements OnInit {
             },
             error => {
               this.loginPressed = !this.loginPressed;
+              this.loginForm.setValue({username: this.loginForm.value.username, password: ''});
               console.log(error);
               if (error.status === 0 || error.status === 504) {
                 this.toast("Unable to communicate with server")
-              } else if (error.error.error.message) {
-                this.toast(error.error.error.message)
+              } else {
+                this.toast(error)
               }
             });
   }
@@ -82,7 +80,7 @@ export class LoginPage implements OnInit {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark",
+      cssClass: 'toast-container',
       keyboardClose: true,
 
     });

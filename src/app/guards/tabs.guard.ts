@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import { Observable } from 'rxjs';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {Storage} from '@ionic/storage';
-import {ToastController} from '@ionic/angular';
 
 
 @Injectable({
@@ -10,30 +8,19 @@ import {ToastController} from '@ionic/angular';
 })
 
 export class TabsGuard implements CanActivate {
-  constructor(private storage: Storage, private router: Router, private toastController: ToastController) { }
+  constructor(private storage: Storage, private router: Router) { }
 
   async canActivate(
       next: ActivatedRouteSnapshot,
       state: RouterStateSnapshot
   ): Promise<boolean> {
 
-    const session = await this.storage.get('session');
-    if (session == null) {
+    const token = await this.storage.get('access_token');
+    if (!(typeof token == 'string')) {
       this.router.navigateByUrl('/login');
       return false;
     } else {
       return true;
     }
-  }
-
-  async toast(message: any) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 3000,
-      position: 'top',
-      color: "dark",
-      keyboardClose: true
-    });
-    toast.present();
   }
 }

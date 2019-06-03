@@ -1,0 +1,36 @@
+ion-list-header {
+  color: var(--ion-text-color)
+}
+ion-content {
+  --ion-background-color: var(--modal-color);
+  --ion-border-color: var(--darker-color);
+}
+.payment-info {
+}
+
+.label {
+  padding-bottom: 8px;
+}
+
+.paypal-text {
+  position: absolute;
+  padding-left: 32px;
+  padding-top: 12px;
+  font-weight: bolder;
+  font-size: 16px;
+  color: var(--ion-inverted-color);
+  z-index: 3;
+}
+.paypal-button {
+  padding-top: 8px;
+  z-index: 1;
+}
+
+.container {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+}
+.paypal-logo {
+  height: 32px;
+}

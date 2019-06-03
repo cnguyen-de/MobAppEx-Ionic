@@ -16,4 +16,27 @@
 
   "LOGIN_PAGE_HEADER": "LOGIN",
   "LOGIN_PAGE_TITLE": "LOGIN TO SNOOZE",
-}
+
+
+  "TABS": "TABS PAGE",
+  "TAB_1": "Kapsel",
+  "TAB_2": "Suchen",
+  "TAB_3": "Information",
+
+  "ACCOUNT": "Konto",
+  "CHANGE_PASSWORD": "Passwort Ändern",
+  "BOOKING_HISTORY": "Buchungen",
+  "LOG_OUT": "Ausloggen",
+  "POWERNAP_INFO": "Power Nap Information",
+  "ABOUT_POWERNAP": "Über Power Nap",
+  "APP_SETTINGS": "App Einstellungen",
+  "CHANGE_LANGUAGE": "Sprache Ändern",
+  "ENABLE_DARK_MODE": "Night Mode Aktivieren",
+  "ENABLE_LIGHT_MODE": "Light Mode Aktivieren",
+  "CAPSULE_PREF": "Kapselpräferenz",
+  "VOLUME": "Volumen",
+  "LIGHT_BRIGHTNESS": "Helligkeit",
+  "ABOUT": "Über uns",
+  "THIS_APP": "Kredit",
+  "CONTACT": "Impressum",
+  "LEGAL": "Legal"}

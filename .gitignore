@@ -24,6 +24,7 @@ www/
 node_modules/
 tmp/
 temp/
+dist/
 platforms/
 platforms/android/
 public/
