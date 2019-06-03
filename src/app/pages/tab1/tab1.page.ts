@@ -38,26 +38,45 @@ export class Tab1Page {
               // go through all bookings
               for (let booking of this.bookings) {
                 // compare the dates if booking date is bigger (today or future)
-                console.log();
                 let date =  new Date(booking.Date.substring(0,10));
-                let dateToday = this.today;
+                let dateToday = new Date();
                 date.setHours(0,0,0,0);
                 dateToday.setHours(0,0,0,0);
-                if (date >= dateToday) {
+                if (date > dateToday) {
+                  this.futureBookings.push(booking);
+                  booking.Date = booking.Date.substring(0, 10);
+                  booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+                  booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+                } else if (date == dateToday) {
                   let hourNow = this.today.getHours();
-                  let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':')[0];
+                  let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':');
                   // compare the hours, if bigger then add to future booking
-                  if (startTime >= hourNow) {
+                  if (startTime[0] > hourNow) {
+                    console.log(hourNow);
                     this.futureBookings.push(booking);
                     booking.Date = booking.Date.substring(0,10);
                     booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+                    booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+
+                    // if same hour, compare minutes
+                  } else if (startTime[0] == hourNow) {
+                    if (startTime[1] >= this.today.getMinutes()) {
+                      this.futureBookings.push(booking);
+                      booking.Date = booking.Date.substring(0,10);
+                      booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+                      booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+
+                    }
                   }
                 }
               }
+              // @ts-ignore
+              this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date))
             }, err => console.log(err))
       }
     });
   }
+
 
   doRefresh($event) {
     this.getFutureBookings();

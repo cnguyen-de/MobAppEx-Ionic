@@ -5,7 +5,9 @@ ion-card {
   color: var(--ion-text-color);
   --background: var(--ion-item-background-color)
 }
-
+ion-refresher, ion-refresher-content {
+  background: var(--darker-color);
+}
 .header {
   text-align: right;
   background: var(--ion-color-warning)
@@ -19,7 +21,34 @@ ion-item {
   --background: var(--ion-item-background-color);
   --ion-border-color: var(--darker-color);
 }
+.sc-ion-card-ios-h {
+  margin: 12px 12px 12px 12px;
+}
 
-.capsule-info-list {
-  margin-bottom: 8px;
+.active-capsule  {
+  margin-top: 24px !important;
+}
+.capsule-info-list .date {
+  padding-right: 12px;
+}
+ion-list-header {
+  color: var(--ion-text-color);
+  --background: var(--ion-item-background-color);
+  --ion-border-color: var(--darker-color);
+}
+
+.mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{
+  color: var(--ion-text-color);
+  background: var(--ion-item-background-color);
+  padding-bottom: 8px;
+}
+.mat-expansion-panel-header-title {
+  color: var(--ion-text-color) !important;
+}
+
+.pin {
+  color: #006600;
+}
+ion-chip {
+  color: var(--ion-text-color);
 }

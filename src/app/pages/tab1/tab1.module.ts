@@ -7,12 +7,14 @@ import { Tab1Page } from './tab1.page';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpLoaderFactory} from '../../app.module';
 import {HttpClient} from '@angular/common/http';
+import {MatExpansionModule} from '@angular/material';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
+    MatExpansionModule,
     RouterModule.forChild([{ path: '', component: Tab1Page }]),
     TranslateModule.forChild({
       loader: {
