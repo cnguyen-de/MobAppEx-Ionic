@@ -76,7 +76,7 @@ export class AppComponent {
   getUserInfo() {
     this.apiService.getToken().then(data => {
       if (data != null) {
-        this.apiService.getUser(data).pipe(first()).subscribe(
+        this.apiService.getUser().pipe(first()).subscribe(
             data => {
               // @ts-ignore
               this.user = data;

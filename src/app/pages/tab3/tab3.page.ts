@@ -37,15 +37,21 @@ export class Tab3Page {
 
   // User Info
   getUserInfo() {
-    this.storage.get('user').then(user => {
-      this.user = user;
-      this.username = user.username;
-      this.email = user.email;
-      if (user.capsulePreference != null) {
-        this.lightPref = user.capsulePreference.LightLevel;
-        this.volumePref = user.capsulePreference.VolumenLevel;
-      }
-    })
+    this.apiService.getUser()
+        .pipe(first())
+        .subscribe(
+            user => {
+              this.user = user;
+              this.username = user.username;
+              this.email = user.email;
+              if (user.capsulePreference != null) {
+                this.lightPref = user.capsulePreference.LightLevel;
+                this.volumePref = user.capsulePreference.VolumenLevel;
+              }
+            },
+            error => {
+              console.log(error);
+            });
   }
 
   //Change Password

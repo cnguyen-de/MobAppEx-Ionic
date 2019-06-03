@@ -30,11 +30,12 @@ export class Tab1Page {
   getFutureBookings() {
     this.apiService.getToken().then(token => {
       if (token != null) {
-        this.apiService.getUser(token).pipe(first()).subscribe(
+        this.apiService.getUser().pipe(first()).subscribe(
             user => {
               this.futureBookings = [];
               // @ts-ignore
               this.bookings = user.bookings;
+              console.log(this.apiService.currentUserValue);
               // go through all bookings
               for (let booking of this.bookings) {
                 // compare the dates if booking date is bigger (today or future)

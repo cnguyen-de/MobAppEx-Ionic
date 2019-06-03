@@ -25,7 +25,6 @@ export class ApiService {
         this.token = token;
       }
     });
-
   }
 
   //API METHODS
@@ -44,10 +43,10 @@ export class ApiService {
         map( (res) => {
           console.log(res);
           // @ts-ignore
-          this.saveToStorage('access_token', res.id);
-          // @ts-ignore
           this.token = res.id;
-          return res;
+          this.saveToStorage('access_token', res.id).then(() => {
+            return res;
+          });
         })
     );
   }
@@ -70,15 +69,15 @@ export class ApiService {
     );
   }
 
-  getUser(token) {
-    this.token = token;
-    let params = this.setParamToken(token);
+  getUser() {
+    let params = this.setParamToken(this.token);
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
           this.saveToStorage('user', res);
           // @ts-ignore
-          this.currentUserSubject.next(res);
-          return res;
+          let user: User = res;
+          this.currentUserSubject.next(user);
+          return user;
         })
     )
   }
@@ -114,7 +113,6 @@ export class ApiService {
   }
 
   getCapsuleAvailability(id: number, date: string) {
-
     this.getToken();
     let params = new HttpParams();
     params = params.append('access_token', this.token);

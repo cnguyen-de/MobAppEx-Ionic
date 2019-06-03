@@ -43,13 +43,13 @@ export class LoginPage implements OnInit {
         .pipe(first())
         .subscribe(
             data => {
-              this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
-              // @ts-ignore
-              this.apiService.getUser(data.id.toString())
+              this.loginForm.setValue({username: this.loginForm.value.username, password: ''});
+              this.apiService.getUser()
                   .pipe(first())
                   .subscribe(
                       data => {
+                        this.router.navigateByUrl('/tabs/tab1');
                         console.log(data)
                       },
                       error => {
