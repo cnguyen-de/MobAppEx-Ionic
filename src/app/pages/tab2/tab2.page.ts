@@ -1,14 +1,7 @@
 import { SlidesPage } from './../slides/slides.page';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
-import {
-  IonSearchbar,
-  IonSegment,
-  IonSegmentButton,
-  IonSlides,
-  ModalController,
-  PopoverController
-} from "@ionic/angular";
+import { IonSlides, Platform} from "@ionic/angular";
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
@@ -49,7 +42,8 @@ export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
   constructor(private locationService: LocationService,
-    private apiService: ApiService) { }
+    private apiService: ApiService,
+    private platform: Platform) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
@@ -118,7 +112,15 @@ export class Tab2Page implements OnInit {
         this.lngMapCenter = data.coords.longitude;
       });
     }
+
+    this.platform.backButton.subscribe(() => {
+      if(this.cardTSS_state == 'top') {
+        this.animateTSS_Click();
+      }
+    });
   }
+
+  
 
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`);
