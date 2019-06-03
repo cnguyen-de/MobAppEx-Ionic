@@ -1,16 +1,10 @@
 import { SlidesPage } from './../slides/slides.page';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
-import {
-  IonSearchbar,
-  IonSegment,
-  IonSegmentButton,
-  IonSlides,
-  ModalController,
-  PopoverController
-} from "@ionic/angular";
+import { IonSlides, Platform} from "@ionic/angular";
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ApiService } from '../../_services/api/api.service';
 
 
 @Component({
@@ -40,7 +34,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
          transform : 'translateY(-102%)',
 
       })),
-      transition('smaller <=> larger',animate('300ms ease-in'))
+      transition('bottom <=> top',animate('300ms ease-in'))
    ])
  ]
 })
@@ -48,8 +42,8 @@ export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
   constructor(private locationService: LocationService,
-    public modalController: ModalController,
-    public popoverController: PopoverController) { }
+    private apiService: ApiService,
+    private platform: Platform) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
@@ -60,7 +54,7 @@ export class Tab2Page implements OnInit {
   lngMapCenter: number = 8.69238764;
   personIcon: string = '../../../assets/images/icons/LocationPerson.svg';
   capsuleIcon: string = '../../../assets/images/icons/SnoozeMarker.svg';
-  capsules = [];
+  
 
   //Slider Configs
   slidesConfig = {
@@ -75,28 +69,38 @@ export class Tab2Page implements OnInit {
   //Single Capsule Values
   capName = '';
 
+  //Capsules
+  capsules: any;
+
   ngOnInit() {
     // Demo Data
-    this.capsules = [
-      {
-        lat: 50.13017685,
-        lng: 8.69303674,
-        isOpen: true,
-        name: "Gebäude 1"
-      },
-      {
-        lat: 50.13122569,
-        lng: 8.69226426,
-        isOpen: false,
-        name: "Bibliothek"
-      },
-      {
-        lat: 50.12887008,
-        lng: 8.69176537,
-        isOpen: false,
-        name: "BCN"
-      }
-    ];
+    // this.capsules = [
+    //   {
+    //     lat: 50.13017685,
+    //     lng: 8.69303674,
+    //     isOpen: true,
+    //     name: "Gebäude 1"
+    //   },
+    //   {
+    //     lat: 50.13122569,
+    //     lng: 8.69226426,
+    //     isOpen: false,
+    //     name: "Bibliothek"
+    //   },
+    //   {
+    //     lat: 50.12887008,
+    //     lng: 8.69176537,
+    //     isOpen: false,
+    //     name: "BCN"
+    //   }
+    // ];
+
+    this.apiService.getCapsules().subscribe(data => {
+      this.capsules = data;
+
+      //Open marker-popup for first marker
+      this.capsules[0].isOpen = true;
+    });
 
     /** 
      * Retrieve Current Position
@@ -109,8 +113,14 @@ export class Tab2Page implements OnInit {
       });
     }
 
-
+    this.platform.backButton.subscribe(() => {
+      if(this.cardTSS_state == 'top') {
+        this.animateTSS_Click();
+      }
+    });
   }
+
+  
 
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`);
@@ -146,24 +156,6 @@ export class Tab2Page implements OnInit {
   }
 
   
-  async presentModal() {
-    const modal = await this.modalController.create({
-      component: SlidesPage,
-      componentProps: { value: 123 }
-    });
-    return await modal.present();
-  }
-
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: SlidesPage,
-      event: ev,
-      translucent: true
-    });
-    
-    return await popover.present();
-  }
-
   async animatecardtotopDone(event) {
     let animState: string = event.toState;
     if (animState == 'bottom') {
@@ -177,18 +169,26 @@ export class Tab2Page implements OnInit {
   async animateTSS_Click(item?) {
 
     if(item) {
-      this.capName = item.name;
+      this.capName = item.Name;
     }
 
 
     let elem = await document.getElementById("cardTSS_top");
     let elem3 = await document.getElementById("slideCard");
-    console.log('widthslide: ' + elem3.offsetWidth);
+    
     elem.setAttribute("style", "visibility: visible; width: " + elem3.offsetWidth + "px");
     let elem2 = await document.getElementById("slider");
     elem2.setAttribute("style", "visibility: hidden");
 
     this.cardTSS_state= this.cardTSS_state == 'top' ? 'bottom' : 'top';
+  }
+
+  getPositionClick(){
+    this.locationService.getCurrentPosition().then(data => {
+      console.log('Result getting location in Component', data);
+      this.latMapCenter = data.coords.latitude;
+      this.lngMapCenter = data.coords.longitude;
+    });
   }
 
   // results: Observable<any>;
