@@ -3,7 +3,7 @@ import { ApiService } from '../../_services/api/api.service';
 import {Storage} from '@ionic/storage';
 import {TimeService} from '../../_services/time/time.service';
 import {first} from 'rxjs/operators';
-import {start} from 'repl';
+import {booking} from '../../_services/booking';
 
 @Component({
   selector: 'app-tab1',
@@ -12,9 +12,9 @@ import {start} from 'repl';
 })
 export class Tab1Page {
   hide: boolean = false;
-  bookings: [];
+  bookings: booking[] = [];
   today = new Date();
-  futureBookings = [];
+  futureBookings: booking[] = [];
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService){
@@ -32,8 +32,8 @@ export class Tab1Page {
       if (token != null) {
         this.apiService.getUser(token).pipe(first()).subscribe(
             user => {
-              // @ts-ignore
               this.futureBookings = [];
+              // @ts-ignore
               this.bookings = user.bookings;
               // go through all bookings
               for (let booking of this.bookings) {
