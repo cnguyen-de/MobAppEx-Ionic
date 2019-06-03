@@ -46,7 +46,7 @@
 </ion-content> -->
 
 <ion-content>
-  <div>
+  <div [@animatemapup]="cardTSS_state">
     <agm-map
       [latitude]="latMapCenter + 0.0003"
       [longitude]="lngMapCenter"
@@ -79,11 +79,12 @@
 
   <ion-slides
     #slider
+    id="slider"
     [options]="slidesConfig"
     (ionSlideDidChange)="onSlideChanged()"
   >
     <ion-slide *ngFor="let item of capsules; let i = index">
-      <ion-card *ngIf="item"  (click)="cardClicked(i)">
+      <ion-card id="slideCard" *ngIf="item"  (click)="cardClicked(i)">
         <ion-card-header>
           <ion-card-title>
             <h4>
@@ -100,9 +101,24 @@
                   next slot bla
               </h6>
             </ion-card-subtitle>
-            <ion-button shape="round" size="default" expand="block">book this one</ion-button>
+            <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one</ion-button>
         </ion-card-header>
       </ion-card>
     </ion-slide>
   </ion-slides>
 </ion-content>
+
+
+<ion-card id="cardTSS_top" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
+  <ion-card-header>
+      <ion-card-title>
+        {{capName}}
+      </ion-card-title>
+      <ion-card-subtitle>
+          blabla
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-button shape="round" (click)="animateTSS_Click()">back down bla</ion-button>
+    </ion-card-content>
+  </ion-card>

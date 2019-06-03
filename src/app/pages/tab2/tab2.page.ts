@@ -1,26 +1,60 @@
+import { SlidesPage } from './../slides/slides.page';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import {
   IonSearchbar,
   IonSegment,
   IonSegmentButton,
-  IonSlides
+  IonSlides,
+  ModalController,
+  PopoverController
 } from "@ionic/angular";
-import { LocationService } from '../../_services/location.service'
+import { LocationService } from '../../_services/location.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 
 @Component({
   selector: "app-tab2",
   templateUrl: "tab2.page.html",
-  styleUrls: ["tab2.page.scss"]
+  styleUrls: ["tab2.page.scss"],
+  animations: [
+    trigger('animatecardtotop',[
+       state('bottom',style({
+          transform : 'translateY(0px)'
+       })),
+       state('top',style({
+          //transform : 'translateY(-490px)',
+          width: 'calc(100% - 16px)',
+          position: 'absolute',
+          top: 0,
+          left: 0
+
+       })),
+       transition('bottom <=> top',animate('300ms ease-in'))
+    ]),
+    trigger('animatemapup',[
+      state('bottom',style({
+         transform : 'translateY(0px)'
+      })),
+      state('top',style({
+         transform : 'translateY(-102%)',
+
+      })),
+      transition('smaller <=> larger',animate('300ms ease-in'))
+   ])
+ ]
 })
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
 
-  constructor(private locationService: LocationService) { }
+  constructor(private locationService: LocationService,
+    public modalController: ModalController,
+    public popoverController: PopoverController) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
 
+  //Map
   mapZoomLevel: number = 17;
   latMapCenter: number = 50.1303316;
   lngMapCenter: number = 8.69238764;
@@ -28,11 +62,18 @@ export class Tab2Page implements OnInit {
   capsuleIcon: string = '../../../assets/images/icons/SnoozeMarker.svg';
   capsules = [];
 
+  //Slider Configs
   slidesConfig = {
     spaceBetween: 10,
     centeredSlides: true,
     slidesPerView: 1.5
   };
+
+  //Animations
+  cardTSS_state: string = "bottom";
+
+  //Single Capsule Values
+  capName = '';
 
   ngOnInit() {
     // Demo Data
@@ -102,6 +143,52 @@ export class Tab2Page implements OnInit {
 
   getDistance(lat1, lng1, lat2, lng2) {
     return this.locationService.getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
+  }
+
+  
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: SlidesPage,
+      componentProps: { value: 123 }
+    });
+    return await modal.present();
+  }
+
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SlidesPage,
+      event: ev,
+      translucent: true
+    });
+    
+    return await popover.present();
+  }
+
+  async animatecardtotopDone(event) {
+    let animState: string = event.toState;
+    if (animState == 'bottom') {
+      let elem = await document.getElementById("cardTSS_top");
+      elem.setAttribute("style", "visibility: hidden");
+      let elem2 = await document.getElementById("slider");
+      elem2.setAttribute("style", "visibility: visible");
+    }
+  }
+
+  async animateTSS_Click(item?) {
+
+    if(item) {
+      this.capName = item.name;
+    }
+
+
+    let elem = await document.getElementById("cardTSS_top");
+    let elem3 = await document.getElementById("slideCard");
+    console.log('widthslide: ' + elem3.offsetWidth);
+    elem.setAttribute("style", "visibility: visible; width: " + elem3.offsetWidth + "px");
+    let elem2 = await document.getElementById("slider");
+    elem2.setAttribute("style", "visibility: hidden");
+
+    this.cardTSS_state= this.cardTSS_state == 'top' ? 'bottom' : 'top';
   }
 
   // results: Observable<any>;

@@ -35,7 +35,7 @@ ion-card {
 ion-card-header {
   padding-top: 12px;
 }
-ion-card-title {
+h4 {
   color: var(--ion-text-color);
 }
 
@@ -43,10 +43,18 @@ ion-button {
   margin-top: 12px;
   height: 36px;
 }
-
-
-
 #colorWorkaround {
   color: black;
+}
+
+#cardTSS_top {
+  position: absolute;
+  height: 150px;
+  width: 200px;
+  visibility: hidden;
+  bottom: 18px;
+  z-index: 100;
+  align-self: center;
+  margin: 8px;
 }
 
