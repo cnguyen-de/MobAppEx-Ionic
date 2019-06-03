@@ -47,12 +47,11 @@ export class Tab1Page {
                   booking.Date = booking.Date.substring(0, 10);
                   booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
                   booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
-                } else if (date == dateToday) {
+                } else if (date.getDate() == dateToday.getDate()) {
                   let hourNow = this.today.getHours();
                   let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':');
                   // compare the hours, if bigger then add to future booking
                   if (startTime[0] > hourNow) {
-                    console.log(hourNow);
                     this.futureBookings.push(booking);
                     booking.Date = booking.Date.substring(0,10);
                     booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);

@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
 import {ApiService} from '../../_services/api/api.service';
@@ -23,7 +22,7 @@ export class LoginPage implements OnInit {
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
-              private authenticationService : AuthService, private formBuilder: FormBuilder,
+              private formBuilder: FormBuilder,
               private apiService: ApiService) {
 
   }
@@ -40,7 +39,7 @@ export class LoginPage implements OnInit {
       return;
     }
     this.loginPressed = !this.loginPressed;
-    this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
+    this.apiService.login(this.loginForm.value.username, this.loginForm.value.password)
         .pipe(first())
         .subscribe(
             data => {

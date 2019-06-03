@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
+import {ApiService} from '../../_services/api/api.service';
 
 
 @Component({
@@ -20,7 +20,7 @@ export class RegistrationPage implements OnInit {
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, public storage : Storage,
-              private authenticationService: AuthService, private formBuilder: FormBuilder) { }
+              private authenticationService: ApiService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.registrationForm = this.formBuilder.group({

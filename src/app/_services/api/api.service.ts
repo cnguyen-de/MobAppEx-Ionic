@@ -10,7 +10,7 @@ import {User} from '../auth/user';
 })
 export class ApiService {
   token: string;
-  server: string;
+  server: string = "https://platania.info:3000/api";
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
@@ -20,22 +20,38 @@ export class ApiService {
     this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
     this.currentUser = this.currentUserSubject.asObservable();
 
-    this.storage.get('server').then((serverIP) => {
-      this.server = serverIP;
-    });
-
-    // this.storage.get('user').then((user) => {
-    //   this.currentUser = user;
-    // });
-
     this.storage.get('access_token').then(token => {
       if (typeof token == 'string') {
         this.token = token;
       }
     });
+
   }
 
   //API METHODS
+
+  register(username: string, email: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers`, {username, email, password}).pipe(
+        map(async (res) => {
+          console.log(res);
+          return res;
+        })
+    );
+  }
+
+  login(username: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
+        map( (res) => {
+          console.log(res);
+          // @ts-ignore
+          this.saveToStorage('access_token', res.id);
+          // @ts-ignore
+          this.token = res.id;
+          return res;
+        })
+    );
+  }
+
   changePassword(oldPassword: string, newPassword: string) {
     let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
