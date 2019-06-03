@@ -22,9 +22,10 @@ $font-family-base: 'Roboto', sans-serif;
 
 //Search bar
 .searchbar-input {
-  background: #f4f5f8 !important;
+  background: var(--darker-color) !important;
   border-radius: 12px !important;
   max-width: 400px;
+  padding: 4px 0 4px 4px;
   border: 1px solid transparent !important;
   box-shadow: none !important;
 }
