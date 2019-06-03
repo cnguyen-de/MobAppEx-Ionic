@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { BookingHistoryPage } from './booking-history.page';
 
+import {MatExpansionModule} from '@angular/material';
+
 const routes: Routes = [
   {
     path: '',
@@ -19,6 +21,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    MatExpansionModule,
+    // MatFormField,
     RouterModule.forChild(routes)
   ],
   declarations: [BookingHistoryPage]

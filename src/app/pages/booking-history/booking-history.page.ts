@@ -13,13 +13,26 @@ export class BookingHistoryPage implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.getBookings();
+    // this.getBookings();
   }
 
   getBookings(){
     this.apiService.currentUser.subscribe(data =>{
-      console.log(data.bookings);
+      // console.log(data.bookings);
       this.bookings = data.bookings;
+
+      // this.bookings = this.sortData();
     });
+  }
+
+  get sortData() {
+    this.getBookings();
+    try {
+      return this.bookings.sort((a, b) => {
+        return <any>new Date(b.Date) - <any>new Date(a.Date);
+      });
+    } catch (error) {
+      // console.log("Failed");
+    }
   }
 }

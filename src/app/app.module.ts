@@ -22,6 +22,9 @@ import {ErrorInterceptor} from './_services/error-interceptor';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {PayPal} from '@ionic-native/paypal/ngx';
 
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatExpansionModule} from '@angular/material';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -33,6 +36,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
       BrowserModule,
       HttpClientModule,
+      BrowserAnimationsModule,
+      MatExpansionModule,
+      // MatFormField,
       IonicModule.forRoot({
         mode: 'ios'
       }),
