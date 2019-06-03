@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ApiService } from '../../_services/api/api.service';
 import {Storage} from '@ionic/storage';
 import {TimeService} from '../../_services/time/time.service';
+import {first} from 'rxjs/operators';
+import {start} from 'repl';
 
 @Component({
   selector: 'app-tab1',
@@ -19,38 +21,49 @@ export class Tab1Page {
     this.getFutureBookings();
   }
 
-  ngOnInit(){
-
-  }
+  ngOnInit() {}
 
   hideCard() {
     this.hide = true;
   }
 
   getFutureBookings() {
-    this.storage.get('user').then(user => {
-      this.bookings = user.bookings;
-      // go through all bookings
-      for (let booking of this.bookings) {
-        // compare the dates if booking date is bigger (today or future)
-        if (new Date(booking.Date) >= this.today) {
-          //console.log(booking.Date);
-          let hourNow = this.today.getHours();
-          let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':')[0];
-          // compare the hours, if bigger then add to future booking
-          if (startTime >= hourNow) {
-            this.futureBookings.push(booking);
-          }
-        }
+    this.apiService.getToken().then(token => {
+      if (token != null) {
+        this.apiService.getUser(token).pipe(first()).subscribe(
+            user => {
+              // @ts-ignore
+              this.futureBookings = [];
+              this.bookings = user.bookings;
+              // go through all bookings
+              for (let booking of this.bookings) {
+                // compare the dates if booking date is bigger (today or future)
+                console.log();
+                let date =  new Date(booking.Date.substring(0,10));
+                let dateToday = this.today;
+                date.setHours(0,0,0,0);
+                dateToday.setHours(0,0,0,0);
+                if (date >= dateToday) {
+                  let hourNow = this.today.getHours();
+                  let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':')[0];
+                  // compare the hours, if bigger then add to future booking
+                  if (startTime >= hourNow) {
+                    this.futureBookings.push(booking);
+                    booking.Date = booking.Date.substring(0,10);
+                    booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+                  }
+                }
+              }
+            }, err => console.log(err))
       }
-      this.changeTimes();
-    })
+    });
   }
 
-  changeTimes() {
-    for (let booking of this.futureBookings) {
-      booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
-    }
+  doRefresh($event) {
+    this.getFutureBookings();
+    setTimeout(() => {
+      $event.target.complete();
+    }, 1000);
   }
 
 }

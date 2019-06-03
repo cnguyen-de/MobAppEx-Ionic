@@ -8,6 +8,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-card button="true" class="welcome-card" *ngIf="futureBookings.length == 0 && !hide">
     <div class="header" (click)="hideCard()">
       <ion-icon class="close-icon" name="close" slot="end" size="large"></ion-icon>
@@ -27,8 +31,11 @@
   <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
     <ion-card *ngIf="i == 0">
       <ion-card-header>
-        <ion-card-title>Capsule: {{booking.capsule.Name}}</ion-card-title>
-        <ion-card-subtitle>{{booking.duration}}</ion-card-subtitle>
+        <ion-card-title>{{booking.capsule.Name}}</ion-card-title>
+        <ion-card-subtitle>
+          <p>{{booking.Date}}</p>
+          <p>{{booking.duration}}</p>
+        </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <ion-text>PIN: {{booking.Pin}}</ion-text>
@@ -36,10 +43,13 @@
     </ion-card>
 
     <ion-list *ngIf="i != 0" class="capsule-info-list">
-      <ion-list-header>Capsule: {{booking.capsule.Name}}
+      <ion-list-header>{{booking.capsule.Name}}
       </ion-list-header>
       <ion-item>
-        <ion-label slot="start">{{booking.duration}}</ion-label>
+        <ion-label slot="start">
+          <p>{{booking.Date}}</p>
+          <p>{{booking.duration}}</p>
+        </ion-label>
         <ion-text slot="end">{{booking.Pin}}</ion-text>
       </ion-item>
     </ion-list>
