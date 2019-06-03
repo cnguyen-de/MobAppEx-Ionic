@@ -183,6 +183,14 @@ export class Tab2Page implements OnInit {
     this.cardTSS_state= this.cardTSS_state == 'top' ? 'bottom' : 'top';
   }
 
+  getPositionClick(){
+    this.locationService.getCurrentPosition().then(data => {
+      console.log('Result getting location in Component', data);
+      this.latMapCenter = data.coords.latitude;
+      this.lngMapCenter = data.coords.longitude;
+    });
+  }
+
   // results: Observable<any>;
   // searchTerm: string = '';
   // @ViewChild('slides') slides : IonSlides;
