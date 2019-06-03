@@ -8,7 +8,10 @@ import {LanguageChooserModalPage} from '../../modals/language-chooser-modal/lang
 import {VolumeModalPage} from '../../modals/volume-modal/volume-modal.page';
 import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {first} from 'rxjs/operators';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
+import {TranslateService} from '@ngx-translate/core';
+import {User} from '../../_services/auth/user';
+
 
 @Component({
   selector: 'app-tab3',
@@ -16,24 +19,32 @@ import {ApiService} from '../../_services/api.service';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-
+  user: User;
   username: string;
   email: string;
-  darkMode: boolean = false;
-  lightPref: number = 12; //TODO get value from server
-  volumePref: number = 50;
+  darkMode: boolean;
+  lightPref: number = 0;
+  volumePref: number = 0;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
               private alertController: AlertController, private toastController: ToastController,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private translateService: TranslateService) {
     this.getUserInfo();
+    this.getDarkValue();
   }
+
   // User Info
   getUserInfo() {
     this.storage.get('user').then(user => {
+      this.user = user;
       this.username = user.username;
       this.email = user.email;
+      if (user.capsulePreference != null) {
+        this.lightPref = user.capsulePreference.LightLevel;
+        this.volumePref = user.capsulePreference.VolumenLevel;
+      }
     })
   }
 
@@ -58,6 +69,7 @@ export class Tab3Page {
   }
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
+      mode: 'md',
       cssClass: 'alert-dialog',
       header: 'Are you sure?',
       message: 'Your preferences are saved, you will need to log in again to use the app',
@@ -76,9 +88,7 @@ export class Tab3Page {
                 .pipe(first())
                 .subscribe(
                     data => {
-                      this.storage.remove('user');
-                      this.storage.remove('session');
-                      this.storage.remove('access_token');
+                      this.apiService.logOutLocally();
                       this.router.navigateByUrl('/');
                     },
                     error => {
@@ -99,17 +109,30 @@ export class Tab3Page {
     const modal = await this.modalController.create({
       component: LanguageChooserModalPage,
       componentProps: {
-        value: 1234
+        value: 'en'
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        this.translateService.use(value.data);
+        this.saveToStorage('language', value.data);
+        switch (value.data) {
+          case 'en': this.toast("Language set to English!"); break;
+          case 'de': this.toast("Sprache als Deutsch gesetzt!"); break;
+        }
+      }
+    });
+
     return await modal.present();
   }
 
   //Switch Light-Dark Theme
   switchTheme() {
     this.darkMode = !this.darkMode;
-    this.themeService.enableDarkMode(this.darkMode)
+    this.themeService.enableDarkMode(this.darkMode);
+    this.saveToStorage('dark', this.darkMode);
   }
 
   //Choose Volume Preference
@@ -122,12 +145,14 @@ export class Tab3Page {
       componentProps: {
         value: this.volumePref
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.volumePref = value.data;
+        this.user.capsulePreference.VolumenLevel = this.volumePref;
+        this.saveToStorage('user', this.user);
         this.toast("Volume preference set to: " + this.volumePref)
       }
     });
@@ -145,17 +170,24 @@ export class Tab3Page {
       componentProps: {
         value: this.lightPref
       },
-      cssClass: 'language-chooser-modal'
+      cssClass: 'chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'number') {
         this.lightPref = value.data;
+        this.user.capsulePreference.LightLevel = this.lightPref;
+        this.saveToStorage('user', this.user);
         this.toast("Light preference set to: " + this.lightPref)
       }
     });
 
     return await modal.present();
+  }
+
+  bookingHistory(){
+    // console.log("Bla");
+    this.router.navigate(['/booking-history']);
   }
 
   //Toast Handler
@@ -164,10 +196,18 @@ export class Tab3Page {
       message: message,
       duration: 3000,
       position: 'top',
-      color: "dark",
+      cssClass: 'toast-container',
       keyboardClose: true,
     });
     toast.present();
+  }
+
+  async saveToStorage(key, value) {
+    await this.storage.set(key, value);
+  }
+
+  async getDarkValue() {
+    this.darkMode = await this.storage.get('dark')
   }
 
 }

@@ -2,7 +2,7 @@
   <div>
     <ion-list>
       <ion-list-header>
-        <ion-label>Light Preference</ion-label>
+        <ion-label>{{ 'LIGHT_BRIGHTNESS' | translate}}</ion-label>
       </ion-list-header>
 
       <ion-item lines="none">
@@ -12,7 +12,10 @@
         </ion-range>
       </ion-item>
       <div class="container">
-        <ion-button (click)="dismiss()" class="confirm-button" shape="round">Confirm</ion-button>
+        <ion-button (click)="confirm()" class="confirm-button" shape="round">
+          <ion-text *ngIf="!buttonPressed">Confirm</ion-text>
+          <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
+        </ion-button>
       </div>
     </ion-list>
   </div>

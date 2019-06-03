@@ -12,7 +12,7 @@
   --ion-text-color-step-600: #222;
 
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #08a0e9;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -83,15 +83,4 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background-surface-color: #000;
-      --ion-background-color: #171717;
-      --ion-item-background-color: #171717;
-      --ion-item-divider: #171717;
-      --ion-text-color: #fff;
-      --ion-text-color-step-400: #fff;
-      --ion-text-color-step-600: #fff;
-    }
-  }
 }

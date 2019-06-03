@@ -20,6 +20,10 @@ import { TokenInterceptor} from './_services/token-interceptor';
 import {ErrorInterceptor} from './_services/error-interceptor';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {PayPal} from '@ionic-native/paypal/ngx';
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatExpansionModule} from '@angular/material';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -32,8 +36,11 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
       BrowserModule,
       HttpClientModule,
+      BrowserAnimationsModule,
+      MatExpansionModule,
+      // MatFormField,
       IonicModule.forRoot({
-        //mode: 'ios'
+        mode: 'ios'
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -51,9 +58,10 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
+    PayPal,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-    Geolocation,
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
 
   ],

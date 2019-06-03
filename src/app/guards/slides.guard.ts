@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 })
 
 export class SlidesGuard implements CanActivate {
-  session: any;
+  token: any;
 
   constructor(private storage: Storage, private router: Router) {}
 
@@ -15,18 +15,18 @@ export class SlidesGuard implements CanActivate {
       next: ActivatedRouteSnapshot,
       state: RouterStateSnapshot
   ): Promise<boolean> {
-    this.getSession();
+    this.getAccessToken();
     const isComplete = await this.storage.get('slidesDone');
     if (!isComplete) {
       this.router.navigateByUrl('/slides');
-    } else if (this.session != null) {
+    } else if (this.token != null) {
       this.router.navigateByUrl('/tabs/tab1');
     }
     return isComplete;
   }
 
-  async getSession() {
-    this.session = await this.storage.get('session');
+  async getAccessToken() {
+    this.token = await this.storage.get('access_token');
   }
 }
 

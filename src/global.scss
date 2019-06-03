@@ -9,11 +9,12 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 $font-family-base: 'Roboto', sans-serif;
 
-
+//Search bar
 .searchbar-input {
   background: #f4f5f8 !important;
   border-radius: 12px !important;
@@ -22,13 +23,52 @@ $font-family-base: 'Roboto', sans-serif;
   box-shadow: none !important;
 }
 
-//Big phones
-@media (min-height: 700px) {
-  .password-changer-modal .modal-wrapper {
-    min-height: 45% !important;
-    top: 55% !important;
+//Toast color
+.toast-container {
+  --color: var(--ion-inverted-color);
+  --background: var(--toast-color) !important;
+}
+
+// log in fields login.page.html
+.login-input .native-input {
+  margin-left: 42px;
+}
+// Alert dialogs color
+.alert-dialog {
+  color: var(--ion-text-color);
+  --ion-color-step-550: var(--ion-text-color);
+  --background: var(--modal-color);
+  .alert-button {
+    color: var(--ion-color-danger);
   }
-  .language-chooser-modal .modal-wrapper {
+  .secondary {
+    color: var(--ion-color-primary);
+  }
+}
+
+//CSS for variant of display sizes
+//Huge phones
+@media (min-height: 800px) {
+  .password-changer-modal .modal-wrapper {
+    min-height: 30% !important;
+    top: 63% !important;
+  }
+
+  .chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 77% !important;
+  }
+}
+
+//Big phones
+@media (min-height: 700px) and (max-height: 799px){
+
+  .password-changer-modal .modal-wrapper {
+    min-height: 42% !important;
+    top: 58% !important;
+  }
+
+  .chooser-modal .modal-wrapper {
     min-height: 25% !important;
     top: 75% !important;
   }
@@ -44,15 +84,11 @@ $font-family-base: 'Roboto', sans-serif;
   overflow: auto;
 }
 
-.language-chooser-modal .modal-wrapper {
+.chooser-modal .modal-wrapper {
   min-height: 30%;
   top: 70%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
-}
-
-.alert-dialog {
-  --background: var(--ion-background-color)
 }

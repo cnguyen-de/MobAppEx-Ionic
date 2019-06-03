@@ -2,7 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, NavParams} from '@ionic/angular';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {ApiService} from '../../_services/api.service';
+import {ApiService} from '../../_services/api/api.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-volume-modal',
@@ -13,6 +14,7 @@ export class VolumeModalPage implements OnInit {
 
   sliderValue: number;
   @Input() value: number;
+  buttonPressed: boolean = false;
 
 
   constructor(private http : HttpClient,
@@ -25,9 +27,23 @@ export class VolumeModalPage implements OnInit {
     this.sliderValue = this.value;
   }
 
-
   onChange() {
     this.value = this.sliderValue;
+  }
+
+  confirm() {
+    this.buttonPressed = !this.buttonPressed;
+    this.apiService.setVolumePreference(this.value)
+        .pipe(first())
+        .subscribe(
+            data => {
+              this.dismiss();
+              this.buttonPressed = !this.buttonPressed;
+            },
+            error => {
+              this.buttonPressed = !this.buttonPressed;
+              console.log(error);
+            });
   }
 
   dismiss() {

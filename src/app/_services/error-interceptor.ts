@@ -3,27 +3,38 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
-import {ApiService} from './api.service';
+import {ApiService} from './api/api.service';
 import {Router} from '@angular/router';
-import {Storage } from '@ionic/storage';
+import {ToastController} from '@ionic/angular';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private apiService: ApiService, private router: Router, private storage: Storage) {}
+  constructor(private apiService: ApiService, private router: Router, private toastController: ToastController) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
       if (err.status === 401) {
         // auto logout if 401 response returned from api
-        this.storage.remove('user');
-        this.storage.remove('session');
-        this.storage.remove('access_token');
+        this.apiService.logOutLocally();
         this.router.navigateByUrl('/login');
-        location.reload(true);
+      } else if (err.status === 0 || err.status === 504) {
+        this.toast("Unable to communicate with server")
       }
+
 
       const error = err.error.message || err.statusText;
       return throwError(error);
     }))
+  }
+
+  async toast(message: any) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      position: 'top',
+      cssClass: 'toast-container',
+      keyboardClose: true
+    });
+    toast.present();
   }
 }

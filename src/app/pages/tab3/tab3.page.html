@@ -2,7 +2,7 @@
     <div class="container">
         <ion-list>
             <ion-list-header>
-                <ion-label>Account</ion-label>
+                <ion-label>{{ 'ACCOUNT' | translate }}</ion-label>
             </ion-list-header>
                 <ion-item lines="full">
                     <ion-icon name="contact" slot="start"></ion-icon>
@@ -16,66 +16,74 @@
                         <ion-text>{{email}}</ion-text>
                     </ion-label>
                 </ion-item>
+                <ion-item lines="full" button="true" (click)="bookingHistory()">
+                    <ion-icon name="filing" slot="start"></ion-icon>
+                    <ion-label>{{ 'BOOKING_HISTORY' | translate }}</ion-label>
+                </ion-item>
                 <ion-item lines="full" button="true" (click)="changePasswordModal()">
-                    <ion-icon name="key" slot="start"></ion-icon>
-                    <ion-label>Change Password</ion-label>
+                    <ion-icon name="md-key" slot="start"></ion-icon>
+                    <ion-label>{{ 'CHANGE_PASSWORD' | translate }}</ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true" (click)="logOut()">
                     <ion-icon name="log-out" slot="start"></ion-icon>
-                    <ion-label>Log out</ion-label>
+                    <ion-label color="danger">{{ 'LOG_OUT' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
 
         <ion-list>
             <ion-list-header>
-                <ion-label>Powernap Information</ion-label>
+                <ion-label>{{ 'POWERNAP_INFO' | translate }}</ion-label>
             </ion-list-header>
-                <ion-item lines="full" button="true">
+                <ion-item lines="full" button="true" href="https://www.sleepfoundation.org/articles/napping">
                     <ion-icon name="pulse" slot="start"></ion-icon>
-                    <ion-label>About Powernap</ion-label>
+                    <ion-label>{{ 'ABOUT_POWERNAP' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
 
         <ion-list>
             <ion-list-header>
-                <ion-label>App Settings</ion-label>
+                <ion-label>{{ 'APP_SETTINGS' | translate }}</ion-label>
             </ion-list-header>
                 <ion-item lines="full" button="true" (click)="changeLanguage()">
                     <ion-icon name="globe" slot="start"></ion-icon>
-                    <ion-label>Change Language</ion-label>
+                    <ion-label>{{ 'CHANGE_LANGUAGE' | translate }}</ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true" (click)="switchTheme()">
                     <ion-icon name="color-wand" slot="start"></ion-icon>
-                    <ion-label *ngIf="!darkMode">Enable Dark Mode</ion-label>
-                    <ion-label *ngIf="darkMode">Enable Light Mode</ion-label>
+                    <ion-label *ngIf="!darkMode">{{ 'ENABLE_DARK_MODE' | translate }}</ion-label>
+                    <ion-label *ngIf="darkMode">{{ 'ENABLE_LIGHT_MODE' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
 
         <ion-list>
             <ion-list-header>
-                <ion-label>Capsule Preferences</ion-label>
+                <ion-label>{{ 'CAPSULE_PREF' | translate }}</ion-label>
             </ion-list-header>
                 <ion-item lines="full" button="true" (click)="changeVolume()">
                     <ion-icon name="volume-low" slot="start"></ion-icon>
-                    <ion-label>Volume</ion-label>
+                    <ion-label>{{ 'VOLUME' | translate }}</ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true" (click)="changeLight()">
                     <ion-icon name="sunny" slot="start"></ion-icon>
-                    <ion-label>Light brightness</ion-label>
+                    <ion-label>{{ 'LIGHT_BRIGHTNESS' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
 
         <ion-list>
             <ion-list-header>
-                <ion-label>About</ion-label>
+                <ion-label>{{ 'ABOUT' | translate }}</ion-label>
             </ion-list-header>
+                <ion-item lines="full" button="true" routerLink="/this-app">
+                    <ion-icon name="phone-portrait" slot="start"></ion-icon>
+                    <ion-label>{{ 'THIS_APP' | translate }}</ion-label>
+                </ion-item>
                 <ion-item lines="full" button="true">
                     <ion-icon name="book" slot="start"></ion-icon>
-                    <ion-label>Contact</ion-label>
+                    <ion-label>{{ 'CONTACT' | translate }}</ion-label>
                 </ion-item>
                 <ion-item lines="full" button="true">
                     <ion-icon name="paper" slot="start"></ion-icon>
-                    <ion-label>Legal</ion-label>
+                    <ion-label>{{ 'LEGAL' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
     </div>
