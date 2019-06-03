@@ -40,7 +40,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
          transform : 'translateY(-102%)',
 
       })),
-      transition('smaller <=> larger',animate('300ms ease-in'))
+      transition('bottom <=> top',animate('300ms ease-in'))
    ])
  ]
 })
