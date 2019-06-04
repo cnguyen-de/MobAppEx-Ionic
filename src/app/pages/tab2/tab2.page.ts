@@ -299,10 +299,12 @@ export class Tab2Page implements OnInit {
   }
 
   getPositionClick(){
+    this.spinBtnPositionPressed = true;
     this.locationService.getCurrentPosition().then(data => {
       console.log('Result getting location in Component', data);
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
+      this.spinBtnPositionPressed = false;
     });
   }
 

@@ -59,7 +59,8 @@
       </agm-marker>
     </agm-map>
     <ion-button id="btn_Position" (click)="getPositionClick()">
-      <ion-icon name="md-locate"></ion-icon>
+      <ion-icon name="md-locate" style="color: red" *ngIf="!spinBtnPositionPressed"></ion-icon>
+      <ion-spinner name="crescent" style="color: red" *ngIf="spinBtnPositionPressed"></ion-spinner>
     </ion-button>
   </div>
 
