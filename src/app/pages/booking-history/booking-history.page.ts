@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { delay, share } from 'rxjs/operators';
 import { ApiService } from '../../_services/api/api.service';
+import { TimeService } from '../../_services/time/time.service';
 
 @Component({
   selector: 'app-booking-history',
@@ -9,25 +12,37 @@ import { ApiService } from '../../_services/api/api.service';
 export class BookingHistoryPage implements OnInit {
 
   bookings: any;
+  time: any;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private timeService: TimeService) { }
 
   ngOnInit() {
-    // this.getBookings();
+    this.getBookings();
   }
 
   getBookings(){
     this.apiService.currentUser.subscribe(data =>{
-      // console.log(data.bookings);
       this.bookings = data.bookings;
+      try {
+        this.bookings.FirstTimeFrame = this.timeService.getStartTime(this.bookings.FirstTimeFrame);
+        this.bookings.LastTimeFrame = this.timeService.getEndTime(this.bookings.LastTimeFrame);
+        console.log(this.bookings);
+      } catch (error) {
+        console.log(error);
+      }
 
-      // this.bookings = this.sortData();
     });
   }
 
+  get timeFrames(){
+    return this.timeService.getTimeRange(this.bookings.FirstTimeFrame, this.bookings.LastTimeFrame);
+  }
+
   get sortData() {
-    this.getBookings();
+    // this.getBookings();
+
     try {
+      // this.time = this.timeService.getTimeRange(this.bookings.FirstTimeFrame, this.bookings.LastTimeFrame);
       return this.bookings.sort((a, b) => {
         return <any>new Date(b.Date) - <any>new Date(a.Date);
       });
