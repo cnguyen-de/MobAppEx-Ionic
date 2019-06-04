@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { IonSlides, IonSegment, IonContent, Platform} from "@ionic/angular";
+import { IonSlides, IonSegment, IonContent, Platform } from "@ionic/angular";
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
@@ -10,38 +10,38 @@ import { ApiService } from '../../_services/api/api.service';
   templateUrl: "tab2.page.html",
   styleUrls: ["tab2.page.scss"],
   animations: [
-    trigger('animatecardtotop',[
-       state('bottom',style({
-          transform : 'translateY(0px)'
-       })),
-       state('top',style({
-          //transform : 'translateY(-490px)',
-          width: 'calc(100% - 20px)',
-          height: '120px',
-          position: 'absolute',
-          top: 0,
-          left: 0
+    trigger('animatecardtotop', [
+      state('bottom', style({
+        transform: 'translateY(0px)'
+      })),
+      state('top', style({
+        //transform : 'translateY(-490px)',
+        width: 'calc(100% - 20px)',
+        height: '120px',
+        position: 'absolute',
+        top: 0,
+        left: 0
 
-       })),
-       transition('bottom <=> top',animate('300ms ease-in'))
+      })),
+      transition('bottom <=> top', animate('300ms ease-in'))
     ]),
-    trigger('animatemapup',[
-      state('bottom',style({
-         transform : 'translateY(0px)'
+    trigger('animatemapup', [
+      state('bottom', style({
+        transform: 'translateY(0px)'
       })),
-      state('top',style({
-         transform : 'translateY(-102%)',
+      state('top', style({
+        transform: 'translateY(-102%)',
 
       })),
-      transition('bottom <=> top',animate('300ms ease-in'))
-   ])
- ]
+      transition('bottom <=> top', animate('300ms ease-in'))
+    ])
+  ]
 })
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
   @ViewChild('segment') segment: IonSegment;
   @ViewChild('content') content: IonContent;
-  @ViewChild('slides') slides:IonSlides;
+  @ViewChild('slides') slides: IonSlides;
 
 
   constructor(private locationService: LocationService,
@@ -58,7 +58,7 @@ export class Tab2Page implements OnInit {
   personIcon: string = '../../../assets/images/icons/LocationPerson.svg';
   capsuleIcon: string = '../../../assets/images/icons/SnoozeMarker.svg';
   spinBtnPositionPressed = false;
-  
+
 
   //Slider Configs
   slidesConfig = {
@@ -70,7 +70,8 @@ export class Tab2Page implements OnInit {
   slideOpts = {
     initialSlide: 0,
     speed: 400,
-    loop: true
+    loop: true,
+    centeredSlides: true
   };
 
   //Animations
@@ -88,6 +89,7 @@ export class Tab2Page implements OnInit {
   daysRange: number = 30;
   //Timeslots
   timeslots = [];
+  timeslots2 = [];
   segmentWidth: number = 100;
 
   test = false;
@@ -96,16 +98,16 @@ export class Tab2Page implements OnInit {
 
 
     //Create 30 days for days-segment
-    for (let i = 0; i < this.daysRange; i++ ){
-      var date = new Date(); 
+    for (let i = 0; i < this.daysRange; i++) {
+      var date = new Date();
       date.setDate(date.getDate() + i);
-      
+
       let formattedDate = new Intl.DateTimeFormat('en-US', {
         month: 'short',
         day: '2-digit'
       }).format(date);
 
-      if(i == 0) {
+      if (i == 0) {
         formattedDate = 'Today';
       } else if (i == 1) {
         formattedDate = 'Tomorrow';
@@ -118,8 +120,8 @@ export class Tab2Page implements OnInit {
     }
 
     // set to last segment, onchange will trigger to next segment which is then the first one ;-)
-    this.segment.value = (this.daysRange-1).toString();
-     
+    this.segment.value = (this.daysRange - 1).toString();
+
     // Demo Data
     // this.capsules = [
     //   {
@@ -161,17 +163,17 @@ export class Tab2Page implements OnInit {
     }
 
     this.platform.backButton.subscribe(() => {
-      if(this.cardTSS_state == 'top') {
+      if (this.cardTSS_state == 'top') {
         this.animateTSS_Click();
       }
     });
 
 
-    
 
-    
 
-    this.timeslots = [
+
+
+    this.timeslots2 = [
       {
         content: '9:00 - 9:20', state: 'true'
       },
@@ -256,7 +258,7 @@ export class Tab2Page implements OnInit {
     ]
   }
 
-  
+
 
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`);
@@ -291,7 +293,7 @@ export class Tab2Page implements OnInit {
     return this.locationService.getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
   }
 
-  
+
   async animatecardtotopDone(event) {
     let animState: string = event.toState;
     if (animState == 'bottom') {
@@ -301,24 +303,40 @@ export class Tab2Page implements OnInit {
       elem2.setAttribute("style", "visibility: visible");
     } else {
       //this.test = true;
-      
+
       setTimeout(() => {
         let elem2 = document.getElementById("root");
         elem2.setAttribute("style", "visibility: visible");
 
         let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px" );
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
       }, 100);
-      
+
+      this.apiService.getCapsuleAvailability(1, '2019-06-01').subscribe(data => {
+        
+        // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
+        for(var propertyName in data) {
+          // propertyName is what you want
+          // you can get the value like this: myObject[propertyName]
+          let tmp = {
+            boool: data[propertyName]
+          }
+          this.timeslots.push(tmp);
+       }
+       console.log(this.timeslots);
+        
+      });
+
     }
   }
 
   async animateTSS_Click(item?) {
 
-    if(item) {
+    if (item) {
       this.capName = item.Name;
       this.capId = item.id;
     }
+
     let elemo = await document.getElementById("root");
     elemo.setAttribute("style", "visibility: hidden");
 
@@ -330,10 +348,11 @@ export class Tab2Page implements OnInit {
     let elem2 = await document.getElementById("slider");
     elem2.setAttribute("style", "visibility: hidden");
 
-    this.cardTSS_state= this.cardTSS_state == 'top' ? 'bottom' : 'top';
+    this.cardTSS_state = this.cardTSS_state == 'top' ? 'bottom' : 'top';
+
   }
 
-  getPositionClick(){
+  getPositionClick() {
     this.spinBtnPositionPressed = true;
     this.locationService.getCurrentPosition().then(data => {
       console.log('Result getting location in Component', data);
@@ -354,7 +373,7 @@ export class Tab2Page implements OnInit {
       console.log('Async operation has ended');
       event.target.complete();
     }, 2000);
-   
+
   }
 
   // onButtonClick() {
@@ -367,9 +386,9 @@ export class Tab2Page implements OnInit {
     // let indexc = await this.slides.getActiveIndex();
     // console.log(indexp + ' : ' + indexc)
 
-    // this.slides.length().then(data => {
-    //   console.log(data);
-    // });
+    this.slides.length().then(data => {
+      console.log(data);
+    });
 
     let elem = document.getElementsByClassName("even");
     elem[0].setAttribute("name", "ios-hand");
@@ -380,34 +399,36 @@ export class Tab2Page implements OnInit {
     elemx[1].setAttribute("style", "visibility:visible");
 
 
-      let elem2 = document.getElementsByClassName("odd");
-      elem2[0].setAttribute("name", "ios-hand");
-      elem2[1].setAttribute("name", "ios-hand");
+    let elem2 = document.getElementsByClassName("odd");
+    elem2[0].setAttribute("name", "ios-hand");
+    elem2[1].setAttribute("name", "ios-hand");
 
-      let elemx2 = document.getElementsByClassName("odd2");
+    let elemx2 = document.getElementsByClassName("odd2");
     elemx2[0].setAttribute("style", "visibility:visible");
     elemx2[1].setAttribute("style", "visibility:visible");
 
-    
 
-  //   this.clickSegment(index);
+    
+     
+
+    //   this.clickSegment(index);
     // this.timeslots = [];
     // setTimeout(() => {
     //   this.timeslots = this.timeslots2;
 
     // }, 1000);
-    
+
   }
 
 
   async onIonSlidePrevStart() {
     //console.log('prev start')
     let index = await +this.segment.value;
-    if(index === 0) {
+    if (index === 0) {
       index = this.daysRange;
     }
     this.segment.value = (index - 1).toString();
-    this.content.scrollToPoint((index-1)*this.segmentWidth,0,200);
+    this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
   }
 
   onIonSlidePrevEnd() {
@@ -417,13 +438,11 @@ export class Tab2Page implements OnInit {
   async onIonSlideNextStart() {
     //console.log('next start')
     let index = await +this.segment.value;
-    if(index === this.daysRange-1) {
+    if (index === this.daysRange - 1) {
       index = -1;
     }
     this.segment.value = (index + 1).toString();
-    this.content.scrollToPoint((index+1)*this.segmentWidth,0,200);
-
-    console.log(this.segment.value);
+    this.content.scrollToPoint((index + 1) * this.segmentWidth, 0, 200);
   }
 
   onIonSlideNextEnd() {
@@ -433,43 +452,43 @@ export class Tab2Page implements OnInit {
   async onIonSlideTouchStart() {
     //let indexp = await this.slides.getPreviousIndex();
     let indexc = await this.slides.getActiveIndex();
-    
-    //console.log(indexp + ' : ' + indexc)
 
-    if(indexc === 0 || indexc ===2) {
+    console.log('slideindex : ' + indexc)
+
+    if (indexc === 0 || indexc === 2) {
       let elem = document.getElementsByClassName("odd");
       elem[0].setAttribute("name", "ios-arrow-dropleft");
       elem[1].setAttribute("name", "ios-arrow-dropright");
 
       let elemx = document.getElementsByClassName("odd2");
-      elemx[0].setAttribute("style", "visibility:hidden");
-      elemx[1].setAttribute("style", "visibility:hidden");
+      elemx[0].setAttribute("style", "visibility:collapse");
+      elemx[1].setAttribute("style", "visibility:collapse");
 
       let elem2 = document.getElementsByClassName("even");
       elem2[0].setAttribute("name", "ios-hand");
       elem2[1].setAttribute("name", "ios-hand");
 
-      // let elemx2 = document.getElementsByClassName("even2");
-      // elemx2[0].setAttribute("style", "visibility:visible");
-      // elemx2[1].setAttribute("style", "visibility:visible");
+      let elemx2 = document.getElementsByClassName("even2");
+      elemx2[0].setAttribute("style", "visibility:visible");
+      elemx2[1].setAttribute("style", "visibility:visible");
     } else {
       let elem = document.getElementsByClassName("even");
       elem[0].setAttribute("name", "ios-arrow-dropleft");
       elem[1].setAttribute("name", "ios-arrow-dropright");
 
       let elemx = document.getElementsByClassName("even2");
-      elemx[0].setAttribute("style", "visibility:hidden");
-      elemx[1].setAttribute("style", "visibility:hidden");
+      elemx[0].setAttribute("style", "visibility:collapse");
+      elemx[1].setAttribute("style", "visibility:collapse");
 
       let elem2 = document.getElementsByClassName("odd");
       elem2[0].setAttribute("name", "ios-hand");
       elem2[1].setAttribute("name", "ios-hand");
 
-      // let elemx2 = document.getElementsByClassName("odd2");
-      // elemx2[0].setAttribute("style", "visibility:visible");
-      // elemx2[1].setAttribute("style", "visibility:visible");
+      let elemx2 = document.getElementsByClassName("odd2");
+      elemx2[0].setAttribute("style", "visibility:visible");
+      elemx2[1].setAttribute("style", "visibility:visible");
     }
-    
+
   }
 
   // results: Observable<any>;

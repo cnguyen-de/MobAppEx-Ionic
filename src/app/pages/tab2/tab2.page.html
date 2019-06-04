@@ -137,12 +137,12 @@
       <ion-slides #slides [options]="slideOpts" style="height: 100%;" (ionSlideDidChange)="onIonSlideDidChange($event)"
         (ionSlidePrevStart)="onIonSlidePrevStart()" (ionSlidePrevEnd)="onIonSlidePrevEnd()"
         (ionSlideNextStart)="onIonSlideNextStart()" (ionSlideNextEnd)="onIonSlideNextEnd()"
-        (ionSlideTouchStart)="onIonSlideTouchStart()">
+        (ionSlideTouchStart)="onIonSlideTouchStart()" *ngIf="timeslots.length">
         <ion-slide>
           <ion-content id="hallo">
-            <div>
+        
               <ion-icon class="odd" name="ios-hand"></ion-icon>
-            </div>
+            
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
               <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
@@ -152,45 +152,44 @@
 
             <ion-list class="odd2" lines="full">
               <div *ngFor="let item of timeslots">
-                <ion-item button="true" *ngIf="item.state === 'false'">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                <ion-item button="true" *ngIf="item.boool == true">
+                  <div id="idero" slot="start">{{ item.boool }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state === 'true'"
+                <ion-item button="true" *ngIf="item.boool == false"
                   style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div id="idero" slot="start">{{ item.boool }}</div>
                   <div slot="end">TAKEN</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state === 'selected'"
+                <!-- <ion-item button="true" *ngIf="item === 'selected'"
                   style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);">
                   <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">SELECTED</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state === 'booked'"
+                <ion-item button="true" *ngIf="item === 'booked'"
                   style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
                   <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">YOURS</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state === 'blocked'"
+                <ion-item button="true" *ngIf="item === 'blocked'"
                   style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180);">
                   <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state === 'inprogress'"
+                <ion-item button="true" *ngIf="item === 'inprogress'"
                   style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
                   <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">IN SELECTION...</div>
-                </ion-item>
+                </ion-item> -->
               </div>
             </ion-list>
-
           </ion-content>
         </ion-slide>
         <ion-slide>
           <ion-content>
-            <div>
+            
               <ion-icon class="even" name="ios-hand"></ion-icon>
-            </div>
+           
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
               <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
@@ -199,12 +198,38 @@
             </ion-refresher>
 
             <ion-list class="even2" lines="full">
-              <ion-item button="true" *ngFor="let item of timeslots">
-                <div id="idero" slot="start">{{ item.content }}</div>
-                <div slot="end">FREE</div>
-              </ion-item>
-            </ion-list>
-
+                <div *ngFor="let item of timeslots">
+                  <ion-item button="true" *ngIf="item.boool == true">
+                    <div id="idero" slot="start">{{ item.boool }}</div>
+                    <div slot="end">FREE</div>
+                  </ion-item>
+                  <ion-item button="true" *ngIf="item.boool == false"
+                    style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
+                    <div id="idero" slot="start">{{ item.boool }}</div>
+                    <div slot="end">TAKEN</div>
+                  </ion-item>
+                  <!-- <ion-item button="true" *ngIf="item === 'selected'"
+                    style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);">
+                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="end">SELECTED</div>
+                  </ion-item>
+                  <ion-item button="true" *ngIf="item === 'booked'"
+                    style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
+                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="end">YOURS</div>
+                  </ion-item>
+                  <ion-item button="true" *ngIf="item === 'blocked'"
+                    style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180);">
+                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="end">FREE</div>
+                  </ion-item>
+                  <ion-item button="true" *ngIf="item === 'inprogress'"
+                    style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
+                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="end">IN SELECTION...</div>
+                  </ion-item> -->
+                </div>
+              </ion-list>
           </ion-content>
         </ion-slide>
       </ion-slides>
