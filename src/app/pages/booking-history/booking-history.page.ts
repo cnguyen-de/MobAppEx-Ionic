@@ -22,13 +22,17 @@ export class BookingHistoryPage implements OnInit {
 
   getBookings(){
     this.apiService.currentUser.subscribe(data =>{
-      this.bookings = data.bookings;
       try {
-        this.bookings.FirstTimeFrame = this.timeService.getStartTime(this.bookings.FirstTimeFrame);
-        this.bookings.LastTimeFrame = this.timeService.getEndTime(this.bookings.LastTimeFrame);
-        console.log(this.bookings);
+        data.bookings = this.sortData(data.bookings);
+        // this.bookings = data.bookings.slice().reverse();
+        this.bookings = data.bookings;
+
+        for(var i = 0; this.bookings.length; i++){
+          this.bookings[i].FirstTimeFrame = this.timeService.getStartTime(this.bookings[i].FirstTimeFrame);
+          this.bookings[i].LastTimeFrame = this.timeService.getEndTime(this.bookings[i].LastTimeFrame);
+        }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
 
     });
@@ -38,13 +42,10 @@ export class BookingHistoryPage implements OnInit {
     return this.timeService.getTimeRange(this.bookings.FirstTimeFrame, this.bookings.LastTimeFrame);
   }
 
-  get sortData() {
-    // this.getBookings();
-
+  sortData(data) {
     try {
-      // this.time = this.timeService.getTimeRange(this.bookings.FirstTimeFrame, this.bookings.LastTimeFrame);
-      return this.bookings.sort((a, b) => {
-        return <any>new Date(b.Date) - <any>new Date(a.Date);
+      return data.sort((a, b) => {
+        return <any>new Date(b.PayedDate) - <any>new Date(a.PayedDate);
       });
     } catch (error) {
       // console.log("Failed");
