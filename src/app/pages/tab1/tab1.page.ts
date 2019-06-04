@@ -18,6 +18,7 @@ export class Tab1Page {
   bookings: booking[] = [];
   today = new Date();
   futureBookings: booking[] = [];
+  isFirstTime: boolean = true;
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService){
@@ -38,14 +39,16 @@ export class Tab1Page {
         user => {
           this.storage.get('user').then(savedUser => {
             console.log(isEqual(user, savedUser));
-            if (isEqual(user, savedUser)) {
+            if (isEqual(user, savedUser) && !this.isFirstTime) {
               this.storage.get('futureBookings').then(bookings => {
                 if (typeof bookings != 'undefined') {
                   this.futureBookings = bookings;
-                  console.log("nothing new, get old data");
+                  console.log('Equal JSONS, showing old data');
                 }
               })
             } else {
+              console.log('Processing new JSON');
+              this.isFirstTime = false;
               this.futureBookings = [];
               // @ts-ignore
               this.bookings = user.bookings;
