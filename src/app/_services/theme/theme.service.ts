@@ -26,12 +26,12 @@ export class ThemeService {
     if (enableDarkMode) {
       theme = this.getDarkTheme();
       this.statusBar.backgroundColorByHexString('#141d26');
-      NavigationBar.backgroundColorByHexString('#141d26', false);
+      //NavigationBar.backgroundColorByHexString('#141d26', false);
       this.statusBar.styleBlackOpaque();
 
     } else {
       this.statusBar.backgroundColorByHexString('#ffffff');
-      NavigationBar.backgroundColorByHexString('#efefef', true);
+      //NavigationBar.backgroundColorByHexString('#efefef', true);
       this.statusBar.styleDefault();
     }
     this.document.documentElement.style.cssText = theme
