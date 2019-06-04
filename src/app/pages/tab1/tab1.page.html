@@ -57,8 +57,16 @@
           </span>
         </ion-card-title>
         <ion-card-subtitle class="active-capsule-header">
-          {{booking.Date | date : "dd.MM.y"}}<br>
-          {{booking.duration}}
+          
+          <ion-chip>
+            <ion-icon name="calendar"></ion-icon>
+            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
+          </ion-chip>
+          <ion-chip>
+            <ion-icon name="time"></ion-icon>
+            <ion-label>{{booking.duration}}</ion-label>
+          </ion-chip>
+          
         </ion-card-subtitle>
       </ion-card-header>
 
@@ -85,10 +93,17 @@
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
+          <ion-chip>
+            <ion-icon name="calendar"></ion-icon>
+            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
+          </ion-chip>
+          <ion-chip>
+            <ion-icon name="time"></ion-icon>
+            <ion-label>{{booking.duration}}</ion-label>
+          </ion-chip>
           <ion-item lines="none">
             <ion-icon name="ios-log-in" class="pin-list"></ion-icon>
             <ion-text color="primary"><h5>{{booking.Pin}}</h5></ion-text>
-            <ion-text slot="end"><h5>{{booking.duration}}</h5></ion-text>
           </ion-item>
         </mat-expansion-panel>
       </mat-accordion>

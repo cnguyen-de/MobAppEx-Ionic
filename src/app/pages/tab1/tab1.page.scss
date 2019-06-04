@@ -8,6 +8,15 @@ ion-card {
 ion-refresher, ion-refresher-content {
   background: var(--darker-color);
 }
+ion-chip{
+  color: var(--ion-text-color);
+  --background: var(--darker-color)
+}
+
+ion-icon {
+  color: var(--ion-text-color)
+}
+
 .header {
   text-align: right;
   background: var(--ion-color-warning)
