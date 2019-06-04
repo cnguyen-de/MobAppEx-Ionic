@@ -78,6 +78,7 @@ export class Tab2Page implements OnInit {
 
   //Single Capsule Values
   capName = '';
+  capId = '';
 
   //Capsules
   capsules: any;
@@ -316,6 +317,7 @@ export class Tab2Page implements OnInit {
 
     if(item) {
       this.capName = item.Name;
+      this.capId = item.id;
     }
     let elemo = await document.getElementById("root");
     elemo.setAttribute("style", "visibility: hidden");
@@ -370,12 +372,21 @@ export class Tab2Page implements OnInit {
     // });
 
     let elem = document.getElementsByClassName("even");
-    elem[0].setAttribute("style", "color:black; border: 0px solid blue;");
-    elem[1].setAttribute("style", "color:black; border: 0px solid blue;");
+    elem[0].setAttribute("name", "ios-hand");
+    elem[1].setAttribute("name", "ios-hand");
+
+    let elemx = document.getElementsByClassName("even2");
+    elemx[0].setAttribute("style", "visibility:visible");
+    elemx[1].setAttribute("style", "visibility:visible");
+
 
       let elem2 = document.getElementsByClassName("odd");
-      elem2[0].setAttribute("style", "color:black; border: 0px solid blue;");
-      elem2[1].setAttribute("style", "color:black; border: 0px solid blue;");
+      elem2[0].setAttribute("name", "ios-hand");
+      elem2[1].setAttribute("name", "ios-hand");
+
+      let elemx2 = document.getElementsByClassName("odd2");
+    elemx2[0].setAttribute("style", "visibility:visible");
+    elemx2[1].setAttribute("style", "visibility:visible");
 
     
 
@@ -427,18 +438,36 @@ export class Tab2Page implements OnInit {
 
     if(indexc === 0 || indexc ===2) {
       let elem = document.getElementsByClassName("odd");
-      elem[0].setAttribute("style", "color:red; border: 0px solid blue;");
-      elem[1].setAttribute("style", "color:green; border: 0px solid blue;");
+      elem[0].setAttribute("name", "ios-arrow-dropleft");
+      elem[1].setAttribute("name", "ios-arrow-dropright");
+
+      let elemx = document.getElementsByClassName("odd2");
+      elemx[0].setAttribute("style", "visibility:hidden");
+      elemx[1].setAttribute("style", "visibility:hidden");
+
       let elem2 = document.getElementsByClassName("even");
-      elem2[0].setAttribute("style", "color:black; border: 0px solid blue;");
-      elem2[1].setAttribute("style", "color:black; border: 0px solid blue;");
+      elem2[0].setAttribute("name", "ios-hand");
+      elem2[1].setAttribute("name", "ios-hand");
+
+      // let elemx2 = document.getElementsByClassName("even2");
+      // elemx2[0].setAttribute("style", "visibility:visible");
+      // elemx2[1].setAttribute("style", "visibility:visible");
     } else {
       let elem = document.getElementsByClassName("even");
-      elem[0].setAttribute("style", "color:red; border: 0px solid blue;");
-      elem[1].setAttribute("style", "color:green; border: 0px solid blue;");
+      elem[0].setAttribute("name", "ios-arrow-dropleft");
+      elem[1].setAttribute("name", "ios-arrow-dropright");
+
+      let elemx = document.getElementsByClassName("even2");
+      elemx[0].setAttribute("style", "visibility:hidden");
+      elemx[1].setAttribute("style", "visibility:hidden");
+
       let elem2 = document.getElementsByClassName("odd");
-      elem2[0].setAttribute("style", "color:black; border: 0px solid blue;");
-      elem2[1].setAttribute("style", "color:black; border: 0px solid blue;");
+      elem2[0].setAttribute("name", "ios-hand");
+      elem2[1].setAttribute("name", "ios-hand");
+
+      // let elemx2 = document.getElementsByClassName("odd2");
+      // elemx2[0].setAttribute("style", "visibility:visible");
+      // elemx2[1].setAttribute("style", "visibility:visible");
     }
     
   }

@@ -123,37 +123,10 @@
 
   <ion-card id="listr">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
-      <ion-segment id="segmt" #segment mode="md"  >
+      <ion-segment id="segmt" #segment mode="md">
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked>
           {{day.date}}
         </ion-segment-button>
-        <!-- <ion-segment-button value="1">
-          Tomorrow
-        </ion-segment-button>
-        <ion-segment-button value="2">
-          June 01
-        </ion-segment-button>
-        <ion-segment-button value="3">
-          June 02
-        </ion-segment-button>
-        <ion-segment-button value="4">
-          June 03
-        </ion-segment-button>
-        <ion-segment-button value="5">
-          June 04
-        </ion-segment-button>
-        <ion-segment-button value="6">
-          June 05
-        </ion-segment-button>
-        <ion-segment-button value="7">
-          June 06
-        </ion-segment-button>
-        <ion-segment-button value="8">
-          June 07
-        </ion-segment-button>
-        <ion-segment-button value="9" checked>
-          June 08
-        </ion-segment-button> -->
       </ion-segment>
     </ion-content>
     <ion-button id="btn-calendar" fill="clear">
@@ -166,15 +139,18 @@
         (ionSlideNextStart)="onIonSlideNextStart()" (ionSlideNextEnd)="onIonSlideNextEnd()"
         (ionSlideTouchStart)="onIonSlideTouchStart()">
         <ion-slide>
-          <ion-content id="hallo" >
-            <!-- <div class="odd">Hallo</div> -->
+          <ion-content id="hallo">
+            <div>
+              <ion-icon class="odd" name="ios-hand"></ion-icon>
+            </div>
+
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-                <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
-                  refreshingSpinner="crescent" refreshingText="Refreshing...">
-                </ion-refresher-content>
-              </ion-refresher>
-            <ion-list class="odd" lines="full">
-              
+              <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
+                refreshingSpinner="crescent" refreshingText="Refreshing...">
+              </ion-refresher-content>
+            </ion-refresher>
+
+            <ion-list class="odd2" lines="full">
               <div *ngFor="let item of timeslots">
                 <ion-item button="true" *ngIf="item.state === 'false'">
                   <div id="idero" slot="start">{{ item.content }}</div>
@@ -205,26 +181,30 @@
                   <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">IN SELECTION...</div>
                 </ion-item>
-
               </div>
-
             </ion-list>
+
           </ion-content>
         </ion-slide>
         <ion-slide>
           <ion-content>
-            <!-- <div class="even">Welt</div> -->
+            <div>
+              <ion-icon class="even" name="ios-hand"></ion-icon>
+            </div>
+
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-                <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
-                  refreshingSpinner="crescent" refreshingText="Refreshing...">
-                </ion-refresher-content>
-              </ion-refresher>
-            <ion-list class="even" lines="full">
+              <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
+                refreshingSpinner="crescent" refreshingText="Refreshing...">
+              </ion-refresher-content>
+            </ion-refresher>
+
+            <ion-list class="even2" lines="full">
               <ion-item button="true" *ngFor="let item of timeslots">
                 <div id="idero" slot="start">{{ item.content }}</div>
                 <div slot="end">FREE</div>
               </ion-item>
             </ion-list>
+
           </ion-content>
         </ion-slide>
       </ion-slides>
@@ -239,7 +219,5 @@
     <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="animateTSS_Click()">
       Proceed To Checkout
     </ion-button>
-
   </ion-card>
-
 </ion-content>
