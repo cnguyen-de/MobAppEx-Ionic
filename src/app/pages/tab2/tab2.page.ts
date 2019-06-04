@@ -71,7 +71,9 @@ export class Tab2Page implements OnInit {
     initialSlide: 0,
     speed: 400,
     loop: true,
-    centeredSlides: true
+    centeredSlides: true,
+    preventClicks: false,
+    preventClicksPropagation: false
   };
 
   //Animations
@@ -175,13 +177,13 @@ export class Tab2Page implements OnInit {
 
     this.timeslots2 = [
       {
-        content: '9:00 - 9:20', state: 'true'
+        content: '9:00 - 9:20', state: true
       },
       {
         content: '9:20 - 9:40', state: 'selected'
       },
       {
-        content: '9:40 - 10:00', state: 'false'
+        content: '9:40 - 10:00', state: false
       },
       {
         content: '10:00 - 10:20', state: 'blocked'
@@ -313,18 +315,15 @@ export class Tab2Page implements OnInit {
       }, 100);
 
       this.apiService.getCapsuleAvailability(1, '2019-06-01').subscribe(data => {
-        
         // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
         for(var propertyName in data) {
           // propertyName is what you want
           // you can get the value like this: myObject[propertyName]
           let tmp = {
-            boool: data[propertyName]
+            state: data[propertyName]
           }
           this.timeslots.push(tmp);
        }
-       console.log(this.timeslots);
-        
       });
 
     }
@@ -386,6 +385,8 @@ export class Tab2Page implements OnInit {
     // let indexc = await this.slides.getActiveIndex();
     // console.log(indexp + ' : ' + indexc)
 
+    
+
     this.slides.length().then(data => {
       console.log(data);
     });
@@ -407,8 +408,14 @@ export class Tab2Page implements OnInit {
     elemx2[0].setAttribute("style", "visibility:visible");
     elemx2[1].setAttribute("style", "visibility:visible");
 
-
+  this.slides.slideTo(1, 0);
     
+    // setTimeout(() => {
+    //   this.updatingSlides = true;
+    //   setTimeout(() => {
+    //     this.updatingSlides = false;
+    //   }, 10);
+    // }, 10);
      
 
     //   this.clickSegment(index);
@@ -432,7 +439,7 @@ export class Tab2Page implements OnInit {
   }
 
   onIonSlidePrevEnd() {
-    //console.log('prev ended')
+    console.log('prev ended')
   }
 
   async onIonSlideNextStart() {
@@ -446,14 +453,17 @@ export class Tab2Page implements OnInit {
   }
 
   onIonSlideNextEnd() {
-    //console.log('next ended')
+    console.log('next ended')
+    
   }
 
   async onIonSlideTouchStart() {
     //let indexp = await this.slides.getPreviousIndex();
     let indexc = await this.slides.getActiveIndex();
 
-    console.log('slideindex : ' + indexc)
+    //console.log('slideindex : ' + indexc)
+
+    
 
     if (indexc === 0 || indexc === 2) {
       let elem = document.getElementsByClassName("odd");
@@ -489,6 +499,35 @@ export class Tab2Page implements OnInit {
       elemx2[1].setAttribute("style", "visibility:visible");
     }
 
+  }
+
+  updatingSlides = false;
+  onTimeSlotClick(i) {
+    // this.timeslots = [];
+    // setTimeout(() => {
+    //   let tmp = {
+    //     state: true,
+    //   }
+    //   this.timeslots.push(tmp);
+    // }, 2000);
+
+    // setTimeout(() => {
+    //   this.updatingSlides = true;
+    //   setTimeout(() => {
+    //     this.updatingSlides = false;
+    //   }, 10);
+    // }, 10);
+
+    if(this.timeslots[i].state == 'selected') {
+      this.timeslots[i].state = true;
+    } else {
+      this.timeslots[i].state = 'selected';
+    }
+
+    console.log(i);
+
+    
+    
   }
 
   // results: Observable<any>;
