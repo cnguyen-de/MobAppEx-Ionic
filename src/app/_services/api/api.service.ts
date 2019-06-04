@@ -8,6 +8,7 @@ import {User} from '../auth/user';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
   token: string;
   server: string = "https://platania.info:3000/api";
@@ -44,6 +45,7 @@ export class ApiService {
           console.log(res);
           // @ts-ignore
           this.token = res.id;
+          // @ts-ignore
           this.saveToStorage('access_token', res.id).then(() => {
             return res;
           });
