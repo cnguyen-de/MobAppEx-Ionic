@@ -5,6 +5,9 @@ import {TimeService} from '../../_services/time/time.service';
 import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 
+import isEqual from 'lodash.isequal'
+
+
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -31,19 +34,28 @@ export class Tab1Page {
   }
 
   getFutureBookings() {
-        this.apiService.getUser().pipe(first()).subscribe(
-            user => {
-              console.log(user);
+    this.apiService.getUser().pipe(first()).subscribe(
+        user => {
+          this.storage.get('user').then(savedUser => {
+            console.log(isEqual(user, savedUser));
+            if (isEqual(user, savedUser)) {
+              this.storage.get('futureBookings').then(bookings => {
+                if (typeof bookings != 'undefined') {
+                  this.futureBookings = bookings;
+                  console.log("nothing new, get old data");
+                }
+              })
+            } else {
               this.futureBookings = [];
               // @ts-ignore
               this.bookings = user.bookings;
               // go through all bookings
               for (let booking of this.bookings) {
                 // compare the dates if booking date is bigger (today or future)
-                let date =  new Date(booking.Date.substring(0,10));
+                let date = new Date(booking.Date.substring(0, 10));
                 let dateToday = new Date();
-                date.setHours(0,0,0,0);
-                dateToday.setHours(0,0,0,0);
+                date.setHours(0, 0, 0, 0);
+                dateToday.setHours(0, 0, 0, 0);
                 if (date > dateToday) {
                   this.futureBookings.push(booking);
                   booking.Date = booking.Date.substring(0, 10);
@@ -51,11 +63,12 @@ export class Tab1Page {
                   booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
                 } else if (date.getDate() == dateToday.getDate()) {
                   let hourNow = this.today.getHours();
+                  console.log(this.timeService.getEndTime(booking.LastTimeFrame));
                   let endTime = this.timeService.getEndTime(booking.LastTimeFrame).split(':');
                   // compare the hours, if bigger then add to future booking
                   if (endTime[0] > hourNow) {
                     this.futureBookings.push(booking);
-                    booking.Date = booking.Date.substring(0,10);
+                    booking.Date = booking.Date.substring(0, 10);
                     booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
                     booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
 
@@ -63,7 +76,7 @@ export class Tab1Page {
                   } else if (endTime[0] == hourNow) {
                     if (endTime[1] >= this.today.getMinutes()) {
                       this.futureBookings.push(booking);
-                      booking.Date = booking.Date.substring(0,10);
+                      booking.Date = booking.Date.substring(0, 10);
                       booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
                       booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
 
@@ -72,8 +85,11 @@ export class Tab1Page {
                 }
               }
               // @ts-ignore
-              this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date))
-            }, err => console.log(err))
+              this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+              this.saveToStorage('futureBookings', this.futureBookings);
+            }
+          });
+        }, err => console.log(err));
 
   }
 
@@ -85,4 +101,7 @@ export class Tab1Page {
     }, 1000);
   }
 
+  async saveToStorage(key, val) {
+    await this.storage.set(key, val);
+  }
 }

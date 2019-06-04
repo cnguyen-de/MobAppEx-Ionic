@@ -18,7 +18,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         this.apiService.logOutLocally();
         this.router.navigateByUrl('/login');
       } else if (err.status === 0 || err.status === 504) {
-        //this.toast("Unable to communicate with server")
+        return throwError("Unable to communicate with server");
       }
 
       const error = err.error.error.message;
