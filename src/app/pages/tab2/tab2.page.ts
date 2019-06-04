@@ -104,6 +104,11 @@ export class Tab2Page implements OnInit {
         day: '2-digit'
       }).format(date);
 
+      if(i == 0) {
+        formattedDate = 'Today';
+      } else if (i == 1) {
+        formattedDate = 'Tomorrow';
+      }
       let day = {
         date: formattedDate,
         value: i.toString()
