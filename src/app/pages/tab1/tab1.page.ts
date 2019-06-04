@@ -18,20 +18,22 @@ export class Tab1Page {
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService){
-    this.getFutureBookings();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
+  ionViewWillEnter() {
+    this.getFutureBookings();
+  }
   hideCard() {
     this.hide = true;
   }
 
   getFutureBookings() {
-    this.apiService.getToken().then(token => {
-      if (token != null) {
         this.apiService.getUser().pipe(first()).subscribe(
             user => {
+              console.log(user);
               this.futureBookings = [];
               // @ts-ignore
               this.bookings = user.bookings;
@@ -72,8 +74,7 @@ export class Tab1Page {
               // @ts-ignore
               this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date))
             }, err => console.log(err))
-      }
-    });
+
   }
 
 

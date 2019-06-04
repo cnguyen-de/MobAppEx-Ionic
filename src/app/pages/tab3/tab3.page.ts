@@ -31,27 +31,45 @@ export class Tab3Page {
               private alertController: AlertController, private toastController: ToastController,
               private apiService: ApiService,
               private translateService: TranslateService) {
+
+  }
+
+  ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
   }
 
   // User Info
   getUserInfo() {
-    this.apiService.getUser()
-        .pipe(first())
-        .subscribe(
-            user => {
-              this.user = user;
-              this.username = user.username;
-              this.email = user.email;
-              if (user.capsulePreference != null) {
-                this.lightPref = user.capsulePreference.LightLevel;
-                this.volumePref = user.capsulePreference.VolumenLevel;
-              }
-            },
-            error => {
-              console.log(error);
-            });
+    this.storage.get('user').then(user => {
+      if (user != null || typeof user != 'undefined') {
+        console.log("found user data");
+        this.user = user;
+        this.username = user.username;
+        this.email = user.email;
+        if (user.capsulePreference != null) {
+          this.lightPref = user.capsulePreference.LightLevel;
+          this.volumePref = user.capsulePreference.VolumenLevel;
+        }
+      } else {
+        console.log("ask server");
+        this.apiService.getUser()
+            .pipe(first())
+            .subscribe(
+                user => {
+                  this.user = user;
+                  this.username = user.username;
+                  this.email = user.email;
+                  if (user.capsulePreference != null) {
+                    this.lightPref = user.capsulePreference.LightLevel;
+                    this.volumePref = user.capsulePreference.VolumenLevel;
+                  }
+                },
+                error => {
+                  console.log(error);
+                });
+      }
+    })
   }
 
   //Change Password

@@ -12,6 +12,7 @@ import {User} from '../auth/user';
 export class ApiService {
   token: string;
   server: string = "https://platania.info:3000/api";
+  user: User;
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
@@ -42,12 +43,11 @@ export class ApiService {
   login(username: string, password: string) {
     return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
         map( (res) => {
-          console.log(res);
+          //console.log(res);
           // @ts-ignore
           this.token = res.id;
-          this.saveToStorage('access_token', this.token).then(() => {
-            return res;
-          });
+          this.saveToStorage('access_token', this.token);
+          return res;
         })
     );
   }
@@ -75,11 +75,11 @@ export class ApiService {
     let params = this.setParamToken(this.token);
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
-          this.saveToStorage('user', res);
           // @ts-ignore
-          let user: User = res;
-          this.currentUserSubject.next(user);
-          return user;
+          this.user = res;
+          this.currentUserSubject.next(this.user);
+          this.saveToStorage('user', this.user);
+          return this.user;
         })
     )
   }
@@ -194,6 +194,6 @@ export class ApiService {
   }
 
   async saveToStorage(key: string, value: any) {
-    await this.storage.set(key, value);
+    return await this.storage.set(key, value);
   }
 }
