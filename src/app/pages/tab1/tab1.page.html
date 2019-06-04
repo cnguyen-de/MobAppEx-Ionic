@@ -1,11 +1,16 @@
 
 <ion-header>
   <ion-toolbar>
+    <!--
     <ion-item lines="none">
-      <!--<ion-searchbar (ionChange)="onSearchChange($event)" class="search-bar" [(ngModel)]="searchTerm" #searchbar></ion-searchbar>-->
+      &lt;!&ndash;<ion-searchbar (ionChange)="onSearchChange($event)" class="search-bar" [(ngModel)]="searchTerm" #searchbar></ion-searchbar>&ndash;&gt;
       <ion-searchbar class="search-bar"></ion-searchbar>
       <ion-icon class="grid" name="apps" slot="end"></ion-icon>
     </ion-item>
+    -->
+    <div class="title" style="text-align: center;">
+      <ion-title>Your Capsules</ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -24,7 +29,7 @@
     </div>
     <ion-card-header>
       <ion-card-title class="text">No reservation found!</ion-card-title>
-      <ion-card-subtitle class="text">Your reserved capsules will show up here</ion-card-subtitle>
+      <ion-card-subtitle class="text">Your booked capsules will show up here</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content routerLink="/tabs/tab2">
@@ -70,9 +75,9 @@
     <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
       <ion-list>
         <ion-list-header mode="ios">
-          <span><ion-icon name="pin"></ion-icon>{{booking.capsule.Name}}</span>
+          <span><ion-icon name="pin"></ion-icon> {{booking.capsule.Name}}</span>
           <ion-text class="date" style="float: right;">
-            {{booking.Date | date : "dd.MM.y"}} - {{booking.FirstTimeFrame}}
+            {{booking.FirstTimeFrame}} - {{booking.Date | date : "dd.MM.y"}}
           </ion-text>
         </ion-list-header>
       </ion-list>

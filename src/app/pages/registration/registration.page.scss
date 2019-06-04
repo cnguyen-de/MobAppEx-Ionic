@@ -12,10 +12,6 @@ ion-toolbar {
   font-weight: bold;
 }
 
-ion-input {
-  border-radius: 12px;
-}
-
 .sign-up-button {
   padding-top: 16px;
   height: 60px;
@@ -24,4 +20,23 @@ ion-input {
 
 .button-text {
   text-align: center;
+}
+
+.login-icon {
+  padding-left: 8px;
+}
+
+ion-item {
+  padding-bottom: 8px;
+}
+ion-icon {
+  position: absolute;
+  color: var(--ion-text-color-step-400);
+  z-index: 2;
+}
+ion-input {
+  --background: var(--ion-item-background-color);
+  border-radius: 25px;
+  z-index: 1;
+  border:1px solid var(--ion-border-color);
 }

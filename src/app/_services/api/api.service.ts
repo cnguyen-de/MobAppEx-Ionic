@@ -45,8 +45,7 @@ export class ApiService {
           console.log(res);
           // @ts-ignore
           this.token = res.id;
-          // @ts-ignore
-          this.saveToStorage('access_token', res.id).then(() => {
+          this.saveToStorage('access_token', this.token).then(() => {
             return res;
           });
         })
@@ -57,6 +56,7 @@ export class ApiService {
     let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
+          //console.log(res);
           return res;
         })
     );
