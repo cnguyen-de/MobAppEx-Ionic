@@ -45,8 +45,7 @@ export class ApiService {
           console.log(res);
           // @ts-ignore
           this.token = res.id;
-          // @ts-ignore
-          this.saveToStorage('access_token', res.id).then(() => {
+          this.saveToStorage('access_token', this.token).then(() => {
             return res;
           });
         })

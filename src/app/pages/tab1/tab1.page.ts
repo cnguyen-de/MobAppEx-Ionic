@@ -35,7 +35,6 @@ export class Tab1Page {
               this.futureBookings = [];
               // @ts-ignore
               this.bookings = user.bookings;
-              console.log(this.apiService.currentUserValue);
               // go through all bookings
               for (let booking of this.bookings) {
                 // compare the dates if booking date is bigger (today or future)
@@ -50,17 +49,17 @@ export class Tab1Page {
                   booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
                 } else if (date.getDate() == dateToday.getDate()) {
                   let hourNow = this.today.getHours();
-                  let startTime = this.timeService.getStartTime(booking.FirstTimeFrame).split(':');
+                  let endTime = this.timeService.getEndTime(booking.LastTimeFrame).split(':');
                   // compare the hours, if bigger then add to future booking
-                  if (startTime[0] > hourNow) {
+                  if (endTime[0] > hourNow) {
                     this.futureBookings.push(booking);
                     booking.Date = booking.Date.substring(0,10);
                     booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
                     booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
 
                     // if same hour, compare minutes
-                  } else if (startTime[0] == hourNow) {
-                    if (startTime[1] >= this.today.getMinutes()) {
+                  } else if (endTime[0] == hourNow) {
+                    if (endTime[1] >= this.today.getMinutes()) {
                       this.futureBookings.push(booking);
                       booking.Date = booking.Date.substring(0,10);
                       booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
