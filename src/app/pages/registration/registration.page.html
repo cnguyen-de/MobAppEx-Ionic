@@ -9,30 +9,31 @@
 
 <ion-content>
   <div class="container">
-    <ion-text color="dark" >
+    <ion-text>
       <h5 class="sign-up-text">Create your account</h5>
     </ion-text>
 
     <form [formGroup]="registrationForm">
       <ion-list>
-        <ion-item>
-          <ion-label class="label" position="floating">Username</ion-label>
-          <ion-input type="text" formControlName="username"></ion-input>
+        <ion-item lines="none">
+          <ion-icon name="contact" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="text" formControlName="username" placeholder="Username"></ion-input>
         </ion-item>
 
-        <ion-item>
-          <ion-label class="label" position="floating">Email</ion-label>
-          <ion-input type="email" formControlName="email"></ion-input>
+        <ion-item lines="none">
+          <ion-icon name="mail" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="email" formControlName="email" placeholder="Email"></ion-input>
         </ion-item>
 
-        <ion-item>
-          <ion-label class="label" position="floating">Password</ion-label>
-          <ion-input type="password" formControlName="password"></ion-input>
+        <ion-item lines="none">
+          <ion-icon name="md-key" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="password" formControlName="password" placeholder="Password"></ion-input>
         </ion-item>
 
-        <ion-item>
-          <ion-label class="label" position="floating">Repeat Password</ion-label>
-          <ion-input type="password" formControlName="repeatPassword" (keyup.enter)="onSubmit()"></ion-input>
+        <ion-item lines="none">
+          <ion-icon name="md-key" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="password" formControlName="repeatPassword"
+                     (keyup.enter)="onSubmit()" placeholder="Repeat Password"></ion-input>
         </ion-item>
 
         <ion-button strong expand="block" color="primary" shape="round"

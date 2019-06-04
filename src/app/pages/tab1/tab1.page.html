@@ -70,9 +70,9 @@
     <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
       <ion-list>
         <ion-list-header mode="ios">
-          <span><ion-icon name="pin"></ion-icon>{{booking.capsule.Name}}</span>
+          <span><ion-icon name="pin"></ion-icon> {{booking.capsule.Name}}</span>
           <ion-text class="date" style="float: right;">
-            {{booking.Date | date : "dd.MM.y"}} - {{booking.FirstTimeFrame}}
+            {{booking.FirstTimeFrame}} - {{booking.Date | date : "dd.MM.y"}}
           </ion-text>
         </ion-list-header>
       </ion-list>
