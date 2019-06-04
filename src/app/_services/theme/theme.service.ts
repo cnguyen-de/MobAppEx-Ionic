@@ -26,11 +26,13 @@ export class ThemeService {
     if (enableDarkMode) {
       theme = this.getDarkTheme();
       this.statusBar.backgroundColorByHexString('#141d26');
+      // @ts-ignore
       NavigationBar.backgroundColorByHexString('#141d26', false);
       this.statusBar.styleBlackOpaque();
 
     } else {
       this.statusBar.backgroundColorByHexString('#ffffff');
+      // @ts-ignore
       NavigationBar.backgroundColorByHexString('#efefef', true);
       this.statusBar.styleDefault();
     }
