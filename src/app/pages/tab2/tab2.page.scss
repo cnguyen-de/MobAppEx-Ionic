@@ -12,12 +12,12 @@ agm-map {
   height: 100%;
 }
 
-div {
+#mapdiv {
     height: calc(100% - 186px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-ion-slides {
+#slider {
   height: 186px;
 }
 
@@ -27,6 +27,10 @@ ion-content {
 
 ion-card {
   --background: var(--ion-item-background-color);
+  --padding: 0;
+}
+
+.slideCards {
   border-radius: 8px;
   width: 100%;
   height: 160px;
@@ -50,12 +54,12 @@ ion-button {
 #cardTSS_top {
   position: absolute;
   height: 150px;
-  width: 200px;
+  width: 250px;
   visibility: hidden;
   bottom: 18px;
   z-index: 100;
   align-self: center;
-  margin: 8px;
+  margin: 10px;
 }
 
 #fab {
@@ -67,5 +71,58 @@ ion-button {
   bottom: 16px;
   right: 4px;
   --background: rgba(0, 0, 0, 0.52);
+}
+
+
+
+#root {
+  position: absolute;
+}
+#headr {
+  height: 120px;
+}
+
+#listr {
+  height: calc(100% - 120px - 90px - 40px);
+  padding: 0px 0px 0px 0px;
+}
+
+#hallo {
+  --padding-bottom: 50px;
+}
+
+#testre {
+  --background: var(--ion-item-background-color);
+  width: calc(100% - 60px);
+  height: 50px;
+}
+
+#btn-calendar {
+  position: absolute;
+  right: 0;
+  top: -6px;
+}
+#ico_calendar {
+  color: var(--ion-color-primary);
+  font-size: 32px;
+}
+
+
+
+
+#footr {
+  height: 90px;
+}
+
+#summary {
+  --background: transparent;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-weight: bold;
+}
+
+#btn_checkout {
+  padding-top: 0;
+  margin-top: -4px;
 }
 
