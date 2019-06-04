@@ -96,7 +96,8 @@
       "cordova-sqlite-storage": {},
       "com.telerik.plugins.nativepagetransitions": {},
       "cordova-plugin-geolocation": {},
-      "com.paypal.cordova.mobilesdk": {}
+      "com.paypal.cordova.mobilesdk": {},
+      "cordova-plugin-navigationbar-color": {}
     },
     "platforms": [
       "browser",

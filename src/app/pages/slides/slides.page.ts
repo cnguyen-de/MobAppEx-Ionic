@@ -20,6 +20,6 @@ export class SlidesPage implements OnInit {
 
     async finish() {
         await this.storage.set('slidesDone', true);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/registration');
     }
 }
