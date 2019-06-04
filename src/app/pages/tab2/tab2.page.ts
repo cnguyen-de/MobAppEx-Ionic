@@ -82,6 +82,9 @@ export class Tab2Page implements OnInit {
   //Capsules
   capsules: any;
 
+  //Day Segments
+  days = [];
+  daysRange: number = 30;
   //Timeslots
   timeslots = [];
   segmentWidth: number = 100;
@@ -89,6 +92,28 @@ export class Tab2Page implements OnInit {
   test = false;
 
   ngOnInit() {
+
+
+    //Create 30 days for days-segment
+    for (let i = 0; i < this.daysRange; i++ ){
+      var date = new Date(); 
+      date.setDate(date.getDate() + i);
+      
+      let formattedDate = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: '2-digit'
+      }).format(date);
+
+      let day = {
+        date: formattedDate,
+        value: i.toString()
+      }
+      this.days.push(day);
+    }
+
+    // set to last segment, onchange will trigger to next segment which is then the first one ;-)
+    this.segment.value = (this.daysRange-1).toString();
+     
     // Demo Data
     // this.capsules = [
     //   {
@@ -134,6 +159,9 @@ export class Tab2Page implements OnInit {
         this.animateTSS_Click();
       }
     });
+
+
+    
 
     
 
@@ -273,7 +301,7 @@ export class Tab2Page implements OnInit {
         elem2.setAttribute("style", "visibility: visible");
 
         let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * 10).toString() + "px" );
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px" );
       }, 100);
       
     }
@@ -322,18 +350,20 @@ export class Tab2Page implements OnInit {
    
   }
 
-  onButtonClick() {
-    this.segment.value = "2";
-    this.content.scrollToPoint(2*this.segmentWidth,0,200);
-  }
+  // onButtonClick() {
+  //   this.segment.value = "2";
+  //   this.content.scrollToPoint(2*this.segmentWidth,0,200);
+  // }
 
   async onIonSlideDidChange(event?) {
     // let indexp = await this.slides.getPreviousIndex();
     // let indexc = await this.slides.getActiveIndex();
     // console.log(indexp + ' : ' + indexc)
-    this.slides.length().then(data => {
-      console.log(data);
-    });
+
+    // this.slides.length().then(data => {
+    //   console.log(data);
+    // });
+
     let elem = document.getElementsByClassName("even");
     elem[0].setAttribute("style", "color:black; border: 0px solid blue;");
     elem[1].setAttribute("style", "color:black; border: 0px solid blue;");
@@ -358,7 +388,7 @@ export class Tab2Page implements OnInit {
     //console.log('prev start')
     let index = await +this.segment.value;
     if(index === 0) {
-      index = 10;
+      index = this.daysRange;
     }
     this.segment.value = (index - 1).toString();
     this.content.scrollToPoint((index-1)*this.segmentWidth,0,200);
@@ -371,11 +401,13 @@ export class Tab2Page implements OnInit {
   async onIonSlideNextStart() {
     //console.log('next start')
     let index = await +this.segment.value;
-    if(index === 9) {
+    if(index === this.daysRange-1) {
       index = -1;
     }
     this.segment.value = (index + 1).toString();
     this.content.scrollToPoint((index+1)*this.segmentWidth,0,200);
+
+    console.log(this.segment.value);
   }
 
   onIonSlideNextEnd() {
