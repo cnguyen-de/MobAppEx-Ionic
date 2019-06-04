@@ -56,6 +56,7 @@ export class ApiService {
     let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
+          //console.log(res);
           return res;
         })
     );
