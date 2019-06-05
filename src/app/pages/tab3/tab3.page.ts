@@ -44,7 +44,7 @@ export class Tab3Page {
   getUserInfo() {
     this.storage.get('user').then(user => {
       if (user != null || typeof user != 'undefined') {
-        console.log("found user data");
+        console.log("Setting user data from memory");
         this.user = user;
         this.username = user.username;
         this.email = user.email;
@@ -71,6 +71,11 @@ export class Tab3Page {
                 });
       }
     })
+  }
+
+  //Navigate to booking history
+  bookingHistory(){
+    this.transitionTo('/booking-history', 'left');
   }
 
   //Change Password
@@ -177,8 +182,9 @@ export class Tab3Page {
       if (typeof value.data == 'number') {
         this.volumePref = value.data;
         this.user.capsulePreference.VolumenLevel = this.volumePref;
-        this.saveToStorage('user', this.user);
-        this.toast("Volume preference set to: " + this.volumePref)
+        this.saveToStorage('user', this.user).then(() => {
+          this.toast("Volume preference set to: " + this.volumePref)
+        });
       }
     });
 
@@ -202,17 +208,17 @@ export class Tab3Page {
       if (typeof value.data == 'number') {
         this.lightPref = value.data;
         this.user.capsulePreference.LightLevel = this.lightPref;
-        this.saveToStorage('user', this.user);
-        this.toast("Light preference set to: " + this.lightPref)
+        this.saveToStorage('user', this.user).then(() => {
+          this.toast("Light preference set to: " + this.lightPref)
+        })
       }
     });
 
     return await modal.present();
   }
 
-  bookingHistory(){
-    // console.log("Bla");
-    this.transitionTo('/booking-history', 'left');
+  showContact() {
+    this.toast("Ask Snooze Team 😊")
   }
 
   transitionTo(path, direction) {
