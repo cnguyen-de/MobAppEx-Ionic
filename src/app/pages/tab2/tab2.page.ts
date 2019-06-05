@@ -3,6 +3,7 @@ import { IonSlides, IonSegment, IonContent, Platform } from "@ionic/angular";
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
+import { TimeService } from '../../_services/time/time.service';
 
 
 @Component({
@@ -46,7 +47,8 @@ export class Tab2Page implements OnInit {
 
   constructor(private locationService: LocationService,
     private apiService: ApiService,
-    private platform: Platform) { }
+    private platform: Platform,
+    private timeService: TimeService) { }
 
   // set to false to use GPS location!
   fixedLocation: boolean = true;
@@ -69,7 +71,7 @@ export class Tab2Page implements OnInit {
 
   slideOpts = {
     initialSlide: 0,
-    speed: 400,
+    speed: 200,
     loop: true,
     centeredSlides: true,
     preventClicks: false,
@@ -121,8 +123,8 @@ export class Tab2Page implements OnInit {
       this.days.push(day);
     }
 
-    // set to last segment, onchange will trigger to next segment which is then the first one ;-)
-    this.segment.value = (this.daysRange - 1).toString();
+    // set first segment of days-segment as checked
+    this.segment.value = '0';
 
     // Demo Data
     // this.capsules = [
@@ -175,89 +177,89 @@ export class Tab2Page implements OnInit {
 
 
 
-    this.timeslots2 = [
-      {
-        content: '9:00 - 9:20', state: true
-      },
-      {
-        content: '9:20 - 9:40', state: 'selected'
-      },
-      {
-        content: '9:40 - 10:00', state: false
-      },
-      {
-        content: '10:00 - 10:20', state: 'blocked'
-      },
-      {
-        content: '10:20 - 10:40', state: 'inprogress'
-      },
-      {
-        content: '10:40 - 11:00', state: 'booked'
-      },
-      {
-        content: '11:00 - 11:20', state: 'booked'
-      },
-      {
-        content: '11:20 - 11:40', state: 'blocked'
-      },
-      {
-        content: '11:40 - 12:00', state: 'false'
-      },
-      {
-        content: '12:00 - 12:20', state: 'false'
-      },
-      {
-        content: '12:20 - 12:40', state: 'false'
-      },
-      {
-        content: '12:40 - 13:00', state: 'false'
-      },
-      {
-        content: '13:00 - 13:20', state: 'false'
-      },
-      {
-        content: '13:20 - 13:40', state: 'false'
-      },
-      {
-        content: '13:40 - 14:00', state: 'false'
-      },
-      {
-        content: '14:00 - 14:20', state: 'false'
-      },
-      {
-        content: '14:20 - 14:40', state: 'false'
-      },
-      {
-        content: '14:40 - 15:00', state: 'false'
-      },
-      {
-        content: '15:00 - 15:20', state: 'false'
-      },
-      {
-        content: '15:20 - 15:40', state: 'false'
-      },
-      {
-        content: '15:40 - 16:00', state: 'false'
-      },
-      {
-        content: '16:00 - 16:20', state: 'false'
-      },
-      {
-        content: '16:20 - 16:40', state: 'false'
-      },
-      {
-        content: '16:40 - 17:00', state: 'false'
-      },
-      {
-        content: '17:00 - 17:20', state: 'false'
-      },
-      {
-        content: '17:20 - 17:40', state: 'false'
-      },
-      {
-        content: '17:40 - 18:00', state: 'false'
-      },
-    ]
+    // this.timeslots2 = [
+    //   {
+    //     content: '9:00 - 9:20', state: true
+    //   },
+    //   {
+    //     content: '9:20 - 9:40', state: 'selected'
+    //   },
+    //   {
+    //     content: '9:40 - 10:00', state: false
+    //   },
+    //   {
+    //     content: '10:00 - 10:20', state: 'blocked'
+    //   },
+    //   {
+    //     content: '10:20 - 10:40', state: 'inprogress'
+    //   },
+    //   {
+    //     content: '10:40 - 11:00', state: 'booked'
+    //   },
+    //   {
+    //     content: '11:00 - 11:20', state: 'booked'
+    //   },
+    //   {
+    //     content: '11:20 - 11:40', state: 'blocked'
+    //   },
+    //   {
+    //     content: '11:40 - 12:00', state: 'false'
+    //   },
+    //   {
+    //     content: '12:00 - 12:20', state: 'false'
+    //   },
+    //   {
+    //     content: '12:20 - 12:40', state: 'false'
+    //   },
+    //   {
+    //     content: '12:40 - 13:00', state: 'false'
+    //   },
+    //   {
+    //     content: '13:00 - 13:20', state: 'false'
+    //   },
+    //   {
+    //     content: '13:20 - 13:40', state: 'false'
+    //   },
+    //   {
+    //     content: '13:40 - 14:00', state: 'false'
+    //   },
+    //   {
+    //     content: '14:00 - 14:20', state: 'false'
+    //   },
+    //   {
+    //     content: '14:20 - 14:40', state: 'false'
+    //   },
+    //   {
+    //     content: '14:40 - 15:00', state: 'false'
+    //   },
+    //   {
+    //     content: '15:00 - 15:20', state: 'false'
+    //   },
+    //   {
+    //     content: '15:20 - 15:40', state: 'false'
+    //   },
+    //   {
+    //     content: '15:40 - 16:00', state: 'false'
+    //   },
+    //   {
+    //     content: '16:00 - 16:20', state: 'false'
+    //   },
+    //   {
+    //     content: '16:20 - 16:40', state: 'false'
+    //   },
+    //   {
+    //     content: '16:40 - 17:00', state: 'false'
+    //   },
+    //   {
+    //     content: '17:00 - 17:20', state: 'false'
+    //   },
+    //   {
+    //     content: '17:20 - 17:40', state: 'false'
+    //   },
+    //   {
+    //     content: '17:40 - 18:00', state: 'false'
+    //   },
+    // ]
   }
 
 
@@ -316,14 +318,15 @@ export class Tab2Page implements OnInit {
 
       this.apiService.getCapsuleAvailability(1, '2019-06-01').subscribe(data => {
         // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
-        for(var propertyName in data) {
+        for (var propertyName in data) {
           // propertyName is what you want
           // you can get the value like this: myObject[propertyName]
           let tmp = {
+            content: this.timeService.getTimeRange(+(propertyName)-1, +(propertyName)),
             state: data[propertyName]
           }
           this.timeslots.push(tmp);
-       }
+        }
       });
 
     }
@@ -385,7 +388,7 @@ export class Tab2Page implements OnInit {
     // let indexc = await this.slides.getActiveIndex();
     // console.log(indexp + ' : ' + indexc)
 
-    
+
 
     this.slides.length().then(data => {
       console.log(data);
@@ -408,34 +411,25 @@ export class Tab2Page implements OnInit {
     elemx2[0].setAttribute("style", "visibility:visible");
     elemx2[1].setAttribute("style", "visibility:visible");
 
-  this.slides.slideTo(1, 0);
-    
-    // setTimeout(() => {
-    //   this.updatingSlides = true;
-    //   setTimeout(() => {
-    //     this.updatingSlides = false;
-    //   }, 10);
-    // }, 10);
-     
-
-    //   this.clickSegment(index);
-    // this.timeslots = [];
-    // setTimeout(() => {
-    //   this.timeslots = this.timeslots2;
-
-    // }, 1000);
-
+    this.slides.slideTo(1, 0);
   }
 
-
+  slidingCount = 0;
   async onIonSlidePrevStart() {
-    //console.log('prev start')
-    let index = await +this.segment.value;
-    if (index === 0) {
-      index = this.daysRange;
+    // console.log('prev start')
+
+    this.slidingCount++;
+    if (this.slidingCount > 1) {
+      // execute logic for NEXT slide!!!
+      let index = await +this.segment.value;
+      if (index === 0) {
+        index = this.daysRange;
+      }
+      this.segment.value = (index - 1).toString();
+      this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
+      this.slidingCount = 0;
     }
-    this.segment.value = (index - 1).toString();
-    this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
+
   }
 
   onIonSlidePrevEnd() {
@@ -443,18 +437,30 @@ export class Tab2Page implements OnInit {
   }
 
   async onIonSlideNextStart() {
-    //console.log('next start')
-    let index = await +this.segment.value;
-    if (index === this.daysRange - 1) {
-      index = -1;
+    console.log('next start')
+    this.slidingCount++;
+    if (this.slidingCount > 1) {
+      // execute logic for PREV slide!!!
+      let index = await +this.segment.value;
+      if (index === this.daysRange - 1) {
+        index = -1;
+      }
+      this.segment.value = (index + 1).toString();
+      this.content.scrollToPoint((index + 1) * this.segmentWidth, 0, 200);
+
+      this.slidingCount = 0;
     }
-    this.segment.value = (index + 1).toString();
-    this.content.scrollToPoint((index + 1) * this.segmentWidth, 0, 200);
+    // let index = await +this.segment.value;
+    // if (index === this.daysRange - 1) {
+    //   index = -1;
+    // }
+    // this.segment.value = (index + 1).toString();
+    // this.content.scrollToPoint((index + 1) * this.segmentWidth, 0, 200);
   }
 
   onIonSlideNextEnd() {
     console.log('next ended')
-    
+
   }
 
   async onIonSlideTouchStart() {
@@ -463,7 +469,7 @@ export class Tab2Page implements OnInit {
 
     //console.log('slideindex : ' + indexc)
 
-    
+
 
     if (indexc === 0 || indexc === 2) {
       let elem = document.getElementsByClassName("odd");
@@ -501,33 +507,15 @@ export class Tab2Page implements OnInit {
 
   }
 
-  updatingSlides = false;
   onTimeSlotClick(i) {
-    // this.timeslots = [];
-    // setTimeout(() => {
-    //   let tmp = {
-    //     state: true,
-    //   }
-    //   this.timeslots.push(tmp);
-    // }, 2000);
-
-    // setTimeout(() => {
-    //   this.updatingSlides = true;
-    //   setTimeout(() => {
-    //     this.updatingSlides = false;
-    //   }, 10);
-    // }, 10);
-
-    if(this.timeslots[i].state == 'selected') {
+    
+    if (this.timeslots[i].state == 'selected') {
       this.timeslots[i].state = true;
     } else {
       this.timeslots[i].state = 'selected';
     }
 
     console.log(i);
-
-    
-    
   }
 
   // results: Observable<any>;

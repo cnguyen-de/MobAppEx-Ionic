@@ -153,12 +153,12 @@
             <ion-list class="odd2" lines="full">
               <div *ngFor="let item of timeslots; let i = index">
                 <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                  <div id="idero" slot="start">{{ item.state }}</div>
+                  <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
                 <ion-item button="true" *ngIf="item.state == false"
                   style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
-                  <div id="idero" slot="start">{{ item.state }}</div>
+                  <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">TAKEN</div>
                 </ion-item>
                 <ion-item button="true" *ngIf="item.state == 'selected'"
@@ -200,17 +200,17 @@
             <ion-list class="even2" lines="full">
                 <div *ngFor="let item of timeslots; let i = index">
                   <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                    <div id="idero" slot="start">{{ item.state }}</div>
+                    <div id="idero" slot="start">{{ item.content }}</div>
                     <div slot="end">FREE</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == false"
                     style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
-                    <div id="idero" slot="start">{{ item.state }}</div>
+                    <div id="idero" slot="start">{{ item.content }}</div>
                     <div slot="end">TAKEN</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'selected'"
                     style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
-                    <div id="idero" slot="start">{{ item.state }}</div>
+                    <div id="idero" slot="start">{{ item.content }}</div>
                     <div slot="end">SELECTED</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'booked'"
