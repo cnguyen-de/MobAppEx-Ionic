@@ -322,7 +322,7 @@ export class Tab2Page implements OnInit {
           // propertyName is what you want
           // you can get the value like this: myObject[propertyName]
           let tmp = {
-            content: this.timeService.getTimeRange(+(propertyName)-1, +(propertyName)),
+            content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
             state: data[propertyName]
           }
           this.timeslots.push(tmp);
