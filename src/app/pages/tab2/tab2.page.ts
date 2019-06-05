@@ -171,95 +171,6 @@ export class Tab2Page implements OnInit {
         this.animateTSS_Click();
       }
     });
-
-
-
-
-
-
-    // this.timeslots2 = [
-    //   {
-    //     content: '9:00 - 9:20', state: true
-    //   },
-    //   {
-    //     content: '9:20 - 9:40', state: 'selected'
-    //   },
-    //   {
-    //     content: '9:40 - 10:00', state: false
-    //   },
-    //   {
-    //     content: '10:00 - 10:20', state: 'blocked'
-    //   },
-    //   {
-    //     content: '10:20 - 10:40', state: 'inprogress'
-    //   },
-    //   {
-    //     content: '10:40 - 11:00', state: 'booked'
-    //   },
-    //   {
-    //     content: '11:00 - 11:20', state: 'booked'
-    //   },
-    //   {
-    //     content: '11:20 - 11:40', state: 'blocked'
-    //   },
-    //   {
-    //     content: '11:40 - 12:00', state: 'false'
-    //   },
-    //   {
-    //     content: '12:00 - 12:20', state: 'false'
-    //   },
-    //   {
-    //     content: '12:20 - 12:40', state: 'false'
-    //   },
-    //   {
-    //     content: '12:40 - 13:00', state: 'false'
-    //   },
-    //   {
-    //     content: '13:00 - 13:20', state: 'false'
-    //   },
-    //   {
-    //     content: '13:20 - 13:40', state: 'false'
-    //   },
-    //   {
-    //     content: '13:40 - 14:00', state: 'false'
-    //   },
-    //   {
-    //     content: '14:00 - 14:20', state: 'false'
-    //   },
-    //   {
-    //     content: '14:20 - 14:40', state: 'false'
-    //   },
-    //   {
-    //     content: '14:40 - 15:00', state: 'false'
-    //   },
-    //   {
-    //     content: '15:00 - 15:20', state: 'false'
-    //   },
-    //   {
-    //     content: '15:20 - 15:40', state: 'false'
-    //   },
-    //   {
-    //     content: '15:40 - 16:00', state: 'false'
-    //   },
-    //   {
-    //     content: '16:00 - 16:20', state: 'false'
-    //   },
-    //   {
-    //     content: '16:20 - 16:40', state: 'false'
-    //   },
-    //   {
-    //     content: '16:40 - 17:00', state: 'false'
-    //   },
-    //   {
-    //     content: '17:00 - 17:20', state: 'false'
-    //   },
-    //   {
-    //     content: '17:20 - 17:40', state: 'false'
-    //   },
-    //   {
-    //     content: '17:40 - 18:00', state: 'false'
-    //   },
-    // ]
   }
 
 
@@ -375,11 +286,28 @@ export class Tab2Page implements OnInit {
 
 
   doRefresh(event) {
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
     
+    this.timeslots = [];
+    this.firstSelected = -1;
+    this.lastSelected = -1;
+    this.bookedArray = [];
+    this.selectedCount = 0;
+    
+    this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
+      // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
+      for (var propertyName in data) {
+        // propertyName is what you want
+        // you can get the value like this: myObject[propertyName]
+        let tmp = {
+          content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
+          state: data[propertyName]
+        }
+        if(propertyName == '7' || propertyName == '10') {
+          tmp.state = false;
+        }
+        this.timeslots.push(tmp);
+      }
+    });
 
   }
 
