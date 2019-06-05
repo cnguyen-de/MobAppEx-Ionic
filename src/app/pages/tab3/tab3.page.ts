@@ -26,7 +26,6 @@ export class Tab3Page {
   darkMode: boolean;
   lightPref: number = 0;
   volumePref: number = 0;
-  forward: boolean = false;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
@@ -36,20 +35,6 @@ export class Tab3Page {
 
   }
 
-  ionViewDidEnter() {
-    this.forward = false;
-  }
-  ionViewWillLeave() {
-    if (!this.forward) {
-      let options: NativeTransitionOptions = {
-        direction: 'right',
-        duration: 150,
-        slowdownfactor: 2,
-        androiddelay: 150,
-      };
-      this.nativePageTransitions.slide(options);
-    }
-  }
   ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
@@ -68,7 +53,7 @@ export class Tab3Page {
           this.volumePref = user.capsulePreference.VolumenLevel;
         }
       } else {
-        console.log("ask server");
+        console.log("Retrieving user data from server");
         this.apiService.getUser()
             .pipe(first())
             .subscribe(
@@ -231,7 +216,6 @@ export class Tab3Page {
   }
 
   transitionTo(path, direction) {
-    this.forward = true;
     let options: NativeTransitionOptions = {
       direction: direction,
       duration: 150,
@@ -241,6 +225,7 @@ export class Tab3Page {
     this.nativePageTransitions.slide(options);
     this.router.navigateByUrl(path);
   }
+
   //Toast Handler
   async toast(message: any) {
     const toast = await this.toastController.create({

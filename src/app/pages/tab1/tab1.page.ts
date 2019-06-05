@@ -6,7 +6,6 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 
 import isEqual from 'lodash.isequal'
-import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -22,7 +21,7 @@ export class Tab1Page {
   isFirstTime: boolean = true;
 
   constructor(private apiService: ApiService, private storage: Storage,
-              private timeService: TimeService, private nativePageTransitions: NativePageTransitions){
+              private timeService: TimeService){
   }
 
   ngOnInit() {
@@ -39,15 +38,6 @@ export class Tab1Page {
     })
   }
 
-  ionViewWillLeave() {
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 2,
-      androiddelay: 150,
-    };
-    this.nativePageTransitions.slide(options);
-  }
   hideCard() {
     this.hide = true;
   }
@@ -61,7 +51,7 @@ export class Tab1Page {
               this.storage.get('futureBookings').then(bookings => {
                 if (typeof bookings != 'undefined') {
                   this.futureBookings = bookings;
-                  console.log('Equal JSONS, showing old data');
+                  console.log('Equal JSONs, showing old data');
                 }
               })
             } else {
@@ -115,12 +105,11 @@ export class Tab1Page {
 
   }
 
-
   doRefresh($event) {
     this.getFutureBookings();
     setTimeout(() => {
       $event.target.complete();
-    }, 1000);
+    }, 700);
   }
 
   async saveToStorage(key, val) {
