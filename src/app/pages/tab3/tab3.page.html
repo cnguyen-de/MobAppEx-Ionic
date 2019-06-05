@@ -73,7 +73,7 @@
             <ion-list-header mode="ios">
                 <ion-label>{{ 'ABOUT' | translate }}</ion-label>
             </ion-list-header>
-                <ion-item lines="full" button="true" routerLink="/this-app">
+                <ion-item lines="full" button="true" (click)="transitionTo('/this-app', 'left')">
                     <ion-icon name="phone-portrait" slot="start"></ion-icon>
                     <ion-label>{{ 'THIS_APP' | translate }}</ion-label>
                 </ion-item>

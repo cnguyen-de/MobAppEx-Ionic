@@ -15,7 +15,7 @@ export class CheckoutModalPage implements OnInit {
   currency: string = 'EUR';
   currencyIcon: string = '€';
 
-  capsule: string = 'Capsule BCN'
+  capsule: string = 'Capsule BCN';
   date: string = '2019-11-09';
   timeStart: string = '9:00';
   timeEnd: string = '11:00';

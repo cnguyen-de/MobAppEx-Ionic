@@ -11,6 +11,7 @@ import {first} from 'rxjs/operators';
 import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 import {User} from '../../_services/auth/user';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -25,15 +26,30 @@ export class Tab3Page {
   darkMode: boolean;
   lightPref: number = 0;
   volumePref: number = 0;
+  forward: boolean = false;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
               private alertController: AlertController, private toastController: ToastController,
-              private apiService: ApiService,
+              private apiService: ApiService, private nativePageTransitions: NativePageTransitions,
               private translateService: TranslateService) {
 
   }
 
+  ionViewDidEnter() {
+    this.forward = false;
+  }
+  ionViewWillLeave() {
+    if (!this.forward) {
+      let options: NativeTransitionOptions = {
+        direction: 'right',
+        duration: 150,
+        slowdownfactor: 2,
+        androiddelay: 150,
+      };
+      this.nativePageTransitions.slide(options);
+    }
+  }
   ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
@@ -113,7 +129,7 @@ export class Tab3Page {
                 .subscribe(
                     data => {
                       this.apiService.logOutLocally();
-                      this.router.navigateByUrl('/');
+                      this.transitionTo('/', 'right');
                     },
                     error => {
                       console.log(error);
@@ -211,9 +227,20 @@ export class Tab3Page {
 
   bookingHistory(){
     // console.log("Bla");
-    this.router.navigate(['/booking-history']);
+    this.transitionTo('/booking-history', 'left');
   }
 
+  transitionTo(path, direction) {
+    this.forward = true;
+    let options: NativeTransitionOptions = {
+      direction: direction,
+      duration: 150,
+      slowdownfactor: 2,
+      androiddelay: 150,
+    };
+    this.nativePageTransitions.slide(options);
+    this.router.navigateByUrl(path);
+  }
   //Toast Handler
   async toast(message: any) {
     const toast = await this.toastController.create({

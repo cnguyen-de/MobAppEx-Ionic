@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { delay, share } from 'rxjs/operators';
 import { ApiService } from '../../_services/api/api.service';
 import { TimeService } from '../../_services/time/time.service';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 @Component({
   selector: 'app-booking-history',
@@ -14,12 +15,21 @@ export class BookingHistoryPage implements OnInit {
   bookings: any;
   time: any;
 
-  constructor(private apiService: ApiService, private timeService: TimeService) { }
+  constructor(private apiService: ApiService, private timeService: TimeService,
+              private nativePageTransitions: NativePageTransitions) { }
 
   ngOnInit() {
     this.getBookings();
   }
-
+  ionViewWillLeave() {
+    let options: NativeTransitionOptions = {
+      direction: 'right',
+      duration: 150,
+      slowdownfactor: 2,
+      androiddelay: 150,
+    };
+    this.nativePageTransitions.slide(options);
+  }
   getBookings(){
     this.apiService.currentUser.subscribe(data =>{
       try {

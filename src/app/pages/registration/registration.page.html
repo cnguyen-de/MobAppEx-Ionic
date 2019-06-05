@@ -50,13 +50,13 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-text color="primary" routerLink="/recovery">
+          <ion-text color="primary" (click)="transitionTo('/recovery')">
             Forgot password?
           </ion-text>
         </ion-col>
         .
         <ion-col>
-          <ion-text color="primary" routerLink="/login">
+          <ion-text color="primary" (click)="transitionTo('/login')">
             Login to Snooze
           </ion-text>
         </ion-col>

@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
 import {ApiService} from '../../_services/api/api.service';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -19,11 +20,17 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
   loginPressed = false;
   user : User;
-
+  options: NativeTransitionOptions = {
+    direction: 'left',
+    duration: 150,
+    slowdownfactor: 2,
+    androiddelay: 150,
+  };
+  forward: boolean = false;
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
               private formBuilder: FormBuilder,
-              private apiService: ApiService) {
+              private apiService: ApiService, private nativePageTransitions: NativePageTransitions) {
 
   }
 
@@ -32,6 +39,21 @@ export class LoginPage implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+  }
+
+  ionViewDidEnter() {
+    this.forward = false;
+  }
+  ionViewWillLeave() {
+    if (!this.forward) {
+      let options: NativeTransitionOptions = {
+        direction: 'right',
+        duration: 150,
+        slowdownfactor: 2,
+        androiddelay: 150,
+      };
+      this.nativePageTransitions.slide(options);
+    }
   }
 
   onSubmit() {
@@ -49,7 +71,7 @@ export class LoginPage implements OnInit {
                   .pipe(first())
                   .subscribe(
                       data => {
-                        this.router.navigateByUrl('/tabs/tab1');
+                        this.transitionTo('/tabs/tab1');
                         console.log(data)
                       },
                       error => {
@@ -68,7 +90,11 @@ export class LoginPage implements OnInit {
             });
   }
 
-
+  transitionTo(path) {
+    this.forward = true;
+    this.nativePageTransitions.slide(this.options);
+    this.router.navigateByUrl(path);
+  }
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);
