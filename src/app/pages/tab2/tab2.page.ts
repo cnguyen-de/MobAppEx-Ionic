@@ -71,11 +71,8 @@ export class Tab2Page implements OnInit {
 
   slideOpts = {
     initialSlide: 0,
-    speed: 200,
+    speed: 400,
     loop: true,
-    centeredSlides: true,
-    preventClicks: false,
-    preventClicksPropagation: false
   };
 
   //Animations
@@ -91,10 +88,17 @@ export class Tab2Page implements OnInit {
   //Day Segments
   days = [];
   daysRange: number = 30;
+
   //Timeslots
   timeslots = [];
   timeslots2 = [];
   segmentWidth: number = 100;
+
+  MAX_SLOTS_PER_BOOKING = 6;
+  bookedArray = [];
+  selectedCount = 0;
+  firstSelected = -1;
+  lastSelected = -1;
 
   test = false;
 
@@ -226,23 +230,23 @@ export class Tab2Page implements OnInit {
         let elem: HTMLElement = document.getElementById('segmt');
         elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
       }, 100);
-
-
-      this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
-        // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
-        for (var propertyName in data) {
-          // propertyName is what you want
-          // you can get the value like this: myObject[propertyName]
-          let tmp = {
-            content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
-            state: data[propertyName]
-          }
-          if(propertyName == '7' || propertyName == '10') {
-            tmp.state = false;
-          }
-          this.timeslots.push(tmp);
-        }
-      });
+      
+      await this.getTimeSlots(); 
+      // this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
+      //   // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
+      //   for (var propertyName in data) {
+      //     // propertyName is what you want
+      //     // you can get the value like this: myObject[propertyName]
+      //     let tmp = {
+      //       content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
+      //       state: data[propertyName]
+      //     }
+      //     if(propertyName == '7' || propertyName == '10') {
+      //       tmp.state = false;
+      //     }
+      //     this.timeslots.push(tmp);
+      //   }
+      // });
 
     }
   }
@@ -286,14 +290,29 @@ export class Tab2Page implements OnInit {
 
 
   doRefresh(event) {
-    
-    this.timeslots = [];
+    setTimeout(() => {
+      // Slowing down operation for better refresher UX
+      this.getTimeSlots();
+
+      event.target.complete();
+    }, 500);
+  }
+
+  async getTimeSlots() {
+    /**
+     * reseting relevant variables
+     * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
+     * @author Dave
+     */
+    this.timeslots = [{content: 'pull to refresh', status: ''}];
     this.firstSelected = -1;
     this.lastSelected = -1;
     this.bookedArray = [];
     this.selectedCount = 0;
-    
-    this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
+
+    // get data from server
+    await this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
+      // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
         // propertyName is what you want
@@ -307,22 +326,17 @@ export class Tab2Page implements OnInit {
         }
         this.timeslots.push(tmp);
       }
+      this.timeslots.splice(0,1);
+    },
+    error => {
+      console.error(error);
     });
-
   }
 
-  // onButtonClick() {
-  //   this.segment.value = "2";
-  //   this.content.scrollToPoint(2*this.segmentWidth,0,200);
-  // }
+  
 
   async onIonSlideDidChange(event?) {
-    // let indexp = await this.slides.getPreviousIndex();
-    // let indexc = await this.slides.getActiveIndex();
-    // console.log(indexp + ' : ' + indexc)
-
-
-
+    
     this.slides.length().then(data => {
       console.log(data);
     });
@@ -344,7 +358,7 @@ export class Tab2Page implements OnInit {
     elemx2[0].setAttribute("style", "visibility:visible");
     elemx2[1].setAttribute("style", "visibility:visible");
 
-    this.slides.slideTo(1, 0);
+    // this.slides.slideTo(1, 0);
   }
 
   slidingCount = 0;
@@ -353,7 +367,7 @@ export class Tab2Page implements OnInit {
 
     this.slidingCount++;
     if (this.slidingCount > 1) {
-      // execute logic for NEXT slide!!!
+      
       let index = await +this.segment.value;
       if (index === 0) {
         index = this.daysRange;
@@ -367,13 +381,14 @@ export class Tab2Page implements OnInit {
 
   onIonSlidePrevEnd() {
     console.log('prev ended')
+    this.slides.slideTo(1, 0);
   }
 
   async onIonSlideNextStart() {
     console.log('next start')
     this.slidingCount++;
     if (this.slidingCount > 1) {
-      // execute logic for PREV slide!!!
+      
       let index = await +this.segment.value;
       if (index === this.daysRange - 1) {
         index = -1;
@@ -393,7 +408,7 @@ export class Tab2Page implements OnInit {
 
   onIonSlideNextEnd() {
     console.log('next ended')
-
+    this.slides.slideTo(1, 0);
   }
 
   async onIonSlideTouchStart() {
@@ -444,12 +459,11 @@ export class Tab2Page implements OnInit {
 
   }
 
-  MAX_SLOTS_PER_BOOKING = 6;
-  bookedCount = 0;
-  bookedArray = [];
-  selectedCount = 0;
-  firstSelected = -1;
-  lastSelected = -1;
+  onIonSlideTransitionEnd() {
+    console.log('onIonSlideTransitionEnd');
+  }
+
+  
 
   onTimeSlotClick(i) {
     // mark all free slots as blocked

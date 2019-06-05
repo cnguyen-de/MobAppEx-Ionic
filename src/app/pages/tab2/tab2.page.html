@@ -141,7 +141,7 @@
         <ion-slide>
           <ion-content id="hallo">
         
-              <ion-icon class="odd" name=""></ion-icon>
+              <ion-icon class="odd" name="hand"></ion-icon>
             
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -188,14 +188,14 @@
         <ion-slide>
           <ion-content>
             
-              <ion-icon class="even" name=""></ion-icon>
+              <ion-icon class="even" name="hand"></ion-icon>
            
 
-            <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+            <!-- <ion-refresher  slot="fixed" (ionRefresh)="doRefresh($event)">
               <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh"
                 refreshingSpinner="crescent" refreshingText="Refreshing...">
               </ion-refresher-content>
-            </ion-refresher>
+            </ion-refresher> -->
 
             <ion-list class="even2" lines="full">
                 <div *ngFor="let item of timeslots; let i = index">
