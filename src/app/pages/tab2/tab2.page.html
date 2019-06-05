@@ -238,7 +238,7 @@
 
   <ion-card id="footr">
     <ion-item id="summary" lines="none">
-      <div slot="start">2 slots (40min)</div>
+      <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
       <div slot="end">10.00 €</div>
     </ion-item>
     <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="animateTSS_Click()">

@@ -316,7 +316,8 @@ export class Tab2Page implements OnInit {
         elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
       }, 100);
 
-      this.apiService.getCapsuleAvailability(1, '2019-06-01').subscribe(data => {
+
+      this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
         // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
         for (var propertyName in data) {
           // propertyName is what you want
@@ -325,7 +326,7 @@ export class Tab2Page implements OnInit {
             content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
             state: data[propertyName]
           }
-          if(propertyName == '7' || propertyName == '8') {
+          if(propertyName == '7' || propertyName == '10') {
             tmp.state = 'booked';
           }
           this.timeslots.push(tmp);
@@ -510,6 +511,9 @@ export class Tab2Page implements OnInit {
 
   }
 
+  MAX_SLOTS_PER_BOOKING = 6;
+  bookedCount = 0;
+  bookedArray = [];
   selectedCount = 0;
   firstSelected = -1;
   lastSelected = -1;
@@ -526,46 +530,87 @@ export class Tab2Page implements OnInit {
     if(this.firstSelected == -1) {
       this.firstSelected = i;
       this.lastSelected = i;
+      this.selectedCount++;
     } else if (i < this.firstSelected) {
       this.firstSelected = i;
+      this.selectedCount++;
     } else if (i > this.lastSelected) {
       this.lastSelected = i;
+      this.selectedCount++;
     }
 
     // mark selected slots as selected
     for(let s = this.firstSelected; s <= this.lastSelected; s++) {
-      console.log('selected: ' + s);
+      //console.log('selected: ' + s);
       if(this.timeslots[s].state != 'booked') {
         this.timeslots[s].state = 'selected';
       }
     }
     
-    // mark 1 slot before and after selected to extend selection
-    if(this.timeslots[this.firstSelected - 1].state == 'blocked') {
-      this.timeslots[this.firstSelected - 1].state = true;
-    }
-    if(this.timeslots[this.lastSelected + 1].state == 'blocked') {
-      this.timeslots[this.lastSelected + 1].state = true;
-    }
+    
 
     // handle booked slots
-    let c = 1;
-    if(this.timeslots[this.firstSelected - 1].state == 'booked') {
+    if(this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
       console.log('is yours');
-      //this.timeslots[this.lastSelected - 3].state = true;
+      let c = 1;
+      
       while (this.timeslots[this.firstSelected - c].state == 'booked') {
         console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
         c++;
+        //this.bookedCount++;
+        //console.log('found booked in front, count: ' + this.bookedCount);
+        this.addItem(this.firstSelected - c);
+        console.log(this.bookedArray);
       }
-      if(this.timeslots[this.firstSelected - c].state == 'blocked') {
+
+      if(this.firstSelected > 0 &&
+        this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
+        this.timeslots[this.firstSelected - c].state == 'blocked') {
         this.timeslots[this.firstSelected - c].state = true;
       }
       
     }
-    if(this.timeslots[this.firstSelected + 1].state == 'booked') {
-      
+    if(this.timeslots[this.lastSelected + 1].state == 'booked') {
+      let c = 1;
+      while (this.timeslots[this.lastSelected + c].state == 'booked') {
+        console.log(c + ': ' + this.timeslots[this.lastSelected + c].state);
+        c++;
+        //this.bookedCount++;
+        //console.log('found booked in back, count: ' + this.bookedCount);
+
+        this.addItem(this.lastSelected + c);
+        console.log(this.bookedArray);
+      }
+
+      if(this.lastSelected < this.timeslots.length - 1 &&
+        this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
+        this.timeslots[this.lastSelected + c].state == 'blocked') {
+        this.timeslots[this.lastSelected + c].state = true;
+      }
     }
 
+
+    // mark 1 slot before and 1 slot after selected to extend selection
+    if(this.firstSelected > 0 &&
+      this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
+      this.timeslots[this.firstSelected - 1].state == 'blocked') {
+      this.timeslots[this.firstSelected - 1].state = true;
+    }
+    if(this.lastSelected < this.timeslots.length - 1 &&
+      this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
+      this.timeslots[this.lastSelected + 1].state == 'blocked') {
+      this.timeslots[this.lastSelected + 1].state = true;
+    }
+
+  }
+  
+  addItem(item) {
+    var index = this.bookedArray.findIndex(x => x == item)
+    if (index === -1) {
+      this.bookedArray.push(item);
+    }else {
+      console.log("object already exists")
+    }
   }
 
   // results: Observable<any>;
