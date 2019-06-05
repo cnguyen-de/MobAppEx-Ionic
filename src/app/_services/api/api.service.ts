@@ -167,6 +167,7 @@ export class ApiService {
   logOutLocally() {
     this.storage.remove('user');
     this.storage.remove('access_token');
+    this.storage.remove('futureBookings');
     this.storage.set('isFirstTime', true);
     return true
   }
