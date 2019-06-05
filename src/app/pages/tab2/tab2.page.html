@@ -141,7 +141,7 @@
         <ion-slide>
           <ion-content id="hallo">
         
-              <ion-icon class="odd" name="ios-hand"></ion-icon>
+              <ion-icon class="odd" name=""></ion-icon>
             
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -188,7 +188,7 @@
         <ion-slide>
           <ion-content>
             
-              <ion-icon class="even" name="ios-hand"></ion-icon>
+              <ion-icon class="even" name=""></ion-icon>
            
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -239,7 +239,7 @@
   <ion-card id="footr">
     <ion-item id="summary" lines="none">
       <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
-      <div slot="end">10.00 €</div>
+      <div slot="end">{{selectedCount}}.00 €</div>
     </ion-item>
     <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="animateTSS_Click()">
       Proceed To Checkout

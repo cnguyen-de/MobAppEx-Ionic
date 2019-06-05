@@ -327,7 +327,7 @@ export class Tab2Page implements OnInit {
             state: data[propertyName]
           }
           if(propertyName == '7' || propertyName == '10') {
-            tmp.state = 'booked';
+            tmp.state = false;
           }
           this.timeslots.push(tmp);
         }
@@ -379,6 +379,7 @@ export class Tab2Page implements OnInit {
       console.log('Async operation has ended');
       event.target.complete();
     }, 2000);
+    
 
   }
 
@@ -399,8 +400,8 @@ export class Tab2Page implements OnInit {
     });
 
     let elem = document.getElementsByClassName("even");
-    elem[0].setAttribute("name", "ios-hand");
-    elem[1].setAttribute("name", "ios-hand");
+    elem[0].setAttribute("style", "visibility:hidden");
+    elem[1].setAttribute("style", "visibility:hidden");
 
     let elemx = document.getElementsByClassName("even2");
     elemx[0].setAttribute("style", "visibility:visible");
@@ -408,8 +409,8 @@ export class Tab2Page implements OnInit {
 
 
     let elem2 = document.getElementsByClassName("odd");
-    elem2[0].setAttribute("name", "ios-hand");
-    elem2[1].setAttribute("name", "ios-hand");
+    elem2[0].setAttribute("style", "visibility:hidden");
+    elem2[1].setAttribute("style", "visibility:hidden");
 
     let elemx2 = document.getElementsByClassName("odd2");
     elemx2[0].setAttribute("style", "visibility:visible");
@@ -477,36 +478,40 @@ export class Tab2Page implements OnInit {
 
     if (indexc === 0 || indexc === 2) {
       let elem = document.getElementsByClassName("odd");
-      elem[0].setAttribute("name", "ios-arrow-dropleft");
-      elem[1].setAttribute("name", "ios-arrow-dropright");
+      //elem[0].setAttribute("name", "ios-arrow-dropleft");
+      elem[0].setAttribute("style", "display:block");
+      //elem[1].setAttribute("name", "ios-arrow-dropright");
+      elem[1].setAttribute("style", "display:block");
 
       let elemx = document.getElementsByClassName("odd2");
-      elemx[0].setAttribute("style", "visibility:collapse");
-      elemx[1].setAttribute("style", "visibility:collapse");
+      elemx[0].setAttribute("style", "visibility:hidden");
+      elemx[1].setAttribute("style", "visibility:hidden");
 
       let elem2 = document.getElementsByClassName("even");
-      elem2[0].setAttribute("name", "ios-hand");
-      elem2[1].setAttribute("name", "ios-hand");
+      elem2[0].setAttribute("style", "visibility:hidden");
+      elem2[1].setAttribute("style", "visibility:hidden");
 
-      let elemx2 = document.getElementsByClassName("even2");
-      elemx2[0].setAttribute("style", "visibility:visible");
-      elemx2[1].setAttribute("style", "visibility:visible");
+      // let elemx2 = document.getElementsByClassName("even2");
+      // elemx2[0].setAttribute("style", "visibility:visible");
+      // elemx2[1].setAttribute("style", "visibility:visible");
     } else {
       let elem = document.getElementsByClassName("even");
-      elem[0].setAttribute("name", "ios-arrow-dropleft");
-      elem[1].setAttribute("name", "ios-arrow-dropright");
+     elem[0].setAttribute("name", "arrow-dropleft");
+     elem[0].setAttribute("style", "display:inline; float:right;");
+     elem[1].setAttribute("name", "arrow-dropright");
+     elem[1].setAttribute("style", "display:inline; float:left;");
 
       let elemx = document.getElementsByClassName("even2");
-      elemx[0].setAttribute("style", "visibility:collapse");
-      elemx[1].setAttribute("style", "visibility:collapse");
+      elemx[0].setAttribute("style", "visibility:hidden");
+      elemx[1].setAttribute("style", "visibility:hidden");
 
       let elem2 = document.getElementsByClassName("odd");
-      elem2[0].setAttribute("name", "ios-hand");
-      elem2[1].setAttribute("name", "ios-hand");
+      elem2[0].setAttribute("style", "visibility:hidden");
+      elem2[1].setAttribute("style", "visibility:hidden");
 
-      let elemx2 = document.getElementsByClassName("odd2");
-      elemx2[0].setAttribute("style", "visibility:visible");
-      elemx2[1].setAttribute("style", "visibility:visible");
+      // let elemx2 = document.getElementsByClassName("odd2");
+      // elemx2[0].setAttribute("style", "visibility:visible");
+      // elemx2[1].setAttribute("style", "visibility:visible");
     }
 
   }
@@ -604,13 +609,15 @@ export class Tab2Page implements OnInit {
 
   }
   
+  // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
   addItem(item) {
     var index = this.bookedArray.findIndex(x => x == item)
     if (index === -1) {
       this.bookedArray.push(item);
-    }else {
-      console.log("object already exists")
     }
+    // else {
+    //   console.log("object already exists")
+    // }
   }
 
   // results: Observable<any>;
