@@ -325,6 +325,9 @@ export class Tab2Page implements OnInit {
             content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
             state: data[propertyName]
           }
+          if(propertyName == '7' || propertyName == '8') {
+            tmp.state = 'booked';
+          }
           this.timeslots.push(tmp);
         }
       });
@@ -507,15 +510,62 @@ export class Tab2Page implements OnInit {
 
   }
 
+  selectedCount = 0;
+  firstSelected = -1;
+  lastSelected = -1;
+
   onTimeSlotClick(i) {
-    
-    if (this.timeslots[i].state == 'selected') {
-      this.timeslots[i].state = true;
-    } else {
-      this.timeslots[i].state = 'selected';
+    // mark all free slots as blocked
+    for (let a = 0; a < this.timeslots.length; a++){
+      if(this.timeslots[a].state == true) {
+        this.timeslots[a].state = 'blocked';
+      }
     }
 
-    console.log(i);
+    // set selected slots
+    if(this.firstSelected == -1) {
+      this.firstSelected = i;
+      this.lastSelected = i;
+    } else if (i < this.firstSelected) {
+      this.firstSelected = i;
+    } else if (i > this.lastSelected) {
+      this.lastSelected = i;
+    }
+
+    // mark selected slots as selected
+    for(let s = this.firstSelected; s <= this.lastSelected; s++) {
+      console.log('selected: ' + s);
+      if(this.timeslots[s].state != 'booked') {
+        this.timeslots[s].state = 'selected';
+      }
+    }
+    
+    // mark 1 slot before and after selected to extend selection
+    if(this.timeslots[this.firstSelected - 1].state == 'blocked') {
+      this.timeslots[this.firstSelected - 1].state = true;
+    }
+    if(this.timeslots[this.lastSelected + 1].state == 'blocked') {
+      this.timeslots[this.lastSelected + 1].state = true;
+    }
+
+    // handle booked slots
+    let c = 1;
+    if(this.timeslots[this.firstSelected - 1].state == 'booked') {
+      console.log('is yours');
+      //this.timeslots[this.lastSelected - 3].state = true;
+      while (this.timeslots[this.firstSelected - c].state == 'booked') {
+        console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
+        c++;
+      }
+      if(this.timeslots[this.firstSelected - c].state == 'blocked') {
+        this.timeslots[this.firstSelected - c].state = true;
+      }
+      
+    }
+    if(this.timeslots[this.firstSelected + 1].state == 'booked') {
+      
+    }
+
   }
 
   // results: Observable<any>;
