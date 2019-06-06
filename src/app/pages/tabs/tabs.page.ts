@@ -15,17 +15,19 @@ export class TabsPage {
 
   select(nextTab: string) {
     let currentTabIndex = this.ionTabs.getSelected()[3];
-
-    let options: NativeTransitionOptions = {
-      direction: this.getAnimationDirection(currentTabIndex, nextTab[3]),
-      duration: 150,
-      slowdownfactor: 2,
-      slidePixels: 0,
-      androiddelay: 150,
-      fixedPixelsTop: 0,
-      fixedPixelsBottom: 56
-    };
-    this.nativePageTransitions.slide(options);
+    let dir: string = this.getAnimationDirection(currentTabIndex, nextTab[3]);
+    if (dir != 'none') {
+      let options: NativeTransitionOptions = {
+        direction: dir,
+        duration: 150,
+        slowdownfactor: 2,
+        slidePixels: 0,
+        androiddelay: 0,
+        fixedPixelsTop: 0,
+        fixedPixelsBottom: 56
+      };
+      this.nativePageTransitions.slide(options);
+    }
   }
 
   getAnimationDirection(currentTab, nextTab): string {
@@ -34,6 +36,8 @@ export class TabsPage {
         return('left');
       case (currentTab > nextTab):
         return('right');
+      case (currentTab = nextTab):
+        return('none')
     }
   }
 

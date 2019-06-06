@@ -50,8 +50,13 @@ export class Tab1Page {
             if (isEqual(user, savedUser) && !this.isFirstTime) {
               this.storage.get('futureBookings').then(bookings => {
                 if (typeof bookings != 'undefined') {
+                  console.log(isEqual(this.futureBookings, bookings));
+                  if (isEqual(this.futureBookings, bookings)) {
+                    console.log('Equal JSONs, showing old data');
+                    return;
+                  }
                   this.futureBookings = bookings;
-                  console.log('Equal JSONs, showing old data');
+                  console.log('Showing data from cache')
                 }
               })
             } else {
@@ -101,7 +106,18 @@ export class Tab1Page {
               this.saveToStorage('futureBookings', this.futureBookings);
             }
           });
-        }, err => console.log(err));
+        }, err => {
+          console.log(err);
+          this.storage.get('futureBookings').then(bookings => {
+            if (typeof bookings != 'undefined') {
+              if (!isEqual(this.futureBookings, bookings)) {
+                console.log('Equal JSONs, showing old data');
+              }
+              this.futureBookings = bookings;
+              console.log('Showing data from cache')
+            }
+          })
+        });
 
   }
 
