@@ -29,15 +29,9 @@ export class SlidesPage implements OnInit {
     };
     this.nativePageTransitions.slide(options);
   }
+
   async finish() {
     await this.storage.set('slidesDone', true);
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 2,
-      androiddelay: 150,
-    };
-    this.nativePageTransitions.slide(options);
     this.router.navigateByUrl('/registration');
   }
 
