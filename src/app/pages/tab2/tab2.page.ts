@@ -232,8 +232,8 @@ export class Tab2Page implements OnInit {
         let elem: HTMLElement = document.getElementById('segmt');
         elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
       }, 100);
-      
-      await this.getTimeSlots(); 
+
+      await this.getTimeSlots();
       // this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
       //   // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       //   for (var propertyName in data) {
@@ -306,7 +306,7 @@ export class Tab2Page implements OnInit {
      * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
      * @author Dave
      */
-    this.timeslots = [{content: 'pull to refresh', status: ''}];
+    this.timeslots = [{ content: 'pull to refresh', status: '' }];
     this.firstSelected = -1;
     this.lastSelected = -1;
     this.bookedArray = [];
@@ -323,22 +323,22 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
           state: data[propertyName]
         }
-        if(propertyName == '7' || propertyName == '10' || propertyName == '11') {
+        if (propertyName == '7' || propertyName == '10' || propertyName == '12') {
           tmp.state = 'booked';
         }
         this.timeslots.push(tmp);
       }
-      this.timeslots.splice(0,1);
+      this.timeslots.splice(0, 1);
     },
-    error => {
-      console.error(error);
-    });
+      error => {
+        console.error(error);
+      });
   }
 
-  
+
 
   async onIonSlideDidChange(event?) {
-    
+
     this.slides.length().then(data => {
       console.log(data);
     });
@@ -369,7 +369,7 @@ export class Tab2Page implements OnInit {
 
     this.slidingCount++;
     if (this.slidingCount > 1) {
-      
+
       let index = await +this.segment.value;
       if (index === 0) {
         index = this.daysRange;
@@ -390,7 +390,7 @@ export class Tab2Page implements OnInit {
     console.log('next start')
     this.slidingCount++;
     if (this.slidingCount > 1) {
-      
+
       let index = await +this.segment.value;
       if (index === this.daysRange - 1) {
         index = -1;
@@ -441,10 +441,10 @@ export class Tab2Page implements OnInit {
       // elemx2[1].setAttribute("style", "visibility:visible");
     } else {
       let elem = document.getElementsByClassName("even");
-     elem[0].setAttribute("name", "arrow-dropleft");
-     elem[0].setAttribute("style", "display:inline; float:right;");
-     elem[1].setAttribute("name", "arrow-dropright");
-     elem[1].setAttribute("style", "display:inline; float:left;");
+      elem[0].setAttribute("name", "arrow-dropleft");
+      elem[0].setAttribute("style", "display:inline; float:right;");
+      elem[1].setAttribute("name", "arrow-dropright");
+      elem[1].setAttribute("style", "display:inline; float:left;");
 
       let elemx = document.getElementsByClassName("even2");
       elemx[0].setAttribute("style", "visibility:hidden");
@@ -465,18 +465,19 @@ export class Tab2Page implements OnInit {
     console.log('onIonSlideTransitionEnd');
   }
 
-  
+
 
   onTimeSlotClick(i) {
+
     // mark all free slots as blocked
-    for (let a = 0; a < this.timeslots.length; a++){
-      if(this.timeslots[a].state == true) {
+    for (let a = 0; a < this.timeslots.length; a++) {
+      if (this.timeslots[a].state == true) {
         this.timeslots[a].state = 'blocked';
       }
     }
 
     // handling selecting & unselecting slots
-    if(this.firstSelected == -1) {
+    if (this.firstSelected == -1) {
       this.firstSelected = i;
       this.lastSelected = i;
       this.selectedCount++;
@@ -487,50 +488,102 @@ export class Tab2Page implements OnInit {
       this.lastSelected = i;
       this.selectedCount++;
     } else if (i == this.firstSelected) {
-      let c = 1;
-      if (this.timeslots[i + c].state == 'booked') {
-        while (this.timeslots[i + c].state == 'booked') {
-          console.log(': :' + c);
-          c++;
+
+
+      let c_down = 1;
+      if (this.timeslots[i + c_down].state == 'booked') {
+        while (this.timeslots[i + c_down].state == 'booked') {
+          var index = this.bookedArray.indexOf(i + c_down);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+          }
+          console.log(': :' + c_down);
+          c_down++;
         }
       }
-      this.firstSelected = i + c;
+
+      let c_up = 1;
+      if (this.timeslots[i - c_up].state == 'booked') {
+        while (this.timeslots[i - c_up].state == 'booked') {
+          var index = this.bookedArray.indexOf(i - c_up);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+          }
+          console.log(': :' + c_up);
+          c_up++;
+        }
+      }
+
+
+      this.firstSelected = i + c_down;
       this.selectedCount--;
       console.log('firstselected: ' + this.firstSelected);
       if (this.timeslots[i].state == 'selected') {
         this.timeslots[i].state = true;
       }
     } else if (i == this.lastSelected) {
-      this.lastSelected = i - 1;
+
+      let c_up = 1;
+      if (this.timeslots[i - c_up].state == 'booked') {
+        while (this.timeslots[i - c_up].state == 'booked') {
+          var index = this.bookedArray.indexOf(i - c_up);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+          }
+          console.log(': :' + c_up);
+          c_up++;
+        }
+      }
+
+      let c_down = 1;
+      if (this.timeslots[i - c_down].state == 'booked') {
+        while (this.timeslots[i - c_down].state == 'booked') {
+          var index = this.bookedArray.indexOf(i - c_down);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+          }
+          console.log(': :' + c_down);
+          c_down++;
+        }
+      }
+
+      this.lastSelected = i - c_up;
       this.selectedCount--;
       if (this.timeslots[i].state == 'selected') {
         this.timeslots[i].state = true;
       }
     }
 
+
+    console.log('firstselected: ' + this.firstSelected);
+    console.log('lastSelected: ' + this.lastSelected);
+
+
+
+
     // mark selected slots as selected
-    for(let s = this.firstSelected; s <= this.lastSelected; s++) {
+    for (let s = this.firstSelected; s <= this.lastSelected; s++) {
       //console.log('selected: ' + s);
-      if(this.timeslots[s].state != 'booked') {
+      if (this.timeslots[s].state != 'booked') {
         this.timeslots[s].state = 'selected';
       }
     }
-    
-    
+
+
 
     // handle booked slots upwards
-    if(this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
+    if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
       console.log('is yours');
       let c = 1;
       while (this.timeslots[this.firstSelected - c].state == 'booked') {
         console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
-        c++;
         //console.log('found booked in front, count: ' + this.bookedCount);
         this.addItem(this.firstSelected - c);
+        c++;
         console.log(this.bookedArray);
       }
 
-      if(this.firstSelected > 0 &&
+      if (this.firstSelected > 0 &&
         this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
         this.timeslots[this.firstSelected - c].state == 'blocked') {
         this.timeslots[this.firstSelected - c].state = true;
@@ -538,17 +591,17 @@ export class Tab2Page implements OnInit {
     }
 
     // handle booked slots downwards
-    if(this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == 'booked') {
+    if (this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == 'booked') {
       let c = 1;
       while (this.timeslots[this.lastSelected + c].state == 'booked') {
         console.log(c + ': ' + this.timeslots[this.lastSelected + c].state);
-        c++;
         //console.log('found booked in back, count: ' + this.bookedCount);
         this.addItem(this.lastSelected + c);
+        c++;
         console.log(this.bookedArray);
       }
 
-      if(this.lastSelected < this.timeslots.length - 1 &&
+      if (this.lastSelected < this.timeslots.length - 1 &&
         this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
         this.timeslots[this.lastSelected + c].state == 'blocked') {
         this.timeslots[this.lastSelected + c].state = true;
@@ -557,12 +610,12 @@ export class Tab2Page implements OnInit {
 
 
     // mark 1 slot before and 1 slot after selected to extend selection
-    if(this.firstSelected > 0 &&
+    if (this.firstSelected > 0 &&
       this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
       this.timeslots[this.firstSelected - 1].state == 'blocked') {
       this.timeslots[this.firstSelected - 1].state = true;
     }
-    if(this.lastSelected < this.timeslots.length - 1 &&
+    if (this.lastSelected < this.timeslots.length - 1 &&
       this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
       this.timeslots[this.lastSelected + 1].state == 'blocked') {
       this.timeslots[this.lastSelected + 1].state = true;
@@ -570,18 +623,19 @@ export class Tab2Page implements OnInit {
 
 
     // mark all blocked as free if no slot is selected
-    if(this.selectedCount == 0) {
-      for (let a = 0; a < this.timeslots.length; a++){
-        if(this.timeslots[a].state == 'blocked') {
+    if (this.selectedCount == 0) {
+      for (let a = 0; a < this.timeslots.length; a++) {
+        if (this.timeslots[a].state == 'blocked') {
           this.timeslots[a].state = true;
         }
       }
       this.firstSelected = -1;
       this.lastSelected = -1;
+      this.bookedArray = [];
     }
 
   }
-  
+
   // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
   addItem(item) {
     var index = this.bookedArray.findIndex(x => x == item)
@@ -593,9 +647,9 @@ export class Tab2Page implements OnInit {
     // }
   }
 
- 
-  
-    
+
+
+
 
   // results: Observable<any>;
   // searchTerm: string = '';
