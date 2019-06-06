@@ -5,9 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab2Page } from './tab2.page';
 import { AgmCoreModule } from '@agm/core';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpLoaderFactory} from '../../app.module';
-import {HttpClient} from '@angular/common/http';
+import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import { HttpLoaderFactory} from '../../app.module';
+import { HttpClient} from '@angular/common/http';
 
 @NgModule({
   imports: [
