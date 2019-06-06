@@ -49,13 +49,12 @@ export class Tab1Page {
             if (isEqual(user, savedUser) && !this.isFirstTime) {
               this.storage.get('futureBookings').then(bookings => {
                 if (typeof bookings != 'undefined') {
-                  console.log(bookings);
                   if (isEqual(this.futureBookings, bookings)) {
-                    console.log('Equal JSONs, showing old data');
+                    console.log('Showing cache data');
                     return;
                   }
                   this.futureBookings = bookings;
-                  console.log('Showing data from cache')
+                  console.log('Showing data from database')
                 }
               })
             } else {
