@@ -36,7 +36,7 @@ export class TabsPage {
         return('left');
       case (currentTab > nextTab):
         return('right');
-      case (currentTab = nextTab):
+      case (currentTab == nextTab):
         return('none')
     }
   }
