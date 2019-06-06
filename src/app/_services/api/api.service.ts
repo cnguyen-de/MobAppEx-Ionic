@@ -8,9 +8,11 @@ import {User} from '../auth/user';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
   token: string;
-  server: string;
+  server: string = "https://platania.info:3000/api";
+  user: User;
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
@@ -20,14 +22,6 @@ export class ApiService {
     this.currentUserSubject = new BehaviorSubject<User>(this.getUser());
     this.currentUser = this.currentUserSubject.asObservable();
 
-    this.storage.get('server').then((serverIP) => {
-      this.server = serverIP;
-    });
-
-    // this.storage.get('user').then((user) => {
-    //   this.currentUser = user;
-    // });
-
     this.storage.get('access_token').then(token => {
       if (typeof token == 'string') {
         this.token = token;
@@ -36,10 +30,33 @@ export class ApiService {
   }
 
   //API METHODS
+
+  register(username: string, email: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers`, {username, email, password}).pipe(
+        map(async (res) => {
+          console.log(res);
+          return res;
+        })
+    );
+  }
+
+  login(username: string, password: string) {
+    return this.httpClient.post(`${this.server}/SnoozeUsers/login`, {username, password}).pipe(
+        map( (res) => {
+          //console.log(res);
+          // @ts-ignore
+          this.token = res.id;
+          this.saveToStorage('access_token', this.token);
+          return res;
+        })
+    );
+  }
+
   changePassword(oldPassword: string, newPassword: string) {
     let params = this.setParamToken(this.token);
     return this.httpClient.post(`${this.server}/SnoozeUsers/change-password`,  {oldPassword, newPassword},{params: params}).pipe(
         map( (res) => {
+          //console.log(res);
           return res;
         })
     );
@@ -54,15 +71,15 @@ export class ApiService {
     );
   }
 
-  getUser(token) {
-    this.token = token;
-    let params = this.setParamToken(token);
+  getUser() {
+    let params = this.setParamToken(this.token);
     return this.httpClient.get(`${this.server}/SnoozeUsers/GetUserData`, {params: params}).pipe(
         map((res) => {
-          this.saveToStorage('user', res);
           // @ts-ignore
-          this.currentUserSubject.next(res);
-          return res;
+          this.user = res;
+          this.currentUserSubject.next(this.user);
+          this.saveToStorage('user', this.user);
+          return this.user;
         })
     )
   }
@@ -98,7 +115,6 @@ export class ApiService {
   }
 
   getCapsuleAvailability(id: number, date: string) {
-
     this.getToken();
     let params = new HttpParams();
     params = params.append('access_token', this.token);
@@ -151,6 +167,8 @@ export class ApiService {
   logOutLocally() {
     this.storage.remove('user');
     this.storage.remove('access_token');
+    this.storage.remove('futureBookings');
+    this.storage.set('isFirstTime', true);
     return true
   }
 
@@ -178,6 +196,6 @@ export class ApiService {
   }
 
   async saveToStorage(key: string, value: any) {
-    await this.storage.set(key, value);
+    return await this.storage.set(key, value);
   }
 }

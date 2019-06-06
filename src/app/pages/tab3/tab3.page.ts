@@ -11,6 +11,7 @@ import {first} from 'rxjs/operators';
 import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 import {User} from '../../_services/auth/user';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -29,8 +30,12 @@ export class Tab3Page {
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
               private alertController: AlertController, private toastController: ToastController,
-              private apiService: ApiService,
+              private apiService: ApiService, private nativePageTransitions: NativePageTransitions,
               private translateService: TranslateService) {
+
+  }
+
+  ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
   }
@@ -38,14 +43,39 @@ export class Tab3Page {
   // User Info
   getUserInfo() {
     this.storage.get('user').then(user => {
-      this.user = user;
-      this.username = user.username;
-      this.email = user.email;
-      if (user.capsulePreference != null) {
-        this.lightPref = user.capsulePreference.LightLevel;
-        this.volumePref = user.capsulePreference.VolumenLevel;
+      if (user != null || typeof user != 'undefined') {
+        console.log("Setting user data from memory");
+        this.user = user;
+        this.username = user.username;
+        this.email = user.email;
+        if (user.capsulePreference != null) {
+          this.lightPref = user.capsulePreference.LightLevel;
+          this.volumePref = user.capsulePreference.VolumenLevel;
+        }
+      } else {
+        console.log("Retrieving user data from server");
+        this.apiService.getUser()
+            .pipe(first())
+            .subscribe(
+                user => {
+                  this.user = user;
+                  this.username = user.username;
+                  this.email = user.email;
+                  if (user.capsulePreference != null) {
+                    this.lightPref = user.capsulePreference.LightLevel;
+                    this.volumePref = user.capsulePreference.VolumenLevel;
+                  }
+                },
+                error => {
+                  console.log(error);
+                });
       }
     })
+  }
+
+  //Navigate to booking history
+  bookingHistory(){
+    this.transitionTo('/booking-history', 'left');
   }
 
   //Change Password
@@ -89,7 +119,7 @@ export class Tab3Page {
                 .subscribe(
                     data => {
                       this.apiService.logOutLocally();
-                      this.router.navigateByUrl('/');
+                      this.transitionTo('/', 'right');
                     },
                     error => {
                       console.log(error);
@@ -152,8 +182,9 @@ export class Tab3Page {
       if (typeof value.data == 'number') {
         this.volumePref = value.data;
         this.user.capsulePreference.VolumenLevel = this.volumePref;
-        this.saveToStorage('user', this.user);
-        this.toast("Volume preference set to: " + this.volumePref)
+        this.saveToStorage('user', this.user).then(() => {
+          this.toast("Volume preference set to: " + this.volumePref)
+        });
       }
     });
 
@@ -177,17 +208,28 @@ export class Tab3Page {
       if (typeof value.data == 'number') {
         this.lightPref = value.data;
         this.user.capsulePreference.LightLevel = this.lightPref;
-        this.saveToStorage('user', this.user);
-        this.toast("Light preference set to: " + this.lightPref)
+        this.saveToStorage('user', this.user).then(() => {
+          this.toast("Light preference set to: " + this.lightPref)
+        })
       }
     });
 
     return await modal.present();
   }
 
-  bookingHistory(){
-    // console.log("Bla");
-    this.router.navigate(['/booking-history']);
+  showContact() {
+    this.toast("Ask Snooze Team 😊")
+  }
+
+  transitionTo(path, direction) {
+    let options: NativeTransitionOptions = {
+      direction: direction,
+      duration: 150,
+      slowdownfactor: 2,
+      androiddelay: 150,
+    };
+    this.nativePageTransitions.slide(options);
+    this.router.navigateByUrl(path);
   }
 
   //Toast Handler

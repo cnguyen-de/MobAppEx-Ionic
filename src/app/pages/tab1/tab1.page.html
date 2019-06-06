@@ -1,59 +1,113 @@
+
 <ion-header>
   <ion-toolbar>
+    <!--
     <ion-item lines="none">
-      <!--<ion-searchbar (ionChange)="onSearchChange($event)" class="search-bar" [(ngModel)]="searchTerm" #searchbar></ion-searchbar>-->
+      &lt;!&ndash;<ion-searchbar (ionChange)="onSearchChange($event)" class="search-bar" [(ngModel)]="searchTerm" #searchbar></ion-searchbar>&ndash;&gt;
       <ion-searchbar class="search-bar"></ion-searchbar>
       <ion-icon class="grid" name="apps" slot="end"></ion-icon>
     </ion-item>
+    -->
+    <div class="title" style="text-align: center;">
+      <ion-title>Your Capsules</ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
+    <ion-refresher-content
+            pullingIcon="arrow-down"
+            refreshingSpinner="crescent"></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card button="true" class="welcome-card" *ngIf="futureBookings.length == 0 && !hide">
+  <!-- NO RESERVED CAPSULE WELCOME CARD -->
+  <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !hide">
     <div class="header" (click)="hideCard()">
       <ion-icon class="close-icon" name="close" slot="end" size="large"></ion-icon>
     </div>
     <ion-card-header>
-      <ion-card-title>It's empty!</ion-card-title>
-      <ion-card-subtitle>Your reserved capsules will show up here</ion-card-subtitle>
+      <ion-card-title class="text">No reservation found!</ion-card-title>
+      <ion-card-subtitle class="text">Your booked capsules will show up here</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content routerLink="/tabs/tab2">
       <ion-item lines="none">
         <ion-text>Find a capsule now</ion-text>
-        <ion-icon name="arrow-round-forward" slot="end" size="large"></ion-icon>
+        <ion-icon name="arrow-round-forward" slot="end" size="large" class="text"></ion-icon>
       </ion-item>
     </ion-card-content>
   </ion-card>
+
+  <!-- CAPSULE RESERVATION LIST -->
   <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
-    <ion-card *ngIf="i == 0">
-      <ion-card-header>
-        <ion-card-title>{{booking.capsule.Name}}</ion-card-title>
-        <ion-card-subtitle>
-          <p>{{booking.Date}}</p>
-          <p>{{booking.duration}}</p>
+
+    <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
+    <ion-card *ngIf="i == 0" class="active-capsule" mode="ios">
+      <div class="active-capsule-bar">
+        <ion-icon name="information-circle-outline" class="info-icon" slot="end" size="large"></ion-icon>
+      </div>
+
+      <ion-card-header class="active-capsule-header">
+        <ion-card-title>
+          <span class="active-capsule-header">
+            <ion-icon name="pin" slot="start"></ion-icon>
+            <ion-label> {{booking.capsule.Name}}</ion-label>
+          </span>
+        </ion-card-title>
+        <ion-card-subtitle class="active-capsule-header">
+          
+          <ion-chip>
+            <ion-icon name="calendar"></ion-icon>
+            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
+          </ion-chip>
+          <ion-chip>
+            <ion-icon name="time"></ion-icon>
+            <ion-label>{{booking.duration}}</ion-label>
+          </ion-chip>
+          
         </ion-card-subtitle>
       </ion-card-header>
+
       <ion-card-content>
-        <ion-text>PIN: {{booking.Pin}}</ion-text>
+        <ion-item lines="none">
+          <ion-icon name="ios-log-in" class="pin"></ion-icon>
+          <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+          <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
+        </ion-item>
       </ion-card-content>
     </ion-card>
 
-    <ion-list *ngIf="i != 0" class="capsule-info-list">
-      <ion-list-header>{{booking.capsule.Name}}
-      </ion-list-header>
-      <ion-item>
-        <ion-label slot="start">
-          <p>{{booking.Date}}</p>
-          <p>{{booking.duration}}</p>
-        </ion-label>
-        <ion-text slot="end">{{booking.Pin}}</ion-text>
-      </ion-item>
-    </ion-list>
-  </div>
+    <!-- LIST VIEW: FUTURE CAPSULES-->
+    <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
+      <ion-list>
+        <ion-list-header mode="ios">
+          <span><ion-icon name="pin"></ion-icon> {{booking.capsule.Name}}</span>
+          <ion-text class="date" style="float: right;">
+            {{booking.FirstTimeFrame}} - {{booking.Date | date : "dd.MM.y"}}
+          </ion-text>
+        </ion-list-header>
+      </ion-list>
 
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
+          <ion-chip>
+            <ion-icon name="calendar"></ion-icon>
+            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
+          </ion-chip>
+          <ion-chip>
+            <ion-icon name="time"></ion-icon>
+            <ion-label>{{booking.duration}}</ion-label>
+          </ion-chip>
+          <ion-item lines="none">
+            <ion-icon name="ios-log-in" class="pin-list"></ion-icon>
+            <ion-text color="primary"><h5>{{booking.Pin}}</h5></ion-text>
+          </ion-item>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ion-card>
+
+  </div>
 </ion-content>

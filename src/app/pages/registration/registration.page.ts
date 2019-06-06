@@ -4,8 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
+import {ApiService} from '../../_services/api/api.service';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -17,10 +18,18 @@ export class RegistrationPage implements OnInit {
 
   registrationForm: FormGroup;
   buttonPressed = false;
+  options: NativeTransitionOptions = {
+    direction: 'left',
+    duration: 200,
+    slowdownfactor: 4,
+    androiddelay: 0,
+  };
+  forward: boolean = false;
 
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, public storage : Storage,
-              private authenticationService: AuthService, private formBuilder: FormBuilder) { }
+              private authenticationService: ApiService, private formBuilder: FormBuilder,
+              private nativePageTransitions: NativePageTransitions) { }
 
   ngOnInit() {
     this.registrationForm = this.formBuilder.group({
@@ -33,6 +42,20 @@ export class RegistrationPage implements OnInit {
     });
   }
 
+  ionViewDidEnter() {
+    this.forward = false;
+  }
+  ionViewWillLeave() {
+    if (!this.forward) {
+      let options: NativeTransitionOptions = {
+        direction: 'right',
+        duration: 200,
+        slowdownfactor: 4,
+        androiddelay: 0,
+      };
+      this.nativePageTransitions.slide(options);
+    }
+  }
 
   checkPasswords(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
@@ -65,7 +88,7 @@ export class RegistrationPage implements OnInit {
         .subscribe(
             data => {
               this.toast('Successfully registered');
-              this.router.navigateByUrl('/login');
+              this.transitionTo('/login');
               this.buttonPressed = !this.buttonPressed;
             },
             error => {
@@ -77,6 +100,12 @@ export class RegistrationPage implements OnInit {
                 this.toast(error)
               }
             });
+  }
+
+  transitionTo(path) {
+    this.forward = true;
+    this.nativePageTransitions.slide(this.options);
+    this.router.navigateByUrl(path);
   }
 
   async toast(message: any) {

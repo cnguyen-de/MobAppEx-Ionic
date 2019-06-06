@@ -4,10 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth/auth.service';
 import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
 import {ApiService} from '../../_services/api/api.service';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -20,11 +20,17 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
   loginPressed = false;
   user : User;
-
+  options: NativeTransitionOptions = {
+    direction: 'left',
+    duration: 200,
+    slowdownfactor: 4,
+    androiddelay: 0,
+  };
+  forward: boolean = false;
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
-              private authenticationService : AuthService, private formBuilder: FormBuilder,
-              private apiService: ApiService) {
+              private formBuilder: FormBuilder,
+              private apiService: ApiService, private nativePageTransitions: NativePageTransitions) {
 
   }
 
@@ -35,22 +41,37 @@ export class LoginPage implements OnInit {
     });
   }
 
+  ionViewDidEnter() {
+    this.forward = false;
+  }
+  ionViewWillLeave() {
+    if (!this.forward) {
+      let options: NativeTransitionOptions = {
+        direction: 'right',
+        duration: 200,
+        slowdownfactor: 4,
+        androiddelay: 0,
+      };
+      this.nativePageTransitions.slide(options);
+    }
+  }
+
   onSubmit() {
     if (this.loginForm.invalid) {
       return;
     }
     this.loginPressed = !this.loginPressed;
-    this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
+    this.apiService.login(this.loginForm.value.username, this.loginForm.value.password)
         .pipe(first())
         .subscribe(
             data => {
-              this.router.navigateByUrl('/tabs/tab1');
               this.loginPressed = !this.loginPressed;
-              // @ts-ignore
-              this.apiService.getUser(data.id.toString())
+              this.loginForm.setValue({username: this.loginForm.value.username, password: ''});
+              this.apiService.getUser()
                   .pipe(first())
                   .subscribe(
                       data => {
+                        this.transitionTo('/tabs/tab1');
                         console.log(data)
                       },
                       error => {
@@ -69,7 +90,11 @@ export class LoginPage implements OnInit {
             });
   }
 
-
+  transitionTo(path) {
+    this.forward = true;
+    this.nativePageTransitions.slide(this.options);
+    this.router.navigateByUrl(path);
+  }
 
   async saveToStorage(key: string, value: any) {
     await this.storage.set(key, value);

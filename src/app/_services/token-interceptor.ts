@@ -3,7 +3,6 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
 
-import { AuthService} from './auth/auth.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {

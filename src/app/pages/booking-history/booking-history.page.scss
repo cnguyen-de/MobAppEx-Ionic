@@ -1,7 +1,21 @@
+ion-header {
+   background: var(--ion-background-color)
+}
+ion-toolbar {
+   --background: var(--ion-background-color)
+}
 .expansion{
    padding: 3%; 
 }
 
 mat-panel-title {
    font-weight: bold;
+}
+
+.mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{
+   color: var(--ion-text-color);
+   background: var(--ion-item-background-color);
+}
+.mat-expansion-panel-header-title {
+   color: var(--ion-text-color) !important;
 }

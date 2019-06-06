@@ -11,14 +11,21 @@
 @import '~@ionic/angular/css/flex-utils.css';
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 $font-family-base: 'Roboto', sans-serif;
+
+
+//more indicator card
+.mat-expansion-indicator::after{
+  color: var(--ion-text-color) !important;
+}
 
 //Search bar
 .searchbar-input {
-  background: #f4f5f8 !important;
+  background: var(--darker-color) !important;
   border-radius: 12px !important;
   max-width: 400px;
+  padding: 4px 0 4px 4px;
   border: 1px solid transparent !important;
   box-shadow: none !important;
 }
@@ -51,7 +58,7 @@ $font-family-base: 'Roboto', sans-serif;
 @media (min-height: 800px) {
   .password-changer-modal .modal-wrapper {
     min-height: 30% !important;
-    top: 63% !important;
+    top: 69% !important;
   }
 
   .chooser-modal .modal-wrapper {
@@ -65,7 +72,7 @@ $font-family-base: 'Roboto', sans-serif;
 
   .password-changer-modal .modal-wrapper {
     min-height: 42% !important;
-    top: 58% !important;
+    top: 66% !important;
   }
 
   .chooser-modal .modal-wrapper {
@@ -76,8 +83,8 @@ $font-family-base: 'Roboto', sans-serif;
 
 //Small phones
 .password-changer-modal .modal-wrapper {
-  min-height: 60%;
-  top: 40%;
+  min-height: 40%;
+  top: 55%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;

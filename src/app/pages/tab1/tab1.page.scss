@@ -5,6 +5,17 @@ ion-card {
   color: var(--ion-text-color);
   --background: var(--ion-item-background-color)
 }
+ion-refresher, ion-refresher-content {
+  background: var(--darker-color);
+}
+ion-chip{
+  color: var(--ion-text-color);
+  --background: var(--darker-color)
+}
+
+ion-icon {
+  color: var(--ion-text-color)
+}
 
 .header {
   text-align: right;
@@ -19,7 +30,57 @@ ion-item {
   --background: var(--ion-item-background-color);
   --ion-border-color: var(--darker-color);
 }
+.sc-ion-card-ios-h {
+  margin: 12px 12px 12px 12px;
+}
 
-.capsule-info-list {
+.active-capsule  {
+  margin-top: 24px !important;
+}
+.active-capsule-bar {
+  background: var(--ion-color-primary)
+}
+.info-icon {
+  padding-top: 4px;
+  padding-left: 4px;
+}
+.active-capsule-header {
+  padding-bottom: 0px;
+  color: var(--ion-text-color);
+}
+.capsule-info-list .date {
+  padding-right: 12px;
+}
+
+ion-list {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 15px 15px 0 0 ;
+}
+ion-list-header {
+  color: var(--ion-text-color);
+  --background: var(--ion-item-background-color);
+  --ion-border-color: var(--ion-item-background-color);
+}
+
+.mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{
+  color: var(--ion-text-color);
+  background: var(--ion-item-background-color);
+  padding-bottom: 8px;
+}
+.mat-expansion-panel-header-title {
+  color: var(--ion-text-color) !important;
+}
+.pin {
+  margin-bottom: 2px;
+  padding-right: 2px;
+  color: var(--ion-text-color);
+}
+.pin-list {
+  color: var(--ion-text-color);
   margin-bottom: 8px;
+  padding-right: 2px;
+}
+.text {
+  color: var(--ion-text-color);
 }

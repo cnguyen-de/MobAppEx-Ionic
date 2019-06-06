@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 
 @Component({
-  selector: 'app-this-app',
-  templateUrl: './this-app.page.html',
-  styleUrls: ['./this-app.page.scss'],
+  selector: 'app-licenses',
+  templateUrl: './licenses.page.html',
+  styleUrls: ['./licenses.page.scss'],
 })
-export class ThisAppPage implements OnInit {
+export class LicensesPage implements OnInit {
 
   constructor(private nativePageTransitions: NativePageTransitions) { }
 
@@ -21,4 +21,5 @@ export class ThisAppPage implements OnInit {
     };
     this.nativePageTransitions.slide(options);
   }
+
 }

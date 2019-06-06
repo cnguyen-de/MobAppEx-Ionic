@@ -18,7 +18,7 @@
 <ion-content>
   <mat-accordion>
     <div class="expansion">
-      <mat-expansion-panel  *ngFor="let booking of sortData" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+      <mat-expansion-panel  *ngFor="let booking of bookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
               Date: {{booking.Date | date : "dd.MM.y"}}
@@ -28,10 +28,9 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
         <p>Capsule Name: {{booking.capsule.Name}}</p>
-        <p>PayedAmount: {{booking.PayedAmount}} €</p>
+        <p>Amount: {{booking.Amount}} €</p>
         <p>PayedDate: {{booking.PayedDate | date : "dd.MM.y"}}</p>
-        <p>FirstTimeFrame: {{booking.FirstTimeFrame}}</p>
-        <p>LastTimeFrame: {{booking.LastTimeFrame}}</p>
+        <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
       </mat-expansion-panel>
     </div>
   </mat-accordion>

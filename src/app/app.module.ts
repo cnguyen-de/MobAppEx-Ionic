@@ -21,10 +21,12 @@ import {ErrorInterceptor} from './_services/error-interceptor';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {PayPal} from '@ionic-native/paypal/ngx';
+import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatExpansionModule} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatExpansionModule } from '@angular/material';
 
+import { Animation, NavOptions } from '@ionic/core'
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -40,7 +42,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       MatExpansionModule,
       // MatFormField,
       IonicModule.forRoot({
-        //mode: 'md'
+        //mode: 'ios'
+        navAnimation: myTransitionAnimation,
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -60,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SplashScreen,
     Geolocation,
     PayPal,
+    NativePageTransitions,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
@@ -68,3 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+export function myTransitionAnimation(): Promise<Animation> {
+  return null
+}

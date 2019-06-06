@@ -29,13 +29,6 @@ export class AppComponent {
     private apiService: ApiService
   ) {
     this.initializeApp();
-    this.initializeDB();
-    this.getLanguagePref();
-    this.setTheme();
-    this.getUserInfo();
-    this.currentUserSubscription = this.apiService.currentUser.subscribe(user => {
-      this.user = user;
-    })
   }
 
   ngOnDestroy() {
@@ -44,6 +37,13 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
+      this.initializeDB();
+      this.getLanguagePref();
+      this.setTheme();
+      this.getUserInfo();
+      this.currentUserSubscription = this.apiService.currentUser.subscribe(user => {
+        this.user = user;
+      });
       this.statusBar.styleDefault();
       setTimeout(() => this.splashScreen.hide(), 500);
     });
@@ -76,7 +76,7 @@ export class AppComponent {
   getUserInfo() {
     this.apiService.getToken().then(data => {
       if (data != null) {
-        this.apiService.getUser(data).pipe(first()).subscribe(
+        this.apiService.getUser().pipe(first()).subscribe(
             data => {
               // @ts-ignore
               this.user = data;

@@ -9,7 +9,7 @@
 </ion-header>
 -->
 
-<ion-content [scrollY]="false">
+<ion-content>
   <div class="background">
     <div class="container">
       <img class="logo" src="../../../assets/images/all_blue_logo.png" alt="" width="300px">
@@ -28,7 +28,8 @@
 
             <ion-item lines="none">
               <ion-icon name="md-key" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="password" formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
+              <ion-input class="login-input" type="password" clearOnEdit="false"
+                         formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
             </ion-item>
           </ion-list>
 
@@ -45,13 +46,13 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-text color="primary" routerLink="/recovery">
+            <ion-text color="primary" (click)="transitionTo('/recovery')">
               Forgot password?
             </ion-text>
           </ion-col>
           .
           <ion-col>
-            <ion-text color="primary" routerLink="/registration">
+            <ion-text color="primary" (click)="transitionTo('/registration')">
               Sign up for Snooze
             </ion-text>
           </ion-col>
