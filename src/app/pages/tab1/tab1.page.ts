@@ -46,11 +46,10 @@ export class Tab1Page {
     this.apiService.getUser().pipe(first()).subscribe(
         user => {
           this.storage.get('user').then(savedUser => {
-            console.log(isEqual(user, savedUser));
             if (isEqual(user, savedUser) && !this.isFirstTime) {
               this.storage.get('futureBookings').then(bookings => {
                 if (typeof bookings != 'undefined') {
-                  console.log(isEqual(this.futureBookings, bookings));
+                  console.log(bookings);
                   if (isEqual(this.futureBookings, bookings)) {
                     console.log('Equal JSONs, showing old data');
                     return;
@@ -73,11 +72,11 @@ export class Tab1Page {
                 let dateToday = new Date();
                 date.setHours(0, 0, 0, 0);
                 dateToday.setHours(0, 0, 0, 0);
+                booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+                booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+                booking.Date = booking.Date.substring(0, 10);
                 if (date > dateToday) {
                   this.futureBookings.push(booking);
-                  booking.Date = booking.Date.substring(0, 10);
-                  booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
-                  booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
                 } else if (date.getDate() == dateToday.getDate()) {
                   let hourNow = this.today.getHours();
                   console.log(this.timeService.getEndTime(booking.LastTimeFrame));
@@ -85,18 +84,10 @@ export class Tab1Page {
                   // compare the hours, if bigger then add to future booking
                   if (endTime[0] > hourNow) {
                     this.futureBookings.push(booking);
-                    booking.Date = booking.Date.substring(0, 10);
-                    booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
-                    booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
-
                     // if same hour, compare minutes
                   } else if (endTime[0] == hourNow) {
                     if (endTime[1] >= this.today.getMinutes()) {
                       this.futureBookings.push(booking);
-                      booking.Date = booking.Date.substring(0, 10);
-                      booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
-                      booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
-
                     }
                   }
                 }
