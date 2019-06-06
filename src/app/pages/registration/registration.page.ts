@@ -20,9 +20,9 @@ export class RegistrationPage implements OnInit {
   buttonPressed = false;
   options: NativeTransitionOptions = {
     direction: 'left',
-    duration: 150,
-    slowdownfactor: 2,
-    androiddelay: 150,
+    duration: 200,
+    slowdownfactor: 4,
+    androiddelay: 0,
   };
   forward: boolean = false;
 
@@ -49,9 +49,9 @@ export class RegistrationPage implements OnInit {
     if (!this.forward) {
       let options: NativeTransitionOptions = {
         direction: 'right',
-        duration: 150,
-        slowdownfactor: 2,
-        androiddelay: 150,
+        duration: 200,
+        slowdownfactor: 4,
+        androiddelay: 0,
       };
       this.nativePageTransitions.slide(options);
     }

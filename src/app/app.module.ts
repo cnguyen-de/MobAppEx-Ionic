@@ -26,6 +26,7 @@ import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatExpansionModule } from '@angular/material';
 
+import { Animation, NavOptions } from '@ionic/core'
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -42,6 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       // MatFormField,
       IonicModule.forRoot({
         //mode: 'ios'
+        navAnimation: myTransitionAnimation,
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -70,3 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+export function myTransitionAnimation(): Promise<Animation> {
+  return null
+}

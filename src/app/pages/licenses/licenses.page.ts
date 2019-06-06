@@ -15,9 +15,9 @@ export class LicensesPage implements OnInit {
   ionViewWillLeave() {
     let options: NativeTransitionOptions = {
       direction: 'right',
-      duration: 150,
-      slowdownfactor: 2,
-      androiddelay: 150,
+      duration: 200,
+      slowdownfactor: 4,
+      androiddelay: 0,
     };
     this.nativePageTransitions.slide(options);
   }

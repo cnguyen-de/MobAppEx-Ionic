@@ -22,9 +22,9 @@ export class LoginPage implements OnInit {
   user : User;
   options: NativeTransitionOptions = {
     direction: 'left',
-    duration: 150,
-    slowdownfactor: 2,
-    androiddelay: 150,
+    duration: 200,
+    slowdownfactor: 4,
+    androiddelay: 0,
   };
   forward: boolean = false;
   constructor(public toastController: ToastController, private http : HttpClient,
@@ -48,9 +48,9 @@ export class LoginPage implements OnInit {
     if (!this.forward) {
       let options: NativeTransitionOptions = {
         direction: 'right',
-        duration: 150,
-        slowdownfactor: 2,
-        androiddelay: 150,
+        duration: 200,
+        slowdownfactor: 4,
+        androiddelay: 0,
       };
       this.nativePageTransitions.slide(options);
     }
