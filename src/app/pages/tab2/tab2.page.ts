@@ -1,9 +1,11 @@
+import { map } from 'rxjs/operators';
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { IonSlides, IonSegment, IonContent, Platform } from "@ionic/angular";
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
 import { TimeService } from '../../_services/time/time.service';
+import { AgmMap, AgmCoreModule } from '@agm/core';
 
 
 @Component({
@@ -321,8 +323,8 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
           state: data[propertyName]
         }
-        if(propertyName == '7' || propertyName == '10') {
-          tmp.state = false;
+        if(propertyName == '7' || propertyName == '10' || propertyName == '11') {
+          tmp.state = 'booked';
         }
         this.timeslots.push(tmp);
       }
@@ -473,7 +475,7 @@ export class Tab2Page implements OnInit {
       }
     }
 
-    // set selected slots
+    // handling selecting & unselecting slots
     if(this.firstSelected == -1) {
       this.firstSelected = i;
       this.lastSelected = i;
@@ -485,8 +487,16 @@ export class Tab2Page implements OnInit {
       this.lastSelected = i;
       this.selectedCount++;
     } else if (i == this.firstSelected) {
-      this.firstSelected = i + 1;
+      let c = 1;
+      if (this.timeslots[i + c].state == 'booked') {
+        while (this.timeslots[i + c].state == 'booked') {
+          console.log(': :' + c);
+          c++;
+        }
+      }
+      this.firstSelected = i + c;
       this.selectedCount--;
+      console.log('firstselected: ' + this.firstSelected);
       if (this.timeslots[i].state == 'selected') {
         this.timeslots[i].state = true;
       }
@@ -504,8 +514,6 @@ export class Tab2Page implements OnInit {
       if(this.timeslots[s].state != 'booked') {
         this.timeslots[s].state = 'selected';
       }
-
-      
     }
     
     
@@ -514,7 +522,6 @@ export class Tab2Page implements OnInit {
     if(this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
       console.log('is yours');
       let c = 1;
-      
       while (this.timeslots[this.firstSelected - c].state == 'booked') {
         console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
         c++;
@@ -569,6 +576,8 @@ export class Tab2Page implements OnInit {
           this.timeslots[a].state = true;
         }
       }
+      this.firstSelected = -1;
+      this.lastSelected = -1;
     }
 
   }
@@ -583,6 +592,10 @@ export class Tab2Page implements OnInit {
     //   console.log("object already exists")
     // }
   }
+
+ 
+  
+    
 
   // results: Observable<any>;
   // searchTerm: string = '';
