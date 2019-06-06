@@ -484,6 +484,18 @@ export class Tab2Page implements OnInit {
     } else if (i > this.lastSelected) {
       this.lastSelected = i;
       this.selectedCount++;
+    } else if (i == this.firstSelected) {
+      this.firstSelected = i + 1;
+      this.selectedCount--;
+      if (this.timeslots[i].state == 'selected') {
+        this.timeslots[i].state = true;
+      }
+    } else if (i == this.lastSelected) {
+      this.lastSelected = i - 1;
+      this.selectedCount--;
+      if (this.timeslots[i].state == 'selected') {
+        this.timeslots[i].state = true;
+      }
     }
 
     // mark selected slots as selected
@@ -492,6 +504,8 @@ export class Tab2Page implements OnInit {
       if(this.timeslots[s].state != 'booked') {
         this.timeslots[s].state = 'selected';
       }
+
+      
     }
     
     
@@ -545,6 +559,16 @@ export class Tab2Page implements OnInit {
       this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
       this.timeslots[this.lastSelected + 1].state == 'blocked') {
       this.timeslots[this.lastSelected + 1].state = true;
+    }
+
+
+    // mark all blocked as free if no slot is selected
+    if(this.selectedCount == 0) {
+      for (let a = 0; a < this.timeslots.length; a++){
+        if(this.timeslots[a].state == 'blocked') {
+          this.timeslots[a].state = true;
+        }
+      }
     }
 
   }
