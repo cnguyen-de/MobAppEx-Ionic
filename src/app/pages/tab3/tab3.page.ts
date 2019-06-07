@@ -224,9 +224,9 @@ export class Tab3Page {
   transitionTo(path, direction) {
     let options: NativeTransitionOptions = {
       direction: direction,
-      duration: 150,
-      slowdownfactor: 2,
-      androiddelay: 150,
+      duration: 200,
+      slowdownfactor: 1,
+      androiddelay: 200,
     };
     this.nativePageTransitions.slide(options);
     this.router.navigateByUrl(path);

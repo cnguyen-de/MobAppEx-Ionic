@@ -43,7 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       // MatFormField,
       IonicModule.forRoot({
         //mode: 'ios'
-        navAnimation: myTransitionAnimation,
+        navAnimation: ()=> null,
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -72,7 +72,3 @@ export function HttpLoaderFactory(http: HttpClient) {
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-
-export function myTransitionAnimation(): Promise<Animation> {
-  return null
-}
