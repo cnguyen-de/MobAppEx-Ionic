@@ -480,12 +480,15 @@ onTimeSlotClick(i) {
   if (this.chosen.length != 0) {
     let same = false
     for (let a = 0; a < this.chosen.length; a++) {
+      // if existed in chosen array, aka pressed a selected slot
       if (this.chosen[a] === i) {
         same = true;
+        // only allow removing 1st and last slot
         if (i == this.chosen[0] || i == this.chosen[this.chosen.length - 1]) {
           this.chosen.splice(a, 1);
           this.timeslots[i].state = true;
           console.log(this.chosen)
+          //calculate min max again.
           this.chosen.sort(function(a, b) { return a > b ? 1 : -1})
           let min = this.chosen[0];
           let max = this.chosen[this.chosen.length - 1];
@@ -494,7 +497,6 @@ onTimeSlotClick(i) {
 
           console.log(min, max, min_available, max_available);
           this.colorTable(min_available, max_available)
-
         }
         return;
       }
@@ -508,7 +510,9 @@ onTimeSlotClick(i) {
   console.log(this.chosen)
 }
 calcMin(max) {
+  //min = 0 or max - 5 (max - (max - 5) + 1 = 6)
   let min_available = Math.max(0, max - 5);
+  //check for booked slot inbetween, if there is then stop after the booked slot
   for (let i = min_available; i < max; i++) {
     if (this.timeslots[i].state == 'booked') {
       min_available = i + 1;
@@ -517,7 +521,9 @@ calcMin(max) {
   return min_available
 }
 calcMax(min) {
+  //set max = min + 5 or 26
   let max_available = Math.min(26, min + 5);
+  //check for booked slot inbetween, if there is then stop before the booked slot
   for (let i = min + 1; i < max_available; i++) {
     if (this.timeslots[i].state == 'booked') {
       max_available = i - 1;
@@ -526,11 +532,12 @@ calcMax(min) {
   return max_available
 }
 processSelect(i) {
-
+  //add chosen slot to chosen array and sort it
   this.chosen.push(i);
   this.timeslots[i].state = 'selected';
   this.chosen.sort(function(a, b) { return a > b ? 1 : -1});
 
+  //calculate min available, max available as option to choose
   console.log(this.chosen);
   let min = this.chosen[0];
   let max = this.chosen[this.chosen.length - 1];
@@ -539,23 +546,26 @@ processSelect(i) {
 
   console.log(min, max, min_available, max_available);
   this.colorTable(min_available, max_available)
+  //handle choosing multiple slots
   if (this.chosen.length > 1) {
+    //if the chosen slot is top of the current chosen slots (aka smallest)
     if (Math.abs(min - i) < Math.abs(max - i)) {
       console.log("i top adding from " + i + " to " + max);
       for (let c = i + 1; c < max; c++) {
-
+        //check for duplicates
         let same = false;
         for (let d = 0; d < this.chosen.length; d++) {
           if (c == this.chosen[d]) {
             same = true;
           }
         }
+        //mark green and add to chosen array
         if (!same) {
           this.timeslots[c].state = 'selected'
           this.chosen.push(c)
         }
       }
-    } else {
+    } else { //if the chosen slot is bottom, same algorithm like above
       console.log("i bottom adding from " + min + " to " + i)
       for (let c = min + 1; c < i; c++) {
 
