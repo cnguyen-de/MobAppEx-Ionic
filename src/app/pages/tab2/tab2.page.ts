@@ -323,7 +323,7 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
           state: data[propertyName]
         }
-        if (propertyName == '14' || propertyName == '16' || propertyName == '18' || propertyName == '20' || propertyName == '21') {
+        if (propertyName == '14' || propertyName == '16' || propertyName == '17' || propertyName == '21' || propertyName == '20') {
           tmp.state = 'booked';
         }
         this.timeslots.push(tmp);
