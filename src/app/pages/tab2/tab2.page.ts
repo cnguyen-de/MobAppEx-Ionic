@@ -323,7 +323,13 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
           state: data[propertyName]
         }
-        if (propertyName == '14' || propertyName == '16' || propertyName == '17' || propertyName == '18' || propertyName == '20') {
+        if (propertyName == '1' ||
+        propertyName == '14' || 
+        propertyName == '16' || 
+        propertyName == '17' || 
+        propertyName == '18' || 
+        propertyName == '27' || 
+        propertyName == '20') {
           tmp.state = 'booked';
         }
         this.timeslots.push(tmp);
@@ -488,7 +494,7 @@ export class Tab2Page implements OnInit {
       this.lastSelected = i;
       this.selectedCount++;
     } else if (i == this.firstSelected) {
-     
+      console.log('unselecting first');
       let c_down = 1;
       if (this.lastSelected < this.timeslots.length - 2 && this.timeslots[i + c_down].state == 'booked') {
         while (this.timeslots[i + c_down].state == 'booked') {
@@ -518,13 +524,14 @@ export class Tab2Page implements OnInit {
 
       
     } else if (i == this.lastSelected) {
-
+      console.log('unselecting last');
       let c_up = 1;
       if (this.firstSelected > 1 && this.timeslots[i - c_up].state == 'booked') {
         while (this.timeslots[i - c_up].state == 'booked') {
           var index = this.bookedArray.indexOf(i - c_up);
           if (index > -1) {
             this.bookedArray.splice(index, 1);
+            console.log('unselected last up' + this.bookedArray);
           }
           c_up++;
         }
@@ -542,7 +549,7 @@ export class Tab2Page implements OnInit {
           var index = this.bookedArray.indexOf(i + c_down);
           if (index > -1) {
             this.bookedArray.splice(index, 1);
-            console.log('unselected ' + this.bookedArray);
+            console.log('unselected last down' + this.bookedArray);
           }
           c_down++;
         }
@@ -564,24 +571,20 @@ export class Tab2Page implements OnInit {
 
     // handle booked slots upwards
     if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
-      console.log('is yours' + this.timeslots.indexOf(this.timeslots[this.firstSelected - 1]));
-      console.log('triggered: previous is booked');
+      //console.log('is yours' + this.timeslots.indexOf(this.timeslots[this.firstSelected - 1]));
+      //console.log('triggered: previous is booked');
       let c = 1;
       while (this.firstSelected - c >= 0 && this.timeslots[this.firstSelected - c].state == 'booked') {
         //console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
         //console.log('found booked in front, count: ' + this.bookedCount);
         this.addItem(this.firstSelected - c);
         c++;
-        console.log(this.bookedArray);
+        //console.log(this.bookedArray);
       }
-
-      console.log('c: ' + c);
 
       if (this.firstSelected > 0 && this.firstSelected - c >= 0 &&
         this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
         this.timeslots[this.firstSelected - c].state == 'blocked') {
-      console.log('TRIGGERED');
-
         this.timeslots[this.firstSelected - c].state = true;
       }
 
@@ -592,7 +595,7 @@ export class Tab2Page implements OnInit {
          let c2 = c;
            while (this.firstSelected - c2 < this.timeslots.length - 2 && 
             this.timeslots[this.firstSelected - c2 - 1].state == 'booked') {
-             console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
+             //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
              this.addItem(this.firstSelected - c2 - 1);
              c2++;
            }
@@ -602,15 +605,7 @@ export class Tab2Page implements OnInit {
             this.timeslots[this.firstSelected - c].state = 'blocked';
            }
          } 
-         
-        //  else {
-        //    if(this.timeslots[this.lastSelected + c2+1].state == 'blocked')
-        //   this.timeslots[this.lastSelected + c2+1].state = true;
-        //  }
-
        }
-
-
     }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -618,7 +613,7 @@ export class Tab2Page implements OnInit {
 
     // handle booked slots downwards
     if (this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == 'booked') {
-      console.log('triggered: next is booked');
+      //console.log('triggered: next is booked');
 
       let c = 1;
       while (this.lastSelected + c < this.timeslots.length && this.timeslots[this.lastSelected + c].state == 'booked') {
@@ -640,7 +635,7 @@ export class Tab2Page implements OnInit {
          let c2 = c;
            while (this.lastSelected + c2 < this.timeslots.length - 2 && 
             this.timeslots[this.lastSelected + c2 + 1].state == 'booked') {
-             console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
+             //console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
              this.addItem(this.lastSelected + c2 + 1);
              c2++;
            }
