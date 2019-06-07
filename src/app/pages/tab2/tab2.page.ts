@@ -313,7 +313,7 @@ export class Tab2Page implements OnInit {
     this.selectedCount = 0;
 
     // get data from server
-    await this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
+    await this.apiService.getCapsuleAvailability(1, '2019-06-06').subscribe(data => {
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
@@ -323,7 +323,7 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
           state: data[propertyName]
         }
-        if (propertyName == '7' || propertyName == '10' || propertyName == '12') {
+        if (propertyName == '15' || propertyName == '17' || propertyName == '19') {
           tmp.state = 'booked';
         }
         this.timeslots.push(tmp);
@@ -488,77 +488,68 @@ export class Tab2Page implements OnInit {
       this.lastSelected = i;
       this.selectedCount++;
     } else if (i == this.firstSelected) {
-
-
+     
       let c_down = 1;
-      if (this.timeslots[i + c_down].state == 'booked') {
+      if (this.lastSelected < this.timeslots.length - 2 && this.timeslots[i + c_down].state == 'booked') {
         while (this.timeslots[i + c_down].state == 'booked') {
           var index = this.bookedArray.indexOf(i + c_down);
           if (index > -1) {
             this.bookedArray.splice(index, 1);
           }
-          console.log(': :' + c_down);
           c_down++;
         }
       }
-
-      let c_up = 1;
-      if (this.timeslots[i - c_up].state == 'booked') {
-        while (this.timeslots[i - c_up].state == 'booked') {
-          var index = this.bookedArray.indexOf(i - c_up);
-          if (index > -1) {
-            this.bookedArray.splice(index, 1);
-          }
-          console.log(': :' + c_up);
-          c_up++;
-        }
-      }
-
-
       this.firstSelected = i + c_down;
       this.selectedCount--;
-      console.log('firstselected: ' + this.firstSelected);
       if (this.timeslots[i].state == 'selected') {
         this.timeslots[i].state = true;
       }
+
+      let c_up = 1;
+      if (this.firstSelected > 1 && this.timeslots[i - c_up].state == 'booked') {
+        while (this.firstSelected - c_up >= 1 && this.timeslots[i - c_up].state == 'booked') {
+          var index = this.bookedArray.indexOf(i - c_up);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+          }
+          c_up++;
+        }
+      }
+
+      
     } else if (i == this.lastSelected) {
 
       let c_up = 1;
-      if (this.timeslots[i - c_up].state == 'booked') {
+      if (this.firstSelected > 1 && this.timeslots[i - c_up].state == 'booked') {
         while (this.timeslots[i - c_up].state == 'booked') {
           var index = this.bookedArray.indexOf(i - c_up);
           if (index > -1) {
             this.bookedArray.splice(index, 1);
           }
-          console.log(': :' + c_up);
           c_up++;
         }
       }
-
-      let c_down = 1;
-      if (this.timeslots[i - c_down].state == 'booked') {
-        while (this.timeslots[i - c_down].state == 'booked') {
-          var index = this.bookedArray.indexOf(i - c_down);
-          if (index > -1) {
-            this.bookedArray.splice(index, 1);
-          }
-          console.log(': :' + c_down);
-          c_down++;
-        }
-      }
-
       this.lastSelected = i - c_up;
       this.selectedCount--;
       if (this.timeslots[i].state == 'selected') {
         this.timeslots[i].state = true;
       }
+
+      let c_down = 1;
+      if (i < this.timeslots.length && this.timeslots[i + c_down].state == 'booked') {
+        console.log("heretrue");
+        while (this.lastSelected + c_down < this.timeslots.length - 1 && this.timeslots[i + c_down].state == 'booked') {
+          var index = this.bookedArray.indexOf(i + c_down);
+          if (index > -1) {
+            this.bookedArray.splice(index, 1);
+            console.log('unselected ' + this.bookedArray);
+          }
+          c_down++;
+        }
+      }
+
+      
     }
-
-
-    console.log('firstselected: ' + this.firstSelected);
-    console.log('lastSelected: ' + this.lastSelected);
-
-
 
 
     // mark selected slots as selected
@@ -573,17 +564,17 @@ export class Tab2Page implements OnInit {
 
     // handle booked slots upwards
     if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
-      console.log('is yours');
+      console.log('is yours' + this.timeslots.indexOf(this.timeslots[this.firstSelected - 1]));
       let c = 1;
-      while (this.timeslots[this.firstSelected - c].state == 'booked') {
-        console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
+      while (this.firstSelected - c >= 0 && this.timeslots[this.firstSelected - c].state == 'booked') {
+        //console.log(c + ': ' + this.timeslots[this.firstSelected - c].state);
         //console.log('found booked in front, count: ' + this.bookedCount);
         this.addItem(this.firstSelected - c);
         c++;
         console.log(this.bookedArray);
       }
 
-      if (this.firstSelected > 0 &&
+      if (this.firstSelected > 0 && this.firstSelected - c >= 0 &&
         this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
         this.timeslots[this.firstSelected - c].state == 'blocked') {
         this.timeslots[this.firstSelected - c].state = true;
@@ -593,7 +584,7 @@ export class Tab2Page implements OnInit {
     // handle booked slots downwards
     if (this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == 'booked') {
       let c = 1;
-      while (this.timeslots[this.lastSelected + c].state == 'booked') {
+      while (this.lastSelected + c < this.timeslots.length && this.timeslots[this.lastSelected + c].state == 'booked') {
         console.log(c + ': ' + this.timeslots[this.lastSelected + c].state);
         //console.log('found booked in back, count: ' + this.bookedCount);
         this.addItem(this.lastSelected + c);
@@ -601,7 +592,7 @@ export class Tab2Page implements OnInit {
         console.log(this.bookedArray);
       }
 
-      if (this.lastSelected < this.timeslots.length - 1 &&
+      if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c < this.timeslots.length &&
         this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
         this.timeslots[this.lastSelected + c].state == 'blocked') {
         this.timeslots[this.lastSelected + c].state = true;
@@ -610,17 +601,50 @@ export class Tab2Page implements OnInit {
 
 
     // mark 1 slot before and 1 slot after selected to extend selection
-    if (this.firstSelected > 0 &&
+    if ((this.firstSelected > 0 &&
       this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
-      this.timeslots[this.firstSelected - 1].state == 'blocked') {
+      this.timeslots[this.firstSelected - 1].state == 'blocked')) {
       this.timeslots[this.firstSelected - 1].state = true;
     }
-    if (this.lastSelected < this.timeslots.length - 1 &&
+    if ((this.lastSelected < this.timeslots.length - 1 &&
       this.selectedCount < this.MAX_SLOTS_PER_BOOKING - this.bookedArray.length &&
-      this.timeslots[this.lastSelected + 1].state == 'blocked') {
+      this.timeslots[this.lastSelected + 1].state == 'blocked')) {
       this.timeslots[this.lastSelected + 1].state = true;
     }
 
+      
+    //check if AFTER NEXT booked slot may result in a 7+ slot booking if not blocked properly
+    if (this.firstSelected > 1 &&
+      this.timeslots[this.firstSelected - 2].state == 'booked' && 
+      this.selectedCount + this.bookedArray.length == 5 &&
+      this.timeslots[this.firstSelected - 1].state == true) {
+        
+      this.timeslots[this.firstSelected - 1].state = 'blocked';
+    }  
+    if (this.lastSelected < this.timeslots.length - 2 &&
+     this.timeslots[this.lastSelected + 2].state == 'booked' && 
+     this.timeslots[this.lastSelected + 1].state == true) {
+
+      
+      let c = 2;
+        while (this.lastSelected + c < this.timeslots.length && this.timeslots[this.lastSelected + c].state == 'booked') {
+          console.log(c + ': ' + this.timeslots[this.lastSelected + c].state);
+          this.addItem(this.lastSelected + c);
+          c++;
+          console.log(this.bookedArray);
+        }
+
+      if (this.selectedCount + this.bookedArray.length > 5) {
+        this.timeslots[this.lastSelected + 1].state = 'blocked';
+        console.log('triggered');
+      }
+    }
+
+
+    // self check
+    if (this.selectedCount + this.bookedArray.length > this.MAX_SLOTS_PER_BOOKING) {
+      this.timeslots[i].state = 'blocked'; 
+    }
 
     // mark all blocked as free if no slot is selected
     if (this.selectedCount == 0) {
