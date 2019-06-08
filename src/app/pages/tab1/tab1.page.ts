@@ -81,6 +81,7 @@ export class Tab1Page {
     // go through all bookings
     this.futureBookings = [];
     //clone bookings
+    console.log(this.bookings)
     for (let booking of this.bookings) {
       // compare the dates if booking date is bigger (today or future)
       let date = new Date(booking.Date.substring(0, 10));

@@ -958,30 +958,27 @@ export class Tab2Page implements OnInit {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
-        this.toast("booked: " + this.paymentID)
-        this.bookingRequestToServer()
+        this.toast("Paypal payment successful, sending data to Server..");
+        this.apiService.bookCapsule(
+            parseInt(this.capId),
+            this.activeDate_String,
+            this.firstSelected+1,
+            this.lastSelected+1,
+            'PayPal',
+            this.selectedCount,
+            true,
+            this.paymentID
+        ).subscribe(data => {
+          this.getTimeSlots(this.activeDate);
+          this.toast("booked: " + this.capName);
+          console.log(data);
+        });
       }
     });
 
     return await modal.present();
   }
 
-  bookingRequestToServer() {
-
-    this.apiService.bookCapsule(
-        parseInt(this.capId),
-        this.activeDate_String,
-        this.firstSelected,
-        this.lastSelected,
-        'PayPal',
-        this.selectedCount,
-        true,
-        this.paymentID
-    ).subscribe(data => {
-      this.getTimeSlots(this.activeDate);
-      console.log(data);
-    });
-  }
 
   //Toast Handler
   async toast(message: any) {
