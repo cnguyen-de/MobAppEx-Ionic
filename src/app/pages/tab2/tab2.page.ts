@@ -947,8 +947,8 @@ export class Tab2Page implements OnInit {
       component: CheckoutModalPage,
       componentProps: {
         paymentAmount: this.selectedCount,
-        timeStart: this.timeService.getStartTime(this.firstSelected),
-        timeEnd: this.timeService.getEndTime(this.lastSelected),
+        timeStart: this.timeService.getStartTime(this.firstSelected+1),
+        timeEnd: this.timeService.getEndTime(this.lastSelected+1),
         date: this.activeDate_String,
         capsule: this.capName
       },
@@ -972,6 +972,9 @@ export class Tab2Page implements OnInit {
           this.getTimeSlots(this.activeDate);
           this.toast("booked: " + this.capName);
           console.log(data);
+        }, err => {
+          console.log(err)
+          this.toast(err);
         });
       }
     });
