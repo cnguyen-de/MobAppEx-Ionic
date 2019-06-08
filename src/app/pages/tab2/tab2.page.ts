@@ -475,6 +475,7 @@ export class Tab2Page implements OnInit {
     this.slides.slideTo(1, 0);
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
+    this.activeDate = this.days[this.segment.value].dateRAW;
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
@@ -506,6 +507,7 @@ export class Tab2Page implements OnInit {
 
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
+    this.activeDate = this.days[this.segment.value].dateRAW;
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
