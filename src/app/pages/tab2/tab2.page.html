@@ -124,7 +124,7 @@
   <ion-card id="listr">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
       <ion-segment id="segmt" #segment mode="md">
-        <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked>
+        <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           {{day.date}}
         </ion-segment-button>
       </ion-segment>
@@ -241,7 +241,7 @@
       <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
       <div slot="end">{{selectedCount}}.00 €</div>
     </ion-item>
-    <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="animateTSS_Click()">
+    <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="proceedToCheckoutClick()" [disabled]="!canProceedCheckout()">
       Proceed To Checkout
     </ion-button>
   </ion-card>

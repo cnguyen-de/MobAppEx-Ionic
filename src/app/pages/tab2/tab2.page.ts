@@ -107,10 +107,16 @@ export class Tab2Page implements OnInit {
   firstSelected = -1;
   lastSelected = -1;
 
+  activeDate = new Date();
+  activeDate_String = '';
+
   test = false;
 
   ngOnInit() {
-
+    // Set current date
+    let currentDate = new Date();
+    console.log(currentDate);
+    this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth()+1) + '-' + currentDate.getDate();
 
     //Create 30 days for days-segment
     for (let i = 0; i < this.daysRange; i++) {
@@ -128,6 +134,7 @@ export class Tab2Page implements OnInit {
         formattedDate = 'Tomorrow';
       }
       let day = {
+        dateRAW: date,
         date: formattedDate,
         value: i.toString()
       }
@@ -227,6 +234,7 @@ export class Tab2Page implements OnInit {
       elem.setAttribute("style", "visibility: hidden");
       let elem2 = await document.getElementById("slider");
       elem2.setAttribute("style", "visibility: visible");
+
     } else {
       //this.test = true;
 
@@ -236,6 +244,29 @@ export class Tab2Page implements OnInit {
 
         let elem: HTMLElement = document.getElementById('segmt');
         elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
+
+        try {
+          let elem1 = document.getElementsByClassName("even");
+          elem1[0].setAttribute("style", "visibility:visible");
+          elem1[1].setAttribute("style", "visibility:visible");
+    
+          let elemx = document.getElementsByClassName("even2");
+          elemx[0].setAttribute("style", "visibility:visible");
+          elemx[1].setAttribute("style", "visibility:visible");
+    
+    
+          let elem21 = document.getElementsByClassName("odd");
+          elem21[0].setAttribute("style", "visibility:visible");
+          elem21[1].setAttribute("style", "visibility:visible");
+    
+          let elemx2 = document.getElementsByClassName("odd2");
+          elemx2[0].setAttribute("style", "visibility:visible");
+          elemx2[1].setAttribute("style", "visibility:visible");
+        } catch {
+          console.error('dynamic elements not rendered yet, catched by us!')
+        }
+        
+        
       }, 100);
 
       await this.getTimeSlots();
@@ -268,6 +299,8 @@ export class Tab2Page implements OnInit {
     let elemo = await document.getElementById("root");
     elemo.setAttribute("style", "visibility: hidden");
 
+    
+
 
     let elem = await document.getElementById("cardTSS_top");
     let elem3 = await document.getElementById("slideCard");
@@ -277,6 +310,26 @@ export class Tab2Page implements OnInit {
     elem2.setAttribute("style", "visibility: hidden");
 
     this.cardTSS_state = this.cardTSS_state == 'top' ? 'bottom' : 'top';
+
+
+    if (this.cardTSS_state == 'bottom') {
+      let elem1 = document.getElementsByClassName("even");
+      elem1[0].setAttribute("style", "visibility:hidden");
+      elem1[1].setAttribute("style", "visibility:hidden");
+
+      let elemx = document.getElementsByClassName("even2");
+      elemx[0].setAttribute("style", "visibility:hidden");
+      elemx[1].setAttribute("style", "visibility:hidden");
+
+
+      let elem21 = document.getElementsByClassName("odd");
+      elem21[0].setAttribute("style", "visibility:hidden");
+      elem21[1].setAttribute("style", "visibility:hidden");
+
+      let elemx2 = document.getElementsByClassName("odd2");
+      elemx2[0].setAttribute("style", "visibility:hidden");
+      elemx2[1].setAttribute("style", "visibility:hidden");
+    }
 
   }
 
@@ -305,13 +358,14 @@ export class Tab2Page implements OnInit {
     }, 500);
   }
 
-  async getTimeSlots() {
+  async getTimeSlots(date?) {
     /**
      * reseting relevant variables
      * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
      * @author Dave
      */
-    this.timeslots = [{ content: 'pull to refresh', status: '' }];
+    this.timeslots = [{ content: 'pull to refresh', status: 'blocked' }]; // <--- Don't delete!!!
+    console.log(this.timeslots);
     this.firstSelected = -1;
     this.lastSelected = -1;
     //this.bookedArray = [];
@@ -321,8 +375,12 @@ export class Tab2Page implements OnInit {
     this.bookedArray_AfterNext_Down = [];
     this.selectedCount = 0;
 
+    if(date != null) {
+      this.activeDate_String = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+    }
+    //formattedDateString = '2019-6-7';
     // get data from server
-    await this.apiService.getCapsuleAvailability(1, '2019-06-06').subscribe(data => {
+    await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
@@ -333,28 +391,28 @@ export class Tab2Page implements OnInit {
           state: data[propertyName]
         }
        
-        if (propertyName == '1' ||
-        propertyName == '3' || 
-        propertyName == '5' || 
-        propertyName == '7' || 
-        propertyName == '10' || 
-        propertyName == '11' || 
-        propertyName == '14' || 
-        propertyName == '16' || 
-        propertyName == '17' || 
-        propertyName == '18' || 
-        propertyName == '27' || 
-
-        // propertyName == '9' || 
+        // if (propertyName == '1' ||
+        // propertyName == '3' || 
+        // propertyName == '5' || 
+        // propertyName == '7' || 
+        // propertyName == '10' || 
         // propertyName == '11' || 
-        // propertyName == '12' || 
-        // propertyName == '13' || 
         // propertyName == '14' || 
-        // propertyName == '15' || 
         // propertyName == '16' || 
-        propertyName == '19') {
-          tmp.state = 'booked';
-        }
+        // propertyName == '17' || 
+        // propertyName == '18' || 
+        // propertyName == '27' || 
+
+        // // propertyName == '9' || 
+        // // propertyName == '11' || 
+        // // propertyName == '12' || 
+        // // propertyName == '13' || 
+        // // propertyName == '14' || 
+        // // propertyName == '15' || 
+        // // propertyName == '16' || 
+        // propertyName == '19') {
+        //   tmp.state = 'booked';
+        // }
         this.timeslots.push(tmp);
       }
       this.timeslots.splice(0, 1);
@@ -390,6 +448,9 @@ export class Tab2Page implements OnInit {
     elemx2[1].setAttribute("style", "visibility:visible");
 
     // this.slides.slideTo(1, 0);
+    console.log(this.segment.value);
+    console.log(this.days[this.segment.value].dateRAW);
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   slidingCount = 0;
@@ -413,6 +474,9 @@ export class Tab2Page implements OnInit {
   onIonSlidePrevEnd() {
     console.log('prev ended')
     this.slides.slideTo(1, 0);
+    // console.log(this.segment.value);
+    // console.log(this.days[this.segment.value].dateRAW);
+    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideNextStart() {
@@ -438,8 +502,12 @@ export class Tab2Page implements OnInit {
   }
 
   onIonSlideNextEnd() {
-    console.log('next ended')
+    //console.log('next ended')
     this.slides.slideTo(1, 0);
+
+    // console.log(this.segment.value);
+    // console.log(this.days[this.segment.value].dateRAW);
+    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideTouchStart() {
@@ -852,6 +920,45 @@ export class Tab2Page implements OnInit {
     // else {
     //   console.log("object already exists")
     // }
+  }
+
+
+
+  onSegmentClick(day) {
+    let date = new Date();
+    date.setDate(date.getDate() + parseInt(day.value));
+   
+    this.activeDate = date;
+    this.getTimeSlots(date);
+  }
+
+  proceedToCheckoutClick() {
+    this.apiService.bookCapsule(
+      parseInt(this.capId), 
+      0, 
+      this.activeDate_String, 
+      this.firstSelected, 
+      this.lastSelected, 
+      'PayPal', 
+      this.selectedCount, 
+      true, 
+      'payerMail',
+      this.selectedCount, 
+      new Date().toString(),
+      'paymentID'
+      ).subscribe(data => {
+
+        this.getTimeSlots(this.activeDate_String);
+      console.log(data);
+    });
+  }
+
+  canProceedCheckout(): boolean{
+    if(this.selectedCount > 0 && this.selectedCount <= this.MAX_SLOTS_PER_BOOKING) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 
