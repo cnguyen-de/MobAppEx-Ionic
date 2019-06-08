@@ -99,7 +99,6 @@ export class Tab2Page implements OnInit {
 
   //Timeslots
   timeslots = [];
-  timeslots2 = [];
   segmentWidth: number = 100;
 
   MAX_SLOTS_PER_BOOKING = 6;
@@ -149,6 +148,8 @@ export class Tab2Page implements OnInit {
 
     // set first segment of days-segment as checked
     this.segment.value = '0';
+
+    
 
     // Demo Data
     // this.capsules = [
@@ -275,23 +276,9 @@ export class Tab2Page implements OnInit {
         
       }, 100);
 
-      await this.getTimeSlots();
-      // this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
-      //   // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
-      //   for (var propertyName in data) {
-      //     // propertyName is what you want
-      //     // you can get the value like this: myObject[propertyName]
-      //     let tmp = {
-      //       content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
-      //       state: data[propertyName]
-      //     }
-      //     if(propertyName == '7' || propertyName == '10') {
-      //       tmp.state = false;
-      //     }
-      //     this.timeslots.push(tmp);
-      //   }
-      // });
 
+      //await this.getTimeSlots(this.activeDate);
+      this.timeslots = [{ content: 'pull to refresh', status: '' }];
     }
   }
 
@@ -350,27 +337,31 @@ export class Tab2Page implements OnInit {
   }
 
 
-
-
-
-
-
   doRefresh(event) {
     setTimeout(() => {
       // Slowing down operation for better refresher UX
-      this.getTimeSlots();
+      this.getTimeSlots(this.activeDate);
 
       event.target.complete();
     }, 500);
   }
 
+
+
+  working = false;
   async getTimeSlots(date?) {
+
+    if (this.working == true) {
+      return;
+    }
+
+    this.working = true;
     /**
      * reseting relevant variables
      * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
      * @author Dave
      */
-    this.timeslots = [{ content: 'pull to refresh', status: 'blocked' }]; // <--- Don't delete!!!
+    this.timeslots = [{ content: 'pull to refresh', status: '' }]; // <--- Don't delete!!!
     console.log(this.timeslots);
     this.firstSelected = -1;
     this.lastSelected = -1;
@@ -385,15 +376,22 @@ export class Tab2Page implements OnInit {
       this.activeDate_String = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
     }
     //formattedDateString = '2019-6-7';
+
+    
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
+    console.log(data);
+
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
         // propertyName is what you want
         // you can get the value like this: myObject[propertyName]
+        
+
+        console.log(this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)));
         let tmp = {
-          content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
+          content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
           state: data[propertyName]
         }
        
@@ -422,6 +420,7 @@ export class Tab2Page implements OnInit {
         this.timeslots.push(tmp);
       }
       this.timeslots.splice(0, 1);
+      this.working = false;
     },
       error => {
         console.error(error);
@@ -454,9 +453,7 @@ export class Tab2Page implements OnInit {
     elemx2[1].setAttribute("style", "visibility:visible");
 
     // this.slides.slideTo(1, 0);
-    console.log(this.segment.value);
-    console.log(this.days[this.segment.value].dateRAW);
-    this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    
   }
 
   slidingCount = 0;
@@ -482,7 +479,7 @@ export class Tab2Page implements OnInit {
     this.slides.slideTo(1, 0);
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
-    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideNextStart() {
@@ -513,7 +510,7 @@ export class Tab2Page implements OnInit {
 
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
-    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideTouchStart() {
@@ -939,6 +936,7 @@ export class Tab2Page implements OnInit {
   }
 
   proceedToCheckoutClick() {
+
     this.presentCheckOutModal();
 
   }
