@@ -270,8 +270,9 @@ export class Tab2Page implements OnInit {
         
       }, 100);
 
-      await this.getTimeSlots(this.activeDate);
 
+      //await this.getTimeSlots(this.activeDate);
+      this.timeslots = [{ content: 'pull to refresh', status: '' }];
     }
   }
 
@@ -330,27 +331,31 @@ export class Tab2Page implements OnInit {
   }
 
 
-
-
-
-
-
   doRefresh(event) {
     setTimeout(() => {
       // Slowing down operation for better refresher UX
-      this.getTimeSlots();
+      this.getTimeSlots(this.activeDate);
 
       event.target.complete();
     }, 500);
   }
 
+
+
+  working = false;
   async getTimeSlots(date?) {
+
+    if (this.working == true) {
+      return;
+    }
+
+    this.working = true;
     /**
      * reseting relevant variables
      * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
      * @author Dave
      */
-    this.timeslots = [{ content: 'pull to refresh', status: 'blocked' }]; // <--- Don't delete!!!
+    this.timeslots = [{ content: 'pull to refresh', status: '' }]; // <--- Don't delete!!!
     console.log(this.timeslots);
     this.firstSelected = -1;
     this.lastSelected = -1;
@@ -362,25 +367,23 @@ export class Tab2Page implements OnInit {
     this.selectedCount = 0;
 
     if(date != null) {
-      console.log(date);
       this.activeDate_String = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
-      console.log('heeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: ' + this.activeDate_String);
-
     }
     //formattedDateString = '2019-6-7';
 
     
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
+    console.log(data);
+
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
         // propertyName is what you want
         // you can get the value like this: myObject[propertyName]
-        if(propertyName == "-1"){
-          return;
-        }
+        
 
+        console.log(this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)));
         let tmp = {
           content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
           state: data[propertyName]
@@ -411,6 +414,7 @@ export class Tab2Page implements OnInit {
         this.timeslots.push(tmp);
       }
       this.timeslots.splice(0, 1);
+      this.working = false;
     },
       error => {
         console.error(error);
