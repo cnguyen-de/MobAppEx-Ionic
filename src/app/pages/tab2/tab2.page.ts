@@ -978,7 +978,7 @@ export class Tab2Page implements OnInit {
         true,
         this.paymentID
     ).subscribe(data => {
-      this.getTimeSlots(this.activeDate_String);
+      this.getTimeSlots(this.activeDate);
       console.log(data);
     });
   }
