@@ -47,53 +47,20 @@ export class Tab1Page {
         user => {
           this.storage.get('user').then(savedUser => {
             if (isEqual(user, savedUser) && !this.isFirstTime) {
-              this.storage.get('futureBookings').then(bookings => {
-                if (typeof bookings != 'undefined') {
-                  if (isEqual(this.futureBookings, bookings)) {
-                    console.log('Showing cache data');
-                    return;
-                  }
-                  this.futureBookings = bookings;
-                  console.log('Showing data from database')
-                }
-              })
+              if (isEqual(this.bookings, savedUser.bookings)) {
+                console.log('Showing cache data');
+              } else {
+                this.bookings = savedUser.bookings;
+                console.log('Getting data from database')
+              }
+              this.getFutureBookingsFromBookings()
             } else {
               console.log('Processing new JSON');
               this.isFirstTime = false;
               this.storage.set('isFirstTime', false);
-              this.futureBookings = [];
               // @ts-ignore
-              this.bookings = user.bookings;
-              // go through all bookings
-              for (let booking of this.bookings) {
-                // compare the dates if booking date is bigger (today or future)
-                let date = new Date(booking.Date.substring(0, 10));
-                let dateToday = new Date();
-                date.setHours(0, 0, 0, 0);
-                dateToday.setHours(0, 0, 0, 0);
-                booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
-                booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
-                booking.Date = booking.Date.substring(0, 10);
-                if (date > dateToday) {
-                  this.futureBookings.push(booking);
-                } else if (date.getDate() == dateToday.getDate()) {
-                  let hourNow = this.today.getHours();
-                  console.log(this.timeService.getEndTime(booking.LastTimeFrame));
-                  let endTime = this.timeService.getEndTime(booking.LastTimeFrame).split(':');
-                  // compare the hours, if bigger then add to future booking
-                  if (endTime[0] > hourNow) {
-                    this.futureBookings.push(booking);
-                    // if same hour, compare minutes
-                  } else if (endTime[0] == hourNow) {
-                    if (endTime[1] >= this.today.getMinutes()) {
-                      this.futureBookings.push(booking);
-                    }
-                  }
-                }
-              }
-              // @ts-ignore
-              this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date));
-              this.saveToStorage('futureBookings', this.futureBookings);
+              this.bookings = JSON.parse(JSON.stringify(user.bookings));
+              this.getFutureBookingsFromBookings()
             }
           });
         }, err => {
@@ -101,16 +68,50 @@ export class Tab1Page {
           this.storage.get('futureBookings').then(bookings => {
             if (typeof bookings != 'undefined') {
               if (!isEqual(this.futureBookings, bookings)) {
-                console.log('Equal JSONs, showing old data');
+                console.log('err');
               }
               this.futureBookings = bookings;
-              console.log('Showing data from cache')
+              console.log('err')
             }
           })
         });
-
   }
 
+  getFutureBookingsFromBookings() {
+    // go through all bookings
+    this.futureBookings = [];
+    //clone bookings
+    for (let booking of this.bookings) {
+      // compare the dates if booking date is bigger (today or future)
+      let date = new Date(booking.Date.substring(0, 10));
+      let dateToday = new Date();
+      date.setHours(0, 0, 0, 0);
+      dateToday.setHours(0, 0, 0, 0);
+      // @ts-ignore
+      booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
+      booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+      booking.Date = booking.Date.substring(0, 10);
+      if (date > dateToday) {
+        this.futureBookings.push(booking);
+      } else if (date.getDate() == dateToday.getDate()) {
+        let hourNow = this.today.getHours();
+        console.log(this.timeService.getEndTime(booking.LastTimeFrame));
+        let endTime = this.timeService.getEndTime(booking.LastTimeFrame).split(':');
+        // compare the hours, if bigger then add to future booking
+        if (endTime[0] > hourNow) {
+          this.futureBookings.push(booking);
+          // if same hour, compare minutes
+        } else if (endTime[0] == hourNow) {
+          if (endTime[1] >= this.today.getMinutes()) {
+            this.futureBookings.push(booking);
+          }
+        }
+      }
+    }
+    // @ts-ignore
+    this.futureBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    this.saveToStorage('futureBookings', this.futureBookings);
+  }
   doRefresh($event) {
     this.getFutureBookings();
     setTimeout(() => {
