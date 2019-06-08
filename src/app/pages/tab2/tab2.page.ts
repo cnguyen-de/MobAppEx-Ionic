@@ -93,7 +93,6 @@ export class Tab2Page implements OnInit {
 
   //Timeslots
   timeslots = [];
-  timeslots2 = [];
   segmentWidth: number = 100;
 
   MAX_SLOTS_PER_BOOKING = 6;
@@ -143,6 +142,8 @@ export class Tab2Page implements OnInit {
 
     // set first segment of days-segment as checked
     this.segment.value = '0';
+
+    
 
     // Demo Data
     // this.capsules = [
@@ -269,22 +270,7 @@ export class Tab2Page implements OnInit {
         
       }, 100);
 
-      await this.getTimeSlots();
-      // this.apiService.getCapsuleAvailability(1, '2019-06-02').subscribe(data => {
-      //   // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
-      //   for (var propertyName in data) {
-      //     // propertyName is what you want
-      //     // you can get the value like this: myObject[propertyName]
-      //     let tmp = {
-      //       content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
-      //       state: data[propertyName]
-      //     }
-      //     if(propertyName == '7' || propertyName == '10') {
-      //       tmp.state = false;
-      //     }
-      //     this.timeslots.push(tmp);
-      //   }
-      // });
+      await this.getTimeSlots(this.activeDate);
 
     }
   }
@@ -376,9 +362,14 @@ export class Tab2Page implements OnInit {
     this.selectedCount = 0;
 
     if(date != null) {
+      console.log(date);
       this.activeDate_String = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+      console.log('heeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: ' + this.activeDate_String);
+
     }
     //formattedDateString = '2019-6-7';
+
+    
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
       // data from server not formatted properly; using workaround:
@@ -386,8 +377,12 @@ export class Tab2Page implements OnInit {
       for (var propertyName in data) {
         // propertyName is what you want
         // you can get the value like this: myObject[propertyName]
+        if(propertyName == "-1"){
+          return;
+        }
+
         let tmp = {
-          content: this.timeService.getTimeRange(+(propertyName), +(propertyName)),
+          content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
           state: data[propertyName]
         }
        
@@ -448,9 +443,7 @@ export class Tab2Page implements OnInit {
     elemx2[1].setAttribute("style", "visibility:visible");
 
     // this.slides.slideTo(1, 0);
-    console.log(this.segment.value);
-    console.log(this.days[this.segment.value].dateRAW);
-    this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    
   }
 
   slidingCount = 0;
@@ -476,7 +469,7 @@ export class Tab2Page implements OnInit {
     this.slides.slideTo(1, 0);
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
-    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideNextStart() {
@@ -507,7 +500,7 @@ export class Tab2Page implements OnInit {
 
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
-    // this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
   async onIonSlideTouchStart() {
@@ -948,7 +941,7 @@ export class Tab2Page implements OnInit {
       'paymentID'
       ).subscribe(data => {
 
-        this.getTimeSlots(this.activeDate_String);
+        this.getTimeSlots(this.activeDate);
       console.log(data);
     });
   }
