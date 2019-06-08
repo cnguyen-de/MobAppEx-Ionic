@@ -20,10 +20,8 @@ export class TabsPage {
       let options: NativeTransitionOptions = {
         direction: dir,
         duration: 200,
-        slowdownfactor: 4,
-        slidePixels: 0,
+        slowdownfactor: 1,
         androiddelay: 0,
-        fixedPixelsTop: 0,
         fixedPixelsBottom: 56
       };
       this.nativePageTransitions.slide(options);

@@ -21,7 +21,7 @@ export class RegistrationPage implements OnInit {
   options: NativeTransitionOptions = {
     direction: 'left',
     duration: 200,
-    slowdownfactor: 4,
+    slowdownfactor: 1,
     androiddelay: 0,
   };
   forward: boolean = false;
@@ -50,7 +50,7 @@ export class RegistrationPage implements OnInit {
       let options: NativeTransitionOptions = {
         direction: 'right',
         duration: 200,
-        slowdownfactor: 4,
+        slowdownfactor: 1,
         androiddelay: 0,
       };
       this.nativePageTransitions.slide(options);

@@ -24,7 +24,7 @@ export class SlidesPage implements OnInit {
     let options: NativeTransitionOptions = {
       direction: 'left',
       duration: 200,
-      slowdownfactor: 4,
+      slowdownfactor: 1,
       androiddelay: 0,
     };
     this.nativePageTransitions.slide(options);

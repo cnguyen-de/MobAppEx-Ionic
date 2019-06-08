@@ -44,9 +44,9 @@
   <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
     <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-    <ion-card *ngIf="i == 0" class="active-capsule" mode="ios">
+    <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios">
       <div class="active-capsule-bar">
-        <ion-icon name="information-circle-outline" class="info-icon" slot="end" size="large"></ion-icon>
+        <ion-icon name="pricetag" class="info-icon" slot="end" size="large"></ion-icon>
       </div>
 
       <ion-card-header class="active-capsule-header">
