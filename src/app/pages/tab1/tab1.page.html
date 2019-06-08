@@ -80,8 +80,8 @@
     </ion-card>
 
     <!-- LIST VIEW: FUTURE CAPSULES-->
-    <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
-      <ion-list>
+    <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list" >
+      <ion-list (click)="matExpansionPanel.toggle()">
         <ion-list-header mode="ios">
           <span><ion-icon name="pin"></ion-icon> {{booking.capsule.Name}}</span>
           <ion-text class="date" style="float: right;">
@@ -91,7 +91,7 @@
       </ion-list>
 
       <mat-accordion>
-        <mat-expansion-panel>
+        <mat-expansion-panel #matExpansionPanel>
           <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
           <ion-chip>
             <ion-icon name="calendar"></ion-icon>
