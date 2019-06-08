@@ -1,11 +1,13 @@
 import { map } from 'rxjs/operators';
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { IonSlides, IonSegment, IonContent, Platform } from "@ionic/angular";
+import {IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController} from '@ionic/angular';
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
 import { TimeService } from '../../_services/time/time.service';
 import { AgmMap, AgmCoreModule } from '@agm/core';
+import {LightModalPage} from '../../modals/light-modal/light-modal.page';
+import {CheckoutModalPage} from '../../modals/checkout-modal/checkout-modal.page';
 
 
 @Component({
@@ -50,8 +52,12 @@ export class Tab2Page implements OnInit {
   constructor(private locationService: LocationService,
     private apiService: ApiService,
     private platform: Platform,
-    private timeService: TimeService) { }
+    private timeService: TimeService,
+    private modalController: ModalController,
+    private toastController: ToastController) { }
 
+  //payment ID from paypal
+  paymentID: string;
   // set to false to use GPS location!
   fixedLocation: boolean = true;
 
@@ -933,26 +939,61 @@ export class Tab2Page implements OnInit {
   }
 
   proceedToCheckoutClick() {
-    this.apiService.bookCapsule(
-      parseInt(this.capId), 
-      0, 
-      this.activeDate_String, 
-      this.firstSelected, 
-      this.lastSelected, 
-      'PayPal', 
-      this.selectedCount, 
-      true, 
-      'payerMail',
-      this.selectedCount, 
-      new Date().toString(),
-      'paymentID'
-      ).subscribe(data => {
+    this.presentCheckOutModal();
 
-        this.getTimeSlots(this.activeDate_String);
+  }
+  async presentCheckOutModal() {
+    const modal = await this.modalController.create({
+      component: CheckoutModalPage,
+      componentProps: {
+        paymentAmount: this.selectedCount,
+        timeStart: this.timeService.getStartTime(this.firstSelected),
+        timeEnd: this.timeService.getEndTime(this.lastSelected),
+        date: this.activeDate_String,
+        capsule: this.capName
+      },
+      cssClass: 'chooser-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        this.paymentID = value.data;
+        this.toast("booked: " + this.paymentID)
+        this.bookingRequestToServer()
+      }
+    });
+
+    return await modal.present();
+  }
+
+  bookingRequestToServer() {
+
+    this.apiService.bookCapsule(
+        parseInt(this.capId),
+        this.activeDate_String,
+        this.firstSelected,
+        this.lastSelected,
+        'PayPal',
+        this.selectedCount,
+        true,
+        this.paymentID
+    ).subscribe(data => {
+      this.getTimeSlots(this.activeDate_String);
       console.log(data);
     });
   }
 
+  //Toast Handler
+  async toast(message: any) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      position: 'top',
+      cssClass: 'toast-container',
+      keyboardClose: true,
+    });
+    toast.present();
+  }
   canProceedCheckout(): boolean{
     if(this.selectedCount > 0 && this.selectedCount <= this.MAX_SLOTS_PER_BOOKING) {
       return true;

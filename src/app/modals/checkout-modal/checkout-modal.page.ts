@@ -25,7 +25,11 @@ export class CheckoutModalPage implements OnInit {
               public storage : Storage, private apiService: ApiService,
               private navParams: NavParams, private modalController: ModalController,
               private payPal: PayPal) {
-    this.paymentAmount = this.navParams.get('value');
+    this.paymentAmount = this.navParams.get('paymentAmount');
+    this.capsule = this.navParams.get('capsule');
+    this.date = this.navParams.get('date');
+    this.timeStart = this.navParams.get('timeStart');
+    this.timeEnd = this.navParams.get('timeEnd');
   }
 
   ngOnInit() {
@@ -42,15 +46,11 @@ export class CheckoutModalPage implements OnInit {
         let payment = new PayPalPayment(this.paymentAmount, this.currency, 'Description', 'sale');
         this.payPal.renderSinglePaymentUI(payment).then((res) => {
           console.log(res);
-          this.dismiss();
+          this.modalController.dismiss(res.response.id);
         }, (err) => {
           console.log("ERROR rendering")
         })
       }, (err) => console.log("ERROR configuration"))
     }, (err) => console.log("ERROR initializing"))
-  }
-
-  dismiss() {
-    this.modalController.dismiss(this.paymentAmount);
   }
 }
