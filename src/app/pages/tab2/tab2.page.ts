@@ -334,11 +334,11 @@ export class Tab2Page implements OnInit {
         }
        
         if (propertyName == '1' ||
-        propertyName == '4' || 
+        propertyName == '3' || 
         propertyName == '5' || 
         propertyName == '7' || 
-        propertyName == '8' || 
         propertyName == '10' || 
+        propertyName == '11' || 
         propertyName == '14' || 
         propertyName == '16' || 
         propertyName == '17' || 
@@ -624,7 +624,7 @@ export class Tab2Page implements OnInit {
         this.timeslots[this.firstSelected - c + 1].state == 'booked') {
          
          let c2 = c;
-           while (this.firstSelected - c2 < this.timeslots.length - 2 && 
+           while (this.firstSelected - c2 > 0 && 
             this.timeslots[this.firstSelected - (c2 + 1)].state == 'booked') {
              //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
              this.addItem('booked_afternext_up', this.firstSelected - (c2 + 1));
@@ -736,7 +736,7 @@ export class Tab2Page implements OnInit {
         this.timeslots[this.firstSelected - c + 1].state == 'booked') {
          
          let c2 = c;
-           while (this.firstSelected - c2 < this.timeslots.length - 2 && 
+           while (this.firstSelected - c2 > 0 && 
             this.timeslots[this.firstSelected - c2 - 1].state == 'booked') {
              //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
              this.addItem('booked_afternext_up', this.firstSelected - c2 - 1);
