@@ -127,7 +127,7 @@ export class ApiService {
     )
   }
 
-  bookCapsule(Capsule_id: number, Pin: number, Date: string, FirstTimeFrame: number, LastTimeFrame: number, Vendor: string, Amount: number, IsVerified: boolean, PayerEmail: string, PayedAmount: number, PayedDate: string, Payment_id: string) {
+  bookCapsule(Capsule_id: number, Date: string, FirstTimeFrame: number, LastTimeFrame: number, Vendor: string, Amount: number, IsVerified: boolean, Payment_id: string) {
     var SnoozeUser_id;
 
     this.currentUser.subscribe(data =>{
@@ -135,7 +135,7 @@ export class ApiService {
     });
 
     let params = this.setParamToken(this.token);
-    return this.httpClient.post(`${this.server}/Bookings/`, {SnoozeUser_id, Capsule_id, Pin, Date, FirstTimeFrame, LastTimeFrame, Vendor, Amount, IsVerified, PayerEmail, PayedAmount, PayedDate, Payment_id}, {params: params}).pipe(
+    return this.httpClient.post(`${this.server}/Bookings/`, {SnoozeUser_id, Capsule_id, Date, FirstTimeFrame, LastTimeFrame, Vendor, Amount, IsVerified, Payment_id}, {params: params}).pipe(
         map((res) => {
           return res;
         })
