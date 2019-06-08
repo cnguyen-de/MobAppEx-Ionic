@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay, share } from 'rxjs/operators';
+import {delay, first, share} from 'rxjs/operators';
 import { ApiService } from '../../_services/api/api.service';
 import { TimeService } from '../../_services/time/time.service';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import isEqual from 'lodash.isequal'
 
 @Component({
   selector: 'app-booking-history',
@@ -30,22 +31,24 @@ export class BookingHistoryPage implements OnInit {
     };
     this.nativePageTransitions.slide(options);
   }
-  getBookings(){
-    this.apiService.currentUser.subscribe(data =>{
-      try {
-        data.bookings = this.sortData(data.bookings);
-        // this.bookings = data.bookings.slice().reverse();
-        this.bookings = data.bookings;
 
-        for(var i = 0; this.bookings.length; i++){
-          this.bookings[i].FirstTimeFrame = this.timeService.getStartTime(this.bookings[i].FirstTimeFrame);
-          this.bookings[i].LastTimeFrame = this.timeService.getEndTime(this.bookings[i].LastTimeFrame);
-        }
-      } catch (error) {
-        // console.log(error);
-      }
-
-    });
+  getBookings() {
+    this.apiService.getUser().pipe(first()).subscribe(
+        user => {
+          this.apiService.currentUser.subscribe(data => {
+            if (isEqual(user, data)) {
+              data.bookings = this.sortData(data.bookings);
+              this.bookings = data.bookings;
+            } else {
+              user.bookings = this.sortData(user.bookings);
+              this.bookings = user.bookings;
+            }
+            for (var i = 0; this.bookings.length; i++) {
+              this.bookings[i].FirstTimeFrame = this.timeService.getStartTime(this.bookings[i].FirstTimeFrame);
+              this.bookings[i].LastTimeFrame = this.timeService.getEndTime(this.bookings[i].LastTimeFrame);
+            }
+          });
+        });
   }
 
   get timeFrames(){
