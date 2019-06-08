@@ -63,7 +63,7 @@
       <ion-spinner name="crescent" style="color: red" *ngIf="spinBtnPositionPressed"></ion-spinner>
     </ion-button>
   </div>
-
+  
   <ion-fab id="fab" horizontal="center" slot="fixed" hidden>
     <ion-fab-button size="small">
       <ion-icon name="arrow-up"></ion-icon>
@@ -153,7 +153,7 @@
             <ion-list class="odd2" lines="full">
               <div *ngFor="let item of timeslots; let i = index">
                 <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div id="idero" slot="start">{{i}} | {{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
                 <ion-item button="true" *ngIf="item.state == false"
