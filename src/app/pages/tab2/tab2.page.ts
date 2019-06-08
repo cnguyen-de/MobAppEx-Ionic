@@ -362,7 +362,6 @@ export class Tab2Page implements OnInit {
      * @author Dave
      */
     this.timeslots = [{ content: 'pull to refresh', status: '' }]; // <--- Don't delete!!!
-    console.log(this.timeslots);
     this.firstSelected = -1;
     this.lastSelected = -1;
     //this.bookedArray = [];
@@ -380,21 +379,18 @@ export class Tab2Page implements OnInit {
     
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
-    console.log(data);
-
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
         // propertyName is what you want
         // you can get the value like this: myObject[propertyName]
-        
-
-        console.log(this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)));
         let tmp = {
           content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
           state: data[propertyName]
         }
        
+        // DEBUG DATA:
+
         // if (propertyName == '1' ||
         // propertyName == '3' || 
         // propertyName == '5' || 
