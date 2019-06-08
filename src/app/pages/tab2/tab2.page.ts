@@ -1,13 +1,14 @@
 import { map } from 'rxjs/operators';
 import { Component, ViewChild, OnInit } from "@angular/core";
-import {IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController} from '@ionic/angular';
+import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
 import { TimeService } from '../../_services/time/time.service';
 import { AgmMap, AgmCoreModule } from '@agm/core';
-import {LightModalPage} from '../../modals/light-modal/light-modal.page';
-import {CheckoutModalPage} from '../../modals/checkout-modal/checkout-modal.page';
+import { LightModalPage } from '../../modals/light-modal/light-modal.page';
+import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
+import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -102,7 +103,6 @@ export class Tab2Page implements OnInit {
   segmentWidth: number = 100;
 
   MAX_SLOTS_PER_BOOKING = 6;
-  //bookedArray = [];
   bookedArray_Up = [];
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
@@ -111,6 +111,9 @@ export class Tab2Page implements OnInit {
   selectedCount = 0;
   firstSelected = -1;
   lastSelected = -1;
+
+  userBookingsArray = [];
+  userBookingsSlotsArray = [];
 
   activeDate = new Date();
   activeDate_String = '';
@@ -121,7 +124,7 @@ export class Tab2Page implements OnInit {
     // Set current date
     let currentDate = new Date();
     console.log(currentDate);
-    this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth()+1) + '-' + currentDate.getDate();
+    this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
     //Create 30 days for days-segment
     for (let i = 0; i < this.daysRange; i++) {
@@ -149,7 +152,7 @@ export class Tab2Page implements OnInit {
     // set first segment of days-segment as checked
     this.segment.value = '0';
 
-    
+
 
     // Demo Data
     // this.capsules = [
@@ -179,6 +182,17 @@ export class Tab2Page implements OnInit {
       //Open marker-popup for first marker
       this.capsules[0].isOpen = true;
     });
+
+    this.apiService.getUser()
+      .pipe(first())
+      .subscribe(
+        user => {
+          this.userBookingsArray = user.bookings;
+          console.log(user.bookings);
+        },
+        error => {
+          console.log(error);
+        });
 
     /** 
      * Retrieve Current Position
@@ -256,24 +270,24 @@ export class Tab2Page implements OnInit {
           let elem1 = document.getElementsByClassName("even");
           elem1[0].setAttribute("style", "visibility:visible");
           elem1[1].setAttribute("style", "visibility:visible");
-    
+
           let elemx = document.getElementsByClassName("even2");
           elemx[0].setAttribute("style", "visibility:visible");
           elemx[1].setAttribute("style", "visibility:visible");
-    
-    
+
+
           let elem21 = document.getElementsByClassName("odd");
           elem21[0].setAttribute("style", "visibility:visible");
           elem21[1].setAttribute("style", "visibility:visible");
-    
+
           let elemx2 = document.getElementsByClassName("odd2");
           elemx2[0].setAttribute("style", "visibility:visible");
           elemx2[1].setAttribute("style", "visibility:visible");
         } catch {
           console.error('dynamic elements not rendered yet, catched by us!')
         }
-        
-        
+
+
       }, 100);
 
 
@@ -292,7 +306,7 @@ export class Tab2Page implements OnInit {
     let elemo = await document.getElementById("root");
     elemo.setAttribute("style", "visibility: hidden");
 
-    
+
 
 
     let elem = await document.getElementById("cardTSS_top");
@@ -364,19 +378,20 @@ export class Tab2Page implements OnInit {
     this.timeslots = [{ content: 'pull to refresh', status: '' }]; // <--- Don't delete!!!
     this.firstSelected = -1;
     this.lastSelected = -1;
-    //this.bookedArray = [];
+    this.userBookingsSlotsArray = [];
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
     this.bookedArray_AfterNext_Up = [];
     this.bookedArray_AfterNext_Down = [];
     this.selectedCount = 0;
 
-    if(date != null) {
-      this.activeDate_String = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+    if (date != null) {
+      this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     }
     //formattedDateString = '2019-6-7';
 
-    
+    this.findBookings();
+
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
       // data from server not formatted properly; using workaround:
@@ -388,7 +403,7 @@ export class Tab2Page implements OnInit {
           content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
           state: data[propertyName]
         }
-       
+
         // DEBUG DATA:
 
         // if (propertyName == '1' ||
@@ -416,6 +431,11 @@ export class Tab2Page implements OnInit {
         this.timeslots.push(tmp);
       }
       this.timeslots.splice(0, 1);
+
+      for (let val in this.userBookingsSlotsArray) {
+        // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
+        this.timeslots[parseInt(this.userBookingsSlotsArray[val])-1].state = 'booked';
+      }
       this.working = false;
     },
       error => {
@@ -449,7 +469,7 @@ export class Tab2Page implements OnInit {
     elemx2[1].setAttribute("style", "visibility:visible");
 
     // this.slides.slideTo(1, 0);
-    
+
   }
 
   slidingCount = 0;
@@ -591,7 +611,7 @@ export class Tab2Page implements OnInit {
       if (this.lastSelected < this.timeslots.length - 2 && this.timeslots[i + c_down].state == 'booked') {
         while (this.timeslots[i + c_down].state == 'booked') {
           console.log('unselected first down' + this.bookedArray_Down);
-       
+
           var index = this.bookedArray_Down.indexOf(i + c_down);
           if (index > -1) {
             this.bookedArray_Down.splice(index, 1);
@@ -609,7 +629,7 @@ export class Tab2Page implements OnInit {
       if (this.firstSelected > 1 && this.timeslots[i - c_up].state == 'booked') {
         while (this.firstSelected - c_up >= 1 && this.timeslots[i - c_up].state == 'booked') {
           console.log('unselected first up' + this.bookedArray_Up);
-          
+
           var index = this.bookedArray_Up.indexOf(i - c_up);
           if (index > -1) {
             this.bookedArray_Up.splice(index, 1);
@@ -618,7 +638,7 @@ export class Tab2Page implements OnInit {
         }
       }
 
-      
+
     } else if (i == this.lastSelected) {
       console.log('unselecting last');
       let c_up = 1;
@@ -653,7 +673,7 @@ export class Tab2Page implements OnInit {
         }
       }
 
-      
+
     }
 
 
@@ -673,13 +693,13 @@ export class Tab2Page implements OnInit {
 
     // handle booked slots upwards
     if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == 'booked') {
-      
+
       let c = 1;
       while (this.firstSelected - c >= 0 && this.timeslots[this.firstSelected - c].state == 'booked') {
-        
+
         this.addItem('booked_up', this.firstSelected - c);
         c++;
-        console.log('first upwards bookeds: '+  this.bookedArray_Up);
+        console.log('first upwards bookeds: ' + this.bookedArray_Up);
       }
 
       if (this.firstSelected > 0 && this.firstSelected - c >= 0 &&
@@ -689,32 +709,32 @@ export class Tab2Page implements OnInit {
       }
 
       if (this.firstSelected > 1 &&
-        this.timeslots[this.firstSelected - c].state == true && 
+        this.timeslots[this.firstSelected - c].state == true &&
         this.timeslots[this.firstSelected - c + 1].state == 'booked') {
-         
-         let c2 = c;
-           while (this.firstSelected - c2 > 0 && 
-            this.timeslots[this.firstSelected - (c2 + 1)].state == 'booked') {
-             //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
-             this.addItem('booked_afternext_up', this.firstSelected - (c2 + 1));
-             c2++;
-           }
-      console.log('first upwards c: '+  c);
 
-      console.log('first upwards c2: '+  c2);
-      console.log('first selected - c: '+  (this.firstSelected - c).toString());
-      console.log('selected + booked: '+ (this.selectedCount + this.bookedArray_Up.length));
+        let c2 = c;
+        while (this.firstSelected - c2 > 0 &&
+          this.timeslots[this.firstSelected - (c2 + 1)].state == 'booked') {
+          //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
+          this.addItem('booked_afternext_up', this.firstSelected - (c2 + 1));
+          c2++;
+        }
+        console.log('first upwards c: ' + c);
 
-           // größer gleich 5 weil das das ddarauffolgende auch booked ist und somit das limit erreicht
-         if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length) >= 5) {
-           if(this.timeslots[this.firstSelected - c].state == true) {
+        console.log('first upwards c2: ' + c2);
+        console.log('first selected - c: ' + (this.firstSelected - c).toString());
+        console.log('selected + booked: ' + (this.selectedCount + this.bookedArray_Up.length));
+
+        // größer gleich 5 weil das das ddarauffolgende auch booked ist und somit das limit erreicht
+        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length) >= 5) {
+          if (this.timeslots[this.firstSelected - c].state == true) {
             this.timeslots[this.firstSelected - c].state = 'blocked';
-           }
-         } 
-       }
+          }
+        }
+      }
     }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
     // handle booked slots downwards
@@ -733,43 +753,43 @@ export class Tab2Page implements OnInit {
         this.timeslots[this.lastSelected + c].state = true;
       }
 
-     
+
       if (this.lastSelected < this.timeslots.length - 2 &&
-        this.timeslots[this.lastSelected + c].state == true && 
+        this.timeslots[this.lastSelected + c].state == true &&
         this.timeslots[this.lastSelected + c + 1].state == 'booked') {
-         
-         let c2 = c;
-           while (this.lastSelected + c2 < this.timeslots.length - 2 && 
-            this.timeslots[this.lastSelected + c2 + 1].state == 'booked') {
-             //console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
-             this.addItem('booked_afternext_down', this.lastSelected + c2 + 1);
-             c2++;
-           }
-           console.log('booked down c2: ' + c2);
-           console.log('first downwards c: '+  c);
 
-      console.log('first downwards c2: '+  c2);
-      console.log('first selected + c: '+  (this.lastSelected + c).toString());
-      console.log('selected: '+ (this.selectedCount));
-      console.log('bookedDown: '+ (this.bookedArray_Down.length));
-      console.log('bookedDownAfter: '+ (this.bookedArray_AfterNext_Down.length));
+        let c2 = c;
+        while (this.lastSelected + c2 < this.timeslots.length - 2 &&
+          this.timeslots[this.lastSelected + c2 + 1].state == 'booked') {
+          //console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
+          this.addItem('booked_afternext_down', this.lastSelected + c2 + 1);
+          c2++;
+        }
+        console.log('booked down c2: ' + c2);
+        console.log('first downwards c: ' + c);
+
+        console.log('first downwards c2: ' + c2);
+        console.log('first selected + c: ' + (this.lastSelected + c).toString());
+        console.log('selected: ' + (this.selectedCount));
+        console.log('bookedDown: ' + (this.bookedArray_Down.length));
+        console.log('bookedDownAfter: ' + (this.bookedArray_AfterNext_Down.length));
 
 
-      console.log('selected + booked: '+ (this.selectedCount + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length));
+        console.log('selected + booked: ' + (this.selectedCount + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length));
 
-           // größer gleich 5 weil das das ddarauffolgende auch booked ist und somit das limit erreicht
-         if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) >= 5) {
-           if(this.timeslots[this.lastSelected + c].state == true) {
+        // größer gleich 5 weil das das ddarauffolgende auch booked ist und somit das limit erreicht
+        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) >= 5) {
+          if (this.timeslots[this.lastSelected + c].state == true) {
             this.timeslots[this.lastSelected + c].state = 'blocked';
-           }
-         } 
-         
+          }
+        }
+
         //  else {
         //    if(this.timeslots[this.lastSelected + c2+1].state == 'blocked')
         //   this.timeslots[this.lastSelected + c2+1].state = true;
         //  }
 
-       }
+      }
       //  console.log('selected count: ' + this.selectedCount);
       //  console.log('booked count: ' + this.bookedArray.length);
       //  if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c < this.timeslots.length &&
@@ -801,49 +821,49 @@ export class Tab2Page implements OnInit {
       console.log('AFTER NEXT UP');
       let c = 1;
       if (this.firstSelected > 1 &&
-        this.timeslots[this.firstSelected - c].state == true && 
+        this.timeslots[this.firstSelected - c].state == true &&
         this.timeslots[this.firstSelected - c + 1].state == 'booked') {
-         
-         let c2 = c;
-           while (this.firstSelected - c2 > 0 && 
-            this.timeslots[this.firstSelected - c2 - 1].state == 'booked') {
-             //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
-             this.addItem('booked_afternext_up', this.firstSelected - c2 - 1);
-             c2++;
-           }
 
-         if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_AfterNext_Up.length) >= 5) {
-           if(this.timeslots[this.firstSelected - c].state == true) {
+        let c2 = c;
+        while (this.firstSelected - c2 > 0 &&
+          this.timeslots[this.firstSelected - c2 - 1].state == 'booked') {
+          //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
+          this.addItem('booked_afternext_up', this.firstSelected - c2 - 1);
+          c2++;
+        }
+
+        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_AfterNext_Up.length) >= 5) {
+          if (this.timeslots[this.firstSelected - c].state == true) {
             this.timeslots[this.firstSelected - c].state = 'blocked';
-           }
-         } 
+          }
+        }
+      }
     }
-  }
 
     // AFTER NEXT down
     if (this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == true) {
       let c = 1;
       if (this.lastSelected < this.timeslots.length - 2 &&
-        this.timeslots[this.lastSelected + c].state == true && 
+        this.timeslots[this.lastSelected + c].state == true &&
         this.timeslots[this.lastSelected + c + 1].state == 'booked') {
-         
-         let c2 = c;
-           while (this.lastSelected + c2 < this.timeslots.length - 2 && 
-            this.timeslots[this.lastSelected + c2 + 1].state == 'booked') {
-             //console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
-             this.addItem('booked_afternext_down', this.lastSelected + c2 + 1);
-             c2++;
-           }
-           console.log('booked down c2: ' + c2);
-         if ((this.selectedCount + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) >= 5) {
-           if(this.timeslots[this.lastSelected + c].state == true) {
+
+        let c2 = c;
+        while (this.lastSelected + c2 < this.timeslots.length - 2 &&
+          this.timeslots[this.lastSelected + c2 + 1].state == 'booked') {
+          //console.log(c2 + ': ' + this.timeslots[this.lastSelected + c2].state);
+          this.addItem('booked_afternext_down', this.lastSelected + c2 + 1);
+          c2++;
+        }
+        console.log('booked down c2: ' + c2);
+        if ((this.selectedCount + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) >= 5) {
+          if (this.timeslots[this.lastSelected + c].state == true) {
             this.timeslots[this.lastSelected + c].state = 'blocked';
-           }
-         } 
-       }
+          }
+        }
+      }
     }
 
-      
+
     //check if AFTER NEXT booked slot may result in a 7+ slot booking if not blocked properly
     // if (this.firstSelected > 1 &&
     //   this.timeslots[this.firstSelected - 2].state == 'booked' && 
@@ -851,13 +871,13 @@ export class Tab2Page implements OnInit {
     //   this.timeslots[this.firstSelected - 1].state == true) {
     //   this.timeslots[this.firstSelected - 1].state = 'blocked';
     // } 
-    
-    
+
+
     // if (this.lastSelected < this.timeslots.length - 2 &&
     //  this.timeslots[this.lastSelected + 1].state == 'booked' && 
     //  this.timeslots[this.lastSelected + 1].state == true) {
 
-      
+
     //   let c = 2;
     //     while (this.lastSelected + c < this.timeslots.length && this.timeslots[this.lastSelected + c].state == 'booked') {
     //       console.log(c + ': ' + this.timeslots[this.lastSelected + c].state);
@@ -893,7 +913,7 @@ export class Tab2Page implements OnInit {
 
   // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
   addItem(array, item) {
-    if(array == 'booked_afternext_up') {
+    if (array == 'booked_afternext_up') {
       var index = this.bookedArray_AfterNext_Up.findIndex(x => x == item)
       if (index === -1) {
         this.bookedArray_AfterNext_Up.push(item);
@@ -917,7 +937,7 @@ export class Tab2Page implements OnInit {
 
 
 
-    
+
     // else {
     //   console.log("object already exists")
     // }
@@ -928,7 +948,7 @@ export class Tab2Page implements OnInit {
   onSegmentClick(day) {
     let date = new Date();
     date.setDate(date.getDate() + parseInt(day.value));
-   
+
     this.activeDate = date;
     this.getTimeSlots(date);
   }
@@ -943,8 +963,8 @@ export class Tab2Page implements OnInit {
       component: CheckoutModalPage,
       componentProps: {
         paymentAmount: this.selectedCount,
-        timeStart: this.timeService.getStartTime(this.firstSelected+1),
-        timeEnd: this.timeService.getEndTime(this.lastSelected+1),
+        timeStart: this.timeService.getStartTime(this.firstSelected + 1),
+        timeEnd: this.timeService.getEndTime(this.lastSelected + 1),
         date: this.activeDate_String,
         capsule: this.capName
       },
@@ -956,14 +976,14 @@ export class Tab2Page implements OnInit {
         this.paymentID = value.data;
         this.toast("Paypal payment successful, sending data to Server..");
         this.apiService.bookCapsule(
-            parseInt(this.capId),
-            this.activeDate_String,
-            this.firstSelected+1,
-            this.lastSelected+1,
-            'PayPal',
-            this.selectedCount,
-            true,
-            this.paymentID
+          parseInt(this.capId),
+          this.activeDate_String,
+          this.firstSelected + 1,
+          this.lastSelected + 1,
+          'PayPal',
+          this.selectedCount,
+          true,
+          this.paymentID
         ).subscribe(data => {
           this.getTimeSlots(this.activeDate);
           this.toast("booked: " + this.capName);
@@ -990,13 +1010,44 @@ export class Tab2Page implements OnInit {
     });
     toast.present();
   }
-  canProceedCheckout(): boolean{
-    if(this.selectedCount > 0 && this.selectedCount <= this.MAX_SLOTS_PER_BOOKING) {
+  canProceedCheckout(): boolean {
+    if (this.selectedCount > 0 && this.selectedCount <= this.MAX_SLOTS_PER_BOOKING) {
       return true;
     } else {
       return false;
     }
   }
+
+  findBookings() {
+    let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
+    for (let a = 0; a < this.userBookingsArray.length; a++) {
+
+      let date = new Date(Date.parse(this.userBookingsArray[a].Date));
+      //console.log(date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() + ':' + datestring);
+      //console.log(this.userBookingsArray[a].Capsule_id + ':' + this.capId);
+      if (this.userBookingsArray[a].Capsule_id == this.capId && datestring == date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString()) {
+        this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame);
+        this.addBookedSlot(this.userBookingsArray[a].LastTimeFrame);
+
+        for (let s = this.userBookingsArray[a].FirstTimeFrame + 1; s <= this.userBookingsArray[a].LastTimeFrame -1; s++) {
+          this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame + 1);
+        }
+
+        
+
+      }
+    }
+    console.log(this.userBookingsSlotsArray);
+  }
+
+  addBookedSlot(item) {
+      var index = this.userBookingsSlotsArray.findIndex(x => x == item)
+      if (index === -1) {
+        this.userBookingsSlotsArray.push(item);
+      }
+    
+    }
 
 
 
