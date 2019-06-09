@@ -21,9 +21,12 @@
             pullingIcon="arrow-down"
             refreshingSpinner="crescent"></ion-refresher-content>
   </ion-refresher>
+  <div class="loading-icon" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
 
   <!-- NO RESERVED CAPSULE WELCOME CARD -->
-  <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !hide">
+  <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !hide && !loading">
     <div class="header" (click)="hideCard()">
       <ion-icon class="close-icon" name="close" slot="end" size="large"></ion-icon>
     </div>

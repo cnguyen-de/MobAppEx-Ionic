@@ -19,6 +19,7 @@ export class Tab1Page {
   today = new Date();
   futureBookings: booking[] = [];
   isFirstTime: boolean = true;
+  loading: boolean;
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService){
@@ -28,6 +29,9 @@ export class Tab1Page {
   }
 
   ionViewWillEnter() {
+    if (this.futureBookings.length == 0) {
+      this.loading = true;
+    }
     this.storage.get('isFirstTime').then(data => {
       if (typeof data == 'boolean') {
         this.isFirstTime = data;
@@ -35,7 +39,7 @@ export class Tab1Page {
         this.isFirstTime = true;
       }
       this.getFutureBookings();
-    })
+    });
   }
 
   hideCard() {
@@ -43,6 +47,7 @@ export class Tab1Page {
   }
 
   getFutureBookings() {
+    console.log(this.loading)
     this.apiService.getUser().pipe(first()).subscribe(
         user => {
           this.storage.get('user').then(savedUser => {
@@ -52,10 +57,12 @@ export class Tab1Page {
               if (isEqual(sortedBooking, this.futureBookings)) {
                 console.log("from cache")
               } else {
-                console.log("from database")
+                console.log("from database");
                 this.futureBookings = sortedBooking;
+                this.loading = false;
               }
             } else {
+              this.loading = true;
               console.log('Processing new JSON');
               this.isFirstTime = false;
               this.storage.set('isFirstTime', false);
@@ -63,6 +70,7 @@ export class Tab1Page {
               this.bookings = JSON.parse(JSON.stringify(user.bookings));
               this.futureBookings = this.getFutureBookingsFromBookings(this.bookings);
               this.saveToStorage('futureBookings', this.futureBookings);
+              this.loading = false;
             }
           });
         }, err => {
@@ -83,7 +91,6 @@ export class Tab1Page {
     // go through all bookings
     let sortedBookings = [];
     //clone bookings
-    console.log(bookings)
     for (let booking of bookings) {
       // compare the dates if booking date is bigger (today or future)
       let date = new Date(booking.Date.substring(0, 10));

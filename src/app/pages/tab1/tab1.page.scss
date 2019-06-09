@@ -12,11 +12,13 @@ ion-chip{
   color: var(--ion-text-color);
   --background: var(--darker-color)
 }
-
 ion-icon {
   color: var(--ion-text-color)
 }
-
+.loading-icon {
+  text-align: center;
+  padding-top: 20px;
+}
 .header {
   text-align: right;
   background: var(--ion-color-warning)
