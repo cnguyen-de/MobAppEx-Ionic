@@ -103,6 +103,7 @@ export class Tab2Page implements OnInit {
   segmentWidth: number = 100;
 
   MAX_SLOTS_PER_BOOKING = 6;
+  PRICE_PER_SLOT = 2;
   bookedArray_Up = [];
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
@@ -111,6 +112,8 @@ export class Tab2Page implements OnInit {
   selectedCount = 0;
   firstSelected = -1;
   lastSelected = -1;
+
+  bookingsQueue = [];
 
   userBookingsArray = [];
   userBookingsSlotsArray = [];
@@ -184,16 +187,10 @@ export class Tab2Page implements OnInit {
       this.capsules[0].isOpen = true;
     });
 
-    this.apiService.getUser()
-      .pipe(first())
-      .subscribe(
-        user => {
-          this.userBookingsArray = user.bookings;
-          console.log(user.bookings);
-        },
-        error => {
-          console.log(error);
-        });
+    // get User.Bookings from server
+    this.getUserBookings();
+
+    
 
     /** 
      * Retrieve Current Position
@@ -392,6 +389,7 @@ export class Tab2Page implements OnInit {
     this.bookedArray_AfterNext_Up = [];
     this.bookedArray_AfterNext_Down = [];
     this.selectedCount = 0;
+    this.bookingsQueue = [];
 
     if (date != null) {
       this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -965,9 +963,8 @@ export class Tab2Page implements OnInit {
   }
 
   proceedToCheckoutClick() {
-
+    this.createBookings();
     this.presentCheckOutModal();
-
   }
   async presentCheckOutModal() {
     const modal = await this.modalController.create({
@@ -986,23 +983,51 @@ export class Tab2Page implements OnInit {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
         this.toast("Paypal payment successful, sending data to Server..");
-        this.apiService.bookCapsule(
-          parseInt(this.capId),
-          this.activeDate_String,
-          this.firstSelected + 1,
-          this.lastSelected + 1,
-          'PayPal',
-          this.selectedCount,
-          true,
-          this.paymentID
-        ).subscribe(data => {
-          this.getTimeSlots(this.activeDate);
-          this.toast("booked: " + this.capName);
-          console.log(data);
-        }, err => {
-          console.log(err)
-          this.toast(err);
-        });
+        
+        // loop through bookingsQueue
+        for(let b = 0; b < this.bookingsQueue.length; b++) {
+          this.apiService.bookCapsule(
+            parseInt(this.capId), //Casule Id
+            this.activeDate_String, // Date
+            this.bookingsQueue[b].first, // First slot
+            this.bookingsQueue[b].last, // Last slot
+            'PayPal', // Vendor
+            this.bookingsQueue[b].selectedCount * this.PRICE_PER_SLOT, // Amount
+            true, // Verified
+            this.paymentID // Paypal Payment id
+          ).subscribe(data => {
+
+            if(b == this.bookingsQueue.length -1) {
+              // TODO: this.getUserBookings();
+              this.getTimeSlots(this.activeDate);
+              this.toast("booked: " + this.capName);
+              console.log(data);
+            }
+            
+          }, err => {
+            console.log(err)
+            this.toast(err);
+          });
+        }
+
+        // this.apiService.bookCapsule(
+        //   parseInt(this.capId),
+        //   this.activeDate_String,
+        //   this.firstSelected + 1,
+        //   this.lastSelected + 1,
+        //   'PayPal',
+        //   this.selectedCount,
+        //   true,
+        //   this.paymentID
+        // ).subscribe(data => {
+        //   // TODO: this.getUserBookings();
+        //   this.getTimeSlots(this.activeDate);
+        //   this.toast("booked: " + this.capName);
+        //   console.log(data);
+        // }, err => {
+        //   console.log(err)
+        //   this.toast(err);
+        // });
       }
     });
 
@@ -1060,7 +1085,50 @@ export class Tab2Page implements OnInit {
 
   }
 
+  async getUserBookings() {
+    await this.apiService.getUser()
+      .pipe(first())
+      .subscribe(
+        user => {
+          this.userBookingsArray = user.bookings;
+          console.log(user.bookings);
+        },
+        error => {
+          console.log(error);
+        });
+  }
 
+  createBookings() {
+
+    this.bookingsQueue = [];
+    let selection = [];
+    
+    
+    for(let i = this.firstSelected; i <= this.lastSelected; i++) {
+        if(this.userBookingsSlotsArray.indexOf(i+1) == -1) {
+          selection.push(i+1);
+      } 
+    }
+
+    for (let s = 0; s < selection.length; s++) {
+      let booking = {
+        first: 0,
+        last:0,
+        slotsCount: 0
+      }
+      booking.first = selection[s];
+      booking.slotsCount = 1;
+      while (((((selection[s]) + 1) == (selection[s+1])))) {
+        booking.slotsCount++;
+        s++;
+      }
+
+      booking.last = selection[s];
+      this.bookingsQueue.push(booking);
+      
+    }
+    console.log(this.bookingsQueue);
+  }
 
 
 
