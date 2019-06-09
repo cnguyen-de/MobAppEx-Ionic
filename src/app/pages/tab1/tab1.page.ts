@@ -122,14 +122,22 @@ export class Tab1Page {
       }
     }
     // @ts-ignore
-    sortedBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    sortedBookings.sort( function(a, b) {
+          let aDate = a.Date.split('-');
+          let aTime = a.FirstTimeFrame.split(':');
+          let aDateTime = new Date(aDate[0], aDate[1] - 1, aDate[2], aTime[0], aTime[1]);
+          let bDate = b.Date.split('-');
+          let bTime = b.FirstTimeFrame.split(':');
+          let bDateTime = new Date(bDate[0], bDate[1] - 1, bDate[2], bTime[0], bTime[1]);
+          // @ts-ignore
+          return aDateTime - bDateTime;
+        }
+    );
     this.createNotificationFor(sortedBookings[0]);
     return sortedBookings
   }
 
   createNotificationFor(closestBooking) {
-    console.log(closestBooking);
-
     let dateArray = closestBooking.Date.split('-');
     let timeArray = closestBooking.FirstTimeFrame.split(':');
     let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
@@ -143,7 +151,6 @@ export class Tab1Page {
       }
     }
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
-    console.log(date);
     this.localNotifications.schedule({
       id: closestBooking.id,
       title: 'Snooze Capsule',
