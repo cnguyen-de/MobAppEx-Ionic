@@ -992,7 +992,7 @@ export class Tab2Page implements OnInit {
             this.bookingsQueue[b].first, // First slot
             this.bookingsQueue[b].last, // Last slot
             'PayPal', // Vendor
-            this.bookingsQueue[b].selectedCount * this.PRICE_PER_SLOT, // Amount
+            this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT, // Amount
             true, // Verified
             this.paymentID // Paypal Payment id
           ).subscribe(data => {
