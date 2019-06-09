@@ -6,6 +6,7 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 
 import isEqual from 'lodash.isequal'
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 
 
 @Component({
@@ -14,6 +15,7 @@ import isEqual from 'lodash.isequal'
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+  MINUTES_BEFORE_START = 10;
   hide: boolean = false;
   bookings: booking[] = [];
   today = new Date();
@@ -22,7 +24,7 @@ export class Tab1Page {
   loading: boolean;
 
   constructor(private apiService: ApiService, private storage: Storage,
-              private timeService: TimeService){
+              private timeService: TimeService, private localNotifications: LocalNotifications){
   }
 
   ngOnInit() {
@@ -50,7 +52,6 @@ export class Tab1Page {
   }
 
   getFutureBookings() {
-    console.log(this.loading)
     this.apiService.getUser().pipe(first()).subscribe(
         user => {
           this.storage.get('user').then(savedUser => {
@@ -122,7 +123,36 @@ export class Tab1Page {
     }
     // @ts-ignore
     sortedBookings.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    this.createNotificationFor(sortedBookings[0]);
     return sortedBookings
+  }
+
+  createNotificationFor(closestBooking) {
+    console.log(closestBooking);
+
+    let dateArray = closestBooking.Date.split('-');
+    let timeArray = closestBooking.FirstTimeFrame.split(':');
+    let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+
+    //Check if the time start is less than 10 minutes then set notification to now.
+    if (new Date(closestBooking.Date).getDate() == this.today.getDate()) {
+      if (timeArray[0] - this.today.getHours() == 0) {
+        if (timeArray[1] - this.today.getMinutes() <= this.MINUTES_BEFORE_START) {
+          notifyingMin = this.today.getMinutes();
+        }
+      }
+    }
+    let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
+    console.log(date);
+    this.localNotifications.schedule({
+      id: closestBooking.id,
+      title: 'Snooze Capsule',
+      text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
+      trigger: {
+        at: date
+      }
+    });
+
   }
   doRefresh($event) {
     this.getFutureBookings();
