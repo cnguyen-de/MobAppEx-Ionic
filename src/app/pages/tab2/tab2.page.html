@@ -107,9 +107,9 @@
       blabla
     </ion-card-subtitle>
   </ion-card-header>
-  <!-- <ion-card-content>
-    <ion-button shape="round" (click)="animateTSS_Click()">back down bla</ion-button>
-  </ion-card-content> -->
+  <ion-card-content>
+    <ion-button shape="round" (click)="animateTSS_Click()">back down btn for testing</ion-button>
+  </ion-card-content>
 </ion-card>
 
 
@@ -117,7 +117,7 @@
 
   <ion-card id="headr" mode="md" style="visibility:collapse">
     <ion-card-header>
-      <h4>Bibliothek</h4>
+      <h4></h4>
     </ion-card-header>
   </ion-card>
 
@@ -134,7 +134,7 @@
     </ion-button>
 
     <ion-content>
-      <ion-slides #slides [options]="slideOpts" style="height: 100%;" (ionSlideDidChange)="onIonSlideDidChange($event)"
+      <ion-slides id="slides" #slides [options]="slideOpts" style="height: 100%;" (ionSlideDidChange)="onIonSlideDidChange($event)"
         (ionSlidePrevStart)="onIonSlidePrevStart()" (ionSlidePrevEnd)="onIonSlidePrevEnd()"
         (ionSlideNextStart)="onIonSlideNextStart()" (ionSlideNextEnd)="onIonSlideNextEnd()"
         (ionSlideTouchStart)="onIonSlideTouchStart()" *ngIf="timeslots && timeslots.length">

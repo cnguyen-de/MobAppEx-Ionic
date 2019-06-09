@@ -89,7 +89,7 @@ export class Tab2Page implements OnInit {
 
   //Single Capsule Values
   capName = '';
-  capId = '';
+  capId = '1';
 
   //Capsules
   capsules: any;
@@ -121,6 +121,7 @@ export class Tab2Page implements OnInit {
   test = false;
 
   ngOnInit() {
+      
     // Set current date
     let currentDate = new Date();
     console.log(currentDate);
@@ -210,6 +211,7 @@ export class Tab2Page implements OnInit {
         this.animateTSS_Click();
       }
     });
+
   }
 
 
@@ -258,7 +260,8 @@ export class Tab2Page implements OnInit {
 
     } else {
       //this.test = true;
-
+      //this.timeslots = [{ content: 'pull to refresh', status: '' }];
+      
       setTimeout(() => {
         let elem2 = document.getElementById("root");
         elem2.setAttribute("style", "visibility: visible");
@@ -266,7 +269,10 @@ export class Tab2Page implements OnInit {
         let elem: HTMLElement = document.getElementById('segmt');
         elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
 
+        
         try {
+          
+
           let elem1 = document.getElementsByClassName("even");
           elem1[0].setAttribute("style", "visibility:visible");
           elem1[1].setAttribute("style", "visibility:visible");
@@ -290,9 +296,11 @@ export class Tab2Page implements OnInit {
 
       }, 100);
 
-
-      //await this.getTimeSlots(this.activeDate);
-      this.timeslots = [{ content: 'pull to refresh', status: '' }];
+      if(this.timeslots.length == 0) {
+        this.timeslots = [{ content: 'pull to refresh', status: '' }];
+      } else {
+        await this.getTimeSlots(this.activeDate);
+      }
     }
   }
 
@@ -399,36 +407,41 @@ export class Tab2Page implements OnInit {
       for (var propertyName in data) {
         // propertyName is what you want
         // you can get the value like this: myObject[propertyName]
-        let tmp = {
-          content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
-          state: data[propertyName]
+
+        // if-statement makes sure that data will show properly, even when corrupted on server
+        if(parseInt(propertyName) > 0 && parseInt(propertyName) <= 27) {
+          let tmp = {
+            content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
+            state: data[propertyName]
+          }
+  
+          // DEBUG DATA:
+  
+          // if (propertyName == '1' ||
+          // propertyName == '3' || 
+          // propertyName == '5' || 
+          // propertyName == '7' || 
+          // propertyName == '10' || 
+          // propertyName == '11' || 
+          // propertyName == '14' || 
+          // propertyName == '16' || 
+          // propertyName == '17' || 
+          // propertyName == '18' || 
+          // propertyName == '27' || 
+  
+          // // propertyName == '9' || 
+          // // propertyName == '11' || 
+          // // propertyName == '12' || 
+          // // propertyName == '13' || 
+          // // propertyName == '14' || 
+          // // propertyName == '15' || 
+          // // propertyName == '16' || 
+          // propertyName == '19') {
+          //   tmp.state = 'booked';
+          // }
+          this.timeslots.push(tmp);
         }
-
-        // DEBUG DATA:
-
-        // if (propertyName == '1' ||
-        // propertyName == '3' || 
-        // propertyName == '5' || 
-        // propertyName == '7' || 
-        // propertyName == '10' || 
-        // propertyName == '11' || 
-        // propertyName == '14' || 
-        // propertyName == '16' || 
-        // propertyName == '17' || 
-        // propertyName == '18' || 
-        // propertyName == '27' || 
-
-        // // propertyName == '9' || 
-        // // propertyName == '11' || 
-        // // propertyName == '12' || 
-        // // propertyName == '13' || 
-        // // propertyName == '14' || 
-        // // propertyName == '15' || 
-        // // propertyName == '16' || 
-        // propertyName == '19') {
-        //   tmp.state = 'booked';
-        // }
-        this.timeslots.push(tmp);
+        
       }
       this.timeslots.splice(0, 1);
 
