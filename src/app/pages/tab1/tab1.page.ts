@@ -39,6 +39,9 @@ export class Tab1Page {
         this.isFirstTime = true;
       }
       this.getFutureBookings();
+      if (this.futureBookings.length == 0) {
+        this.loading = false;
+      }
     });
   }
 
