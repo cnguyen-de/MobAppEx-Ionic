@@ -370,7 +370,7 @@ export class Tab2Page implements OnInit {
 
   working = false;
   async getTimeSlots(date?) {
-
+    
     if (this.working == true) {
       return;
     }
@@ -393,12 +393,14 @@ export class Tab2Page implements OnInit {
     this.selectedCount = 0;
     this.bookingsQueue = [];
 
+    await this.getUserBookings();
+
     if (date != null) {
       this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     }
     //formattedDateString = '2019-6-7';
 
-    this.findBookings();
+    //this.findBookings();
 
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
@@ -1052,7 +1054,7 @@ export class Tab2Page implements OnInit {
           ).subscribe(data => {
 
             if (b == this.bookingsQueue.length - 1) {
-              // TODO: this.getUserBookings();
+              //this.getUserBookings();
               this.getTimeSlots(this.activeDate);
               this.toast("booked: " + this.capName);
               console.log(data);
@@ -1143,6 +1145,7 @@ export class Tab2Page implements OnInit {
         user => {
           this.userBookingsArray = user.bookings;
           console.log(user.bookings);
+          this.findBookings();
         },
         error => {
           console.log(error);
