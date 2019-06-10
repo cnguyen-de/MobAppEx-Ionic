@@ -153,7 +153,7 @@
             <ion-list class="odd2" lines="full">
               <div *ngFor="let item of timeslots; let i = index">
                 <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                  <div id="idero" slot="start">{{i}} | {{ item.content }}</div>
+                  <div id="idero" slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
                 <ion-item button="true" *ngIf="item.state == false"
@@ -239,7 +239,7 @@
   <ion-card id="footr">
     <ion-item id="summary" lines="none">
       <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
-      <div slot="end">{{selectedCount}}.00 €</div>
+      <div slot="end">{{selectedCount * PRICE_PER_SLOT}}.00 €</div>
     </ion-item>
     <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="proceedToCheckoutClick()" [disabled]="!canProceedCheckout()">
       Proceed To Checkout
