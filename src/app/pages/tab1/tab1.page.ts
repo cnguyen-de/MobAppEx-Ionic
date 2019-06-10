@@ -133,7 +133,9 @@ export class Tab1Page {
           return aDateTime - bDateTime;
         }
     );
-    this.createNotificationFor(sortedBookings[0]);
+    if (sortedBookings.length > 0) {
+      this.createNotificationFor(sortedBookings[0]);
+    }
     return sortedBookings
   }
 

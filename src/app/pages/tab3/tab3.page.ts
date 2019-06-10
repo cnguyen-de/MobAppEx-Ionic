@@ -179,9 +179,9 @@ export class Tab3Page {
     });
 
     modal.onDidDismiss().then(value => {
-      if (typeof value.data == 'number') {
-        this.volumePref = value.data;
-        this.user.capsulePreference.VolumenLevel = this.volumePref;
+      if (typeof value.data != 'undefined') {
+        this.volumePref = value.data.VolumenLevel;
+        this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
           this.toast("Volume preference set to: " + this.volumePref)
         });
@@ -205,9 +205,9 @@ export class Tab3Page {
     });
 
     modal.onDidDismiss().then(value => {
-      if (typeof value.data == 'number') {
-        this.lightPref = value.data;
-        this.user.capsulePreference.LightLevel = this.lightPref;
+      if (typeof value.data != 'undefined') {
+        this.lightPref = value.data.LightLevel;
+        this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
           this.toast("Light preference set to: " + this.lightPref)
         })
