@@ -104,12 +104,13 @@ export class Tab1Page {
       // @ts-ignore
       booking.duration = this.timeService.getTimeRange(booking.FirstTimeFrame, booking.LastTimeFrame);
       booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
+      booking.LastTimeFrame = this.timeService.getEndTime(booking.LastTimeFrame);
       booking.Date = booking.Date.substring(0, 10);
       if (date > dateToday) {
         sortedBookings.push(booking);
       } else if (date.getDate() == dateToday.getDate()) {
         let hourNow = this.today.getHours();
-        let endTime = this.timeService.getEndTime(booking.LastTimeFrame).split(':');
+        let endTime = booking.LastTimeFrame.split(':');
         // compare the hours, if bigger then add to future booking
         if (endTime[0] > hourNow) {
           sortedBookings.push(booking);
@@ -133,6 +134,33 @@ export class Tab1Page {
           return aDateTime - bDateTime;
         }
     );
+    //let combinedBookings = sortedBookings;
+    //console.log(combinedBookings)
+
+    //Combine consecutive bookings into one session
+    if (sortedBookings.length > 1) {
+      let combined = false;
+      let i = 0;
+      while (!combined) {
+        //console.log(i);
+        if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame) {
+          //console.log("combined " + sortedBookings[i].LastTimeFrame, sortedBookings[i + 1].LastTimeFrame);
+          sortedBookings[i].LastTimeFrame = sortedBookings[i + 1].LastTimeFrame;
+          sortedBookings[i].duration = sortedBookings[i].FirstTimeFrame + " - " + sortedBookings[i].LastTimeFrame;
+          sortedBookings.splice(i + 1, 1);
+          //console.log("sliced " + (i + 1));
+          i = 0;
+          continue;
+        }
+        if (i == sortedBookings.length - 2) {
+          console.log("combined");
+          combined = true;
+          break;
+        }
+        i++;
+      }
+    }
+
     if (sortedBookings.length > 0) {
       this.createNotificationFor(sortedBookings[0]);
     }
