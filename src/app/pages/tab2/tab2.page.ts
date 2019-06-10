@@ -108,6 +108,7 @@ export class Tab2Page implements OnInit {
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
   bookedArray_AfterNext_Down = [];
+  bookedArray_Between = [];
 
   selectedCount = 0;
   firstSelected = -1;
@@ -190,7 +191,7 @@ export class Tab2Page implements OnInit {
     // get User.Bookings from server
     this.getUserBookings();
 
-    
+
 
     /** 
      * Retrieve Current Position
@@ -388,6 +389,7 @@ export class Tab2Page implements OnInit {
     this.bookedArray_Down = [];
     this.bookedArray_AfterNext_Up = [];
     this.bookedArray_AfterNext_Down = [];
+    this.bookedArray_Between = [];
     this.selectedCount = 0;
     this.bookingsQueue = [];
 
@@ -422,11 +424,11 @@ export class Tab2Page implements OnInit {
           //   // propertyName == '7' || 
           //   // propertyName == '10' || 
           //   propertyName == '11' ||
-          //   propertyName == '13' ||
+          //   propertyName == '12' ||
           //   propertyName == '15' ||
-          //   propertyName == '17' ||
-          //   // propertyName == '18' || 
-          //   // propertyName == '27' || 
+          //   propertyName == '16' ||
+          //   propertyName == '18' || 
+          //   propertyName == '19' || 
 
           //   // propertyName == '9' || 
           //   // propertyName == '11' || 
@@ -601,6 +603,14 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
+    //console.clear();
+    this.bookedArray_Up = [];
+    this.bookedArray_Down = [];
+    this.bookedArray_AfterNext_Up = [];
+    this.bookedArray_AfterNext_Down = [];
+    this.bookedArray_Between = [];
+
+
     // mark all free slots as blocked
     for (let a = 0; a < this.timeslots.length; a++) {
       if (this.timeslots[a].state == true) {
@@ -699,21 +709,33 @@ export class Tab2Page implements OnInit {
       }
     }
 
+
+    // count booked between first and last selected
+    for (let s = this.firstSelected; s <= this.lastSelected; s++) {
+      if (this.timeslots[s].state == 'booked') {
+        this.addItem('between', s);
+      }
+    }
+
+
+
+
     // mark 1 slot before and 1 slot after selected to extend selection
-    if ((this.firstSelected > 0 &&
-      this.selectedCount < this.MAX_SLOTS_PER_BOOKING - (this.bookedArray_Up.length + this.bookedArray_Down.length) &&
-      this.timeslots[this.firstSelected - 1].state == 'blocked')) {
+    if (this.firstSelected > 0 && 
+      this.timeslots[this.firstSelected - 1].state == 'blocked') {
       this.timeslots[this.firstSelected - 1].state = true;
     }
     if (this.lastSelected < this.timeslots.length - 1 &&
-      this.selectedCount < this.MAX_SLOTS_PER_BOOKING - (this.bookedArray_Up.length + this.bookedArray_Down.length) &&
       this.timeslots[this.lastSelected + 1].state == 'blocked') {
       this.timeslots[this.lastSelected + 1].state = true;
     }
 
 
-    let c_booked_up: number;
-    let c2_booked_up: number;
+
+
+
+    let c_booked_up = 1;;
+    let c2_booked_up = 1;
 
 
     // handle booked slots upwards
@@ -721,46 +743,45 @@ export class Tab2Page implements OnInit {
 
       c_booked_up = 1;
       while (this.firstSelected - c_booked_up >= 0 && this.timeslots[this.firstSelected - c_booked_up].state == 'booked') {
-
         this.addItem('booked_up', this.firstSelected - c_booked_up);
         c_booked_up++;
-        //console.log('first upwards bookeds: ' + this.bookedArray_Up);
       }
 
-      if (this.firstSelected > 0 && this.firstSelected - c_booked_up >= 0 &&
-        this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length < this.MAX_SLOTS_PER_BOOKING &&
-        this.timeslots[this.firstSelected - c_booked_up].state == 'blocked') {
-        this.timeslots[this.firstSelected - c_booked_up].state = true;
-      }
+      // if (this.firstSelected > 0 && this.firstSelected - c_booked_up >= 0 &&
+      //   this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length + this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
+      //   this.timeslots[this.firstSelected - c_booked_up].state == 'blocked') {
+      //   this.timeslots[this.firstSelected - c_booked_up].state = true;
+      // }
 
       if (this.firstSelected > 1 &&
-        this.timeslots[this.firstSelected - c_booked_up].state == true &&
+        this.timeslots[this.firstSelected - c_booked_up].state == 'blocked' &&
         this.timeslots[this.firstSelected - (c_booked_up + 1)].state == 'booked') {
 
         c2_booked_up = c_booked_up;
+
         while (this.firstSelected - c2_booked_up > 0 &&
           this.timeslots[this.firstSelected - (c2_booked_up + 1)].state == 'booked') {
-          //console.log(c2 + ': ' + this.timeslots[this.firstSelected - c2].state);
           this.addItem('booked_afternext_up', this.firstSelected - (c2_booked_up + 1));
           c2_booked_up++;
         }
 
 
-        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length) > 5) {
-          if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
-            this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
-          }
-        }
+        // if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length + this.bookedArray_Between.length) >= 5) {
+        //   if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
+        //     this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
+        //   }
+        // }
       }
     }
 
+
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    let c_booked_down: number;
-    let c2_booked_down: number;
+    let c_booked_down = 1;
+    let c2_booked_down = 1;
     // handle booked slots downwards
     if (this.lastSelected < this.timeslots.length - 1 && this.timeslots[this.lastSelected + 1].state == 'booked') {
-      //console.log('triggered: next is booked');
 
       c_booked_down = 1;
       while (this.lastSelected + c_booked_down < this.timeslots.length && this.timeslots[this.lastSelected + c_booked_down].state == 'booked') {
@@ -769,15 +790,15 @@ export class Tab2Page implements OnInit {
       }
       //console.log('booked down c: ' + c_booked_down);
 
-      if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c_booked_down < this.timeslots.length &&
-        this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length < this.MAX_SLOTS_PER_BOOKING &&
-        this.timeslots[this.lastSelected + c_booked_down].state == 'blocked') {
-        this.timeslots[this.lastSelected + c_booked_down].state = true;
-      }
+      // if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c_booked_down < this.timeslots.length &&
+      //   this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length + this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
+      //   this.timeslots[this.lastSelected + c_booked_down].state == 'blocked') {
+      //   this.timeslots[this.lastSelected + c_booked_down].state = true;
+      // }
 
 
       if (this.lastSelected < this.timeslots.length - 2 &&
-        this.timeslots[this.lastSelected + c_booked_down].state == true &&
+        this.timeslots[this.lastSelected + c_booked_down].state == 'blocked' &&
         this.timeslots[this.lastSelected + c_booked_down + 1].state == 'booked') {
 
         c2_booked_down = c_booked_down;
@@ -789,60 +810,65 @@ export class Tab2Page implements OnInit {
         }
 
 
-        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) > 5) {
-          if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
-            this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
-          }
-        }
+        // if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length + this.bookedArray_Between.length) >=5) {
+        //   if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
+        //     this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
+        //   }
+        // }
 
+      }
+    }
+
+
+    
+
+
+    if (this.firstSelected > 0 && this.firstSelected - c_booked_up >= 0 &&
+      this.selectedCount + 
+      this.bookedArray_Down.length + 
+      this.bookedArray_Up.length + 
+      this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
+      this.timeslots[this.firstSelected - c_booked_up].state == 'blocked') {
+      this.timeslots[this.firstSelected - c_booked_up].state = true;
+    }
+
+    if ((this.selectedCount + 
+      this.bookedArray_Up.length + 
+      this.bookedArray_Down.length + 
+      this.bookedArray_AfterNext_Up.length + 
+      this.bookedArray_Between.length) > 5) {
+      if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
+        this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
       }
     }
 
 
 
 
+    if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c_booked_down < this.timeslots.length &&
+      this.selectedCount + 
+      this.bookedArray_Down.length + 
+      this.bookedArray_Up.length + 
+      this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
+      this.timeslots[this.lastSelected + c_booked_down].state == 'blocked') {
+      this.timeslots[this.lastSelected + c_booked_down].state = true;
+    }
 
+    if ((this.selectedCount + 
+      this.bookedArray_Up.length + 
+      this.bookedArray_Down.length + 
+      this.bookedArray_AfterNext_Down.length + 
+      this.bookedArray_Between.length) > 5) {
+      if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
+        this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
+      }
+    }
 
 
     
-
-
-    // if (this.firstSelected > 0 && this.firstSelected - c_booked_up >= 0 &&
-    //   this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length &&
-    //   this.timeslots[this.firstSelected - c_booked_up].state == 'blocked') {
-    //   this.timeslots[this.firstSelected - c_booked_up].state = true;
-    // }
-
-    // // größer gleich 5 weil das das darauffolgende auch booked ist und somit das limit erreicht
-    // if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length) >= 5) {
-    //   if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
-    //     this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
-    //   }
-    // }
-
-
-    // if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c_booked_down < this.timeslots.length &&
-    //   this.selectedCount + this.bookedArray_Down.length + this.bookedArray_Up.length < this.MAX_SLOTS_PER_BOOKING &&
-    //   this.timeslots[this.lastSelected + c_booked_down].state == 'blocked') {
-    //   this.timeslots[this.lastSelected + c_booked_down].state = true;
-    // }
-    
-    // // größer gleich 5 weil das das ddarauffolgende auch booked ist und somit das limit erreicht
-    // if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) >= 5) {
-    //   if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
-    //     this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
-    //   }
-    // }
-
-
-
-
-
-
-
     //AFTER NEXT UP: selected -> free -> booked
     if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == true) {
-      //console.log('AFTER NEXT UP');
+      console.log('AFTER NEXT UP');
       let c = 1;
       if (this.firstSelected > 1 &&
         this.timeslots[this.firstSelected - c].state == true &&
@@ -856,7 +882,7 @@ export class Tab2Page implements OnInit {
           c2++;
         }
 
-        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length) > 5) {
+        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length + this.bookedArray_Between.length) > 5) {
           if (this.timeslots[this.firstSelected - c].state == true) {
             this.timeslots[this.firstSelected - c].state = 'blocked';
           }
@@ -879,7 +905,7 @@ export class Tab2Page implements OnInit {
           c2++;
         }
         //console.log('booked down c2: ' + c2);
-        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length) > 5) {
+        if ((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Down.length + this.bookedArray_Between.length) > 5) {
           if (this.timeslots[this.lastSelected + c].state == true) {
             this.timeslots[this.lastSelected + c].state = 'blocked';
           }
@@ -887,21 +913,26 @@ export class Tab2Page implements OnInit {
       }
     }
 
-    // console.log('selected: ' + this.selectedCount);
-    // console.log('up after: ' + this.bookedArray_AfterNext_Up.length);
-    // console.log('up: ' + this.bookedArray_Up.length);
-    // console.log('down: ' + this.bookedArray_Down.length);
-    // console.log('down after: ' + this.bookedArray_AfterNext_Down.length);
 
+    console.log('first: ' + this.firstSelected);
+    console.log('last: ' + this.lastSelected);
+    console.log('selectedCount: ' + this.selectedCount);
+    console.log('up after: ' + this.bookedArray_AfterNext_Up.length + ': ', this.bookedArray_AfterNext_Up);
+    console.log('up: ' + this.bookedArray_Up.length + ': ', this.bookedArray_Up);
+    console.log('between: ' + this.bookedArray_Between.length + ': ', this.bookedArray_Between);
+    console.log('down: ' + this.bookedArray_Down.length + ': ', this.bookedArray_Down);
+    console.log('down after: ' + this.bookedArray_AfterNext_Down.length + ': ', this.bookedArray_AfterNext_Down);
+    console.log('total: ', this.selectedCount +
+    this.bookedArray_Up.length +
+    this.bookedArray_Down.length +
+    this.bookedArray_AfterNext_Up.length +
+    this.bookedArray_AfterNext_Down.length +
+    this.bookedArray_Between.length);
+    console.log('totalcore: ', this.selectedCount +
+    this.bookedArray_Up.length +
+    this.bookedArray_Down.length +
+    this.bookedArray_Between.length);
 
-    // fallback if above code fails for one slot
-    // if((this.selectedCount + this.bookedArray_Up.length + this.bookedArray_Down.length + this.bookedArray_AfterNext_Up.length + this.bookedArray_AfterNext_Down.length) >= this.MAX_SLOTS_PER_BOOKING) {
-    //   for (let a = 0; a < this.timeslots.length; a++) {
-    //     if (this.timeslots[a].state == true) {
-    //       this.timeslots[a].state = 'blocked';
-    //     }
-    //   }
-    // }
 
 
 
@@ -914,11 +945,11 @@ export class Tab2Page implements OnInit {
       }
       this.firstSelected = -1;
       this.lastSelected = -1;
-      //this.bookedArray = [];
       this.bookedArray_Up = [];
       this.bookedArray_Down = [];
       this.bookedArray_AfterNext_Up = [];
       this.bookedArray_AfterNext_Down = [];
+      this.bookedArray_Between = [];
 
     }
 
@@ -927,26 +958,49 @@ export class Tab2Page implements OnInit {
   // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
   addItem(array, item) {
     if (array == 'booked_afternext_up') {
-      var index = this.bookedArray_AfterNext_Up.findIndex(x => x == item)
-      if (index === -1) {
-        this.bookedArray_AfterNext_Up.push(item);
+      var i = this.bookedArray_Up.findIndex(x => x == item);
+      if (i === -1) {
+        var index = this.bookedArray_AfterNext_Up.findIndex(x => x == item);
+        if (index === -1) {
+          this.bookedArray_AfterNext_Up.push(item);
+        }
       }
     } else if (array == 'booked_afternext_down') {
-      var index = this.bookedArray_AfterNext_Down.findIndex(x => x == item)
-      if (index === -1) {
-        this.bookedArray_AfterNext_Down.push(item);
+      var i = this.bookedArray_Down.findIndex(x => x == item);
+      if (i === -1) {
+        var index = this.bookedArray_AfterNext_Down.findIndex(x => x == item);
+        if (index === -1) {
+          this.bookedArray_AfterNext_Down.push(item);
+        }
       }
     } else if (array == 'booked_up') {
-      var index = this.bookedArray_Up.findIndex(x => x == item)
-      if (index === -1) {
-        this.bookedArray_Up.push(item);
+      var i = this.bookedArray_AfterNext_Up.findIndex(x => x == item);
+      if (i === -1) {
+        var index = this.bookedArray_Up.findIndex(x => x == item);
+        if (index === -1) {
+          this.bookedArray_Up.push(item);
+        }
       }
     } else if (array == 'booked_down') {
-      var index = this.bookedArray_Down.findIndex(x => x == item)
-      if (index === -1) {
-        this.bookedArray_Down.push(item);
+      var i = this.bookedArray_AfterNext_Down.findIndex(x => x == item);
+      if (i === -1) {
+        var index = this.bookedArray_Down.findIndex(x => x == item);
+        if (index === -1) {
+          this.bookedArray_Down.push(item);
+        }
+      }
+    } else if (array == 'between') {
+      var index = this.bookedArray_Between.findIndex(x => x == item);
+      var u = this.bookedArray_Up.findIndex(x => x == item);
+      var u2 = this.bookedArray_AfterNext_Up.findIndex(x => x == item);
+      var d = this.bookedArray_Down.findIndex(x => x == item);
+      var d2 = this.bookedArray_AfterNext_Down.findIndex(x => x == item);
+
+      if (index === -1 && u === -1 && u2 === -1 && d === -1 && d2 === -1) {
+        this.bookedArray_Between.push(item);
       }
     }
+
     // else {
     //   console.log("object already exists")
     // }
@@ -983,9 +1037,9 @@ export class Tab2Page implements OnInit {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
         this.toast("Paypal payment successful, sending data to Server..");
-        
+
         // loop through bookingsQueue
-        for(let b = 0; b < this.bookingsQueue.length; b++) {
+        for (let b = 0; b < this.bookingsQueue.length; b++) {
           this.apiService.bookCapsule(
             parseInt(this.capId), //Casule Id
             this.activeDate_String, // Date
@@ -997,13 +1051,13 @@ export class Tab2Page implements OnInit {
             this.paymentID // Paypal Payment id
           ).subscribe(data => {
 
-            if(b == this.bookingsQueue.length -1) {
+            if (b == this.bookingsQueue.length - 1) {
               // TODO: this.getUserBookings();
               this.getTimeSlots(this.activeDate);
               this.toast("booked: " + this.capName);
               console.log(data);
             }
-            
+
           }, err => {
             console.log(err)
             this.toast(err);
@@ -1069,9 +1123,6 @@ export class Tab2Page implements OnInit {
         for (let s = this.userBookingsArray[a].FirstTimeFrame + 1; s <= this.userBookingsArray[a].LastTimeFrame - 1; s++) {
           this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame + 1);
         }
-
-
-
       }
     }
     console.log(this.userBookingsSlotsArray);
@@ -1102,30 +1153,30 @@ export class Tab2Page implements OnInit {
 
     this.bookingsQueue = [];
     let selection = [];
-    
-    
-    for(let i = this.firstSelected; i <= this.lastSelected; i++) {
-        if(this.userBookingsSlotsArray.indexOf(i+1) == -1) {
-          selection.push(i+1);
-      } 
+
+
+    for (let i = this.firstSelected; i <= this.lastSelected; i++) {
+      if (this.userBookingsSlotsArray.indexOf(i + 1) == -1) {
+        selection.push(i + 1);
+      }
     }
 
     for (let s = 0; s < selection.length; s++) {
       let booking = {
         first: 0,
-        last:0,
+        last: 0,
         slotsCount: 0
       }
       booking.first = selection[s];
       booking.slotsCount = 1;
-      while (((((selection[s]) + 1) == (selection[s+1])))) {
+      while (((selection[s]) + 1) == (selection[s + 1])) {
         booking.slotsCount++;
         s++;
       }
 
       booking.last = selection[s];
       this.bookingsQueue.push(booking);
-      
+
     }
     console.log(this.bookingsQueue);
   }
