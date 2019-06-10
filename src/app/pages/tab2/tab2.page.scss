@@ -133,3 +133,9 @@ ion-button {
   align-self: center;
 }
 
+ion-segment-button {
+  --color: var(--ion-text-color);
+  --color-checked: white;
+  --background-checked: var(--ion-color-primary);
+}
+
