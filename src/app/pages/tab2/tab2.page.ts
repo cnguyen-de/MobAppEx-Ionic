@@ -47,6 +47,7 @@ export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
   @ViewChild('segment') segment: IonSegment;
   @ViewChild('content') content: IonContent;
+  @ViewChild('tscontent') tscontent: IonContent;
   @ViewChild('slides') slides: IonSlides;
 
 
@@ -98,6 +99,9 @@ export class Tab2Page implements OnInit {
   days = [];
   daysRange: number = 30;
 
+  // Current Time
+  currentTime;
+
   //Timeslots
   timeslots = [];
   segmentWidth: number = 100;
@@ -124,7 +128,11 @@ export class Tab2Page implements OnInit {
 
   test = false;
 
+
+
   ngOnInit() {
+
+
 
     // Set current date
     let currentDate = new Date();
@@ -256,9 +264,12 @@ export class Tab2Page implements OnInit {
       let elem2 = await document.getElementById("slider");
       elem2.setAttribute("style", "visibility: visible");
 
+      clearInterval();
+
     } else {
       //this.test = true;
       //this.timeslots = [{ content: 'pull to refresh', status: '' }];
+
 
       setTimeout(() => {
         let elem2 = document.getElementById("root");
@@ -269,30 +280,48 @@ export class Tab2Page implements OnInit {
 
 
         try {
-
-
           let elem1 = document.getElementsByClassName("even");
           elem1[0].setAttribute("style", "visibility:visible");
-          elem1[1].setAttribute("style", "visibility:visible");
+          //elem1[1].setAttribute("style", "visibility:visible");
 
           let elemx = document.getElementsByClassName("even2");
           elemx[0].setAttribute("style", "visibility:visible");
-          elemx[1].setAttribute("style", "visibility:visible");
+          //elemx[1].setAttribute("style", "visibility:visible");
 
 
           let elem21 = document.getElementsByClassName("odd");
           elem21[0].setAttribute("style", "visibility:visible");
-          elem21[1].setAttribute("style", "visibility:visible");
+          //elem21[1].setAttribute("style", "visibility:visible");
 
           let elemx2 = document.getElementsByClassName("odd2");
           elemx2[0].setAttribute("style", "visibility:visible");
-          elemx2[1].setAttribute("style", "visibility:visible");
+          //elemx2[1].setAttribute("style", "visibility:visible");
+
+
+
         } catch {
           console.error('dynamic elements not rendered yet, catched by us!')
         }
 
+        
+
+
+
+
+        this.updateClock();
+        setInterval(() => {
+          this.updateClock();
+        }, 1000 * 60);
+
 
       }, 100);
+
+      setTimeout(() => {
+        let elemo = document.getElementById('listr');
+        this.tscontent.scrollByPoint(0, (this.timepixels + elemo.offsetHeight - 40), 1000);
+
+      }, 500);
+
 
       if (this.timeslots.length == 0) {
         this.timeslots = [{ content: 'pull to refresh', status: '' }];
@@ -301,8 +330,38 @@ export class Tab2Page implements OnInit {
       }
     }
   }
+  timepixels = 0;
+  updateClock() {
+
+    let h = new Date().getHours();
+    let m = new Date().getMinutes();
+    
+    this.currentTime = (h<10?'0':'') + h + ':' + (m<10?'0':'') + m;
+
+    let timeitems = ((h - 9) * 60) + m;
+
+    let percent = 100 / 540 * timeitems;
+    console.log(timeitems);
+    this.timepixels = 1328 * percent / 100;
+
+
+
+
+    try {
+      let blckr = document.getElementsByClassName("blocker");
+      blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
+      let blckrline = document.getElementsByClassName("blocker-line");
+      blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
+      let blckrttime = document.getElementsByClassName("blocker-time");
+      blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 13) + "px;");
+    } catch {
+
+    }
+
+  }
 
   async animateTSS_Click(item?) {
+
 
     if (item) {
       this.capName = item.Name;
@@ -370,7 +429,7 @@ export class Tab2Page implements OnInit {
 
   working = false;
   async getTimeSlots(date?) {
-    
+
     if (this.working == true) {
       return;
     }
@@ -723,7 +782,7 @@ export class Tab2Page implements OnInit {
 
 
     // mark 1 slot before and 1 slot after selected to extend selection
-    if (this.firstSelected > 0 && 
+    if (this.firstSelected > 0 &&
       this.timeslots[this.firstSelected - 1].state == 'blocked') {
       this.timeslots[this.firstSelected - 1].state = true;
     }
@@ -822,22 +881,22 @@ export class Tab2Page implements OnInit {
     }
 
 
-    
+
 
 
     if (this.firstSelected > 0 && this.firstSelected - c_booked_up >= 0 &&
-      this.selectedCount + 
-      this.bookedArray_Down.length + 
-      this.bookedArray_Up.length + 
+      this.selectedCount +
+      this.bookedArray_Down.length +
+      this.bookedArray_Up.length +
       this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
       this.timeslots[this.firstSelected - c_booked_up].state == 'blocked') {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if ((this.selectedCount + 
-      this.bookedArray_Up.length + 
-      this.bookedArray_Down.length + 
-      this.bookedArray_AfterNext_Up.length + 
+    if ((this.selectedCount +
+      this.bookedArray_Up.length +
+      this.bookedArray_Down.length +
+      this.bookedArray_AfterNext_Up.length +
       this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
         this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
@@ -848,18 +907,18 @@ export class Tab2Page implements OnInit {
 
 
     if (this.lastSelected < this.timeslots.length - 1 && this.lastSelected + c_booked_down < this.timeslots.length &&
-      this.selectedCount + 
-      this.bookedArray_Down.length + 
-      this.bookedArray_Up.length + 
+      this.selectedCount +
+      this.bookedArray_Down.length +
+      this.bookedArray_Up.length +
       this.bookedArray_Between.length < this.MAX_SLOTS_PER_BOOKING &&
       this.timeslots[this.lastSelected + c_booked_down].state == 'blocked') {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if ((this.selectedCount + 
-      this.bookedArray_Up.length + 
-      this.bookedArray_Down.length + 
-      this.bookedArray_AfterNext_Down.length + 
+    if ((this.selectedCount +
+      this.bookedArray_Up.length +
+      this.bookedArray_Down.length +
+      this.bookedArray_AfterNext_Down.length +
       this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
         this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
@@ -867,7 +926,7 @@ export class Tab2Page implements OnInit {
     }
 
 
-    
+
     //AFTER NEXT UP: selected -> free -> booked
     if (this.firstSelected > 0 && this.timeslots[this.firstSelected - 1].state == true) {
       console.log('AFTER NEXT UP');
@@ -925,15 +984,15 @@ export class Tab2Page implements OnInit {
     console.log('down: ' + this.bookedArray_Down.length + ': ', this.bookedArray_Down);
     console.log('down after: ' + this.bookedArray_AfterNext_Down.length + ': ', this.bookedArray_AfterNext_Down);
     console.log('total: ', this.selectedCount +
-    this.bookedArray_Up.length +
-    this.bookedArray_Down.length +
-    this.bookedArray_AfterNext_Up.length +
-    this.bookedArray_AfterNext_Down.length +
-    this.bookedArray_Between.length);
+      this.bookedArray_Up.length +
+      this.bookedArray_Down.length +
+      this.bookedArray_AfterNext_Up.length +
+      this.bookedArray_AfterNext_Down.length +
+      this.bookedArray_Between.length);
     console.log('totalcore: ', this.selectedCount +
-    this.bookedArray_Up.length +
-    this.bookedArray_Down.length +
-    this.bookedArray_Between.length);
+      this.bookedArray_Up.length +
+      this.bookedArray_Down.length +
+      this.bookedArray_Between.length);
 
 
 
