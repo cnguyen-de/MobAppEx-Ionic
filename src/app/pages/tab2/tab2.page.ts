@@ -345,7 +345,7 @@ export class Tab2Page implements OnInit {
 
     console.log('timeslotsrounded: ', ((this.timeitems / 20) | 0));
 
-    if (this.timepixels >= 0 && this.timepixels <= 1328) {
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
       try {
         let blckr = document.getElementsByClassName("blocker");
         blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
@@ -354,15 +354,8 @@ export class Tab2Page implements OnInit {
         let blckrttime = document.getElementsByClassName("blocker-time");
         blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 13) + "px;");
 
-        if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
-          let tselem = document.getElementsByClassName("tsitem");
-          console.log('length: ', tselem.length);
 
-          for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
-            tselem[t].classList.add("blurred");
-
-          }
-        }
+        this.blurTimeSlots();
 
       } catch {
 
@@ -415,15 +408,15 @@ export class Tab2Page implements OnInit {
       elemx2[0].setAttribute("style", "visibility:hidden");
       elemx2[1].setAttribute("style", "visibility:hidden");
 
-        let blckr = document.getElementsByClassName("blocker");
-        blckr[0].classList.remove("visible");
-        blckr[0].classList.add("collapsed");
-        let blckrline = document.getElementsByClassName("blocker-line");
-        blckrline[0].classList.remove("visible");
-        blckrline[0].classList.add("collapsed");
-        let blckrttime = document.getElementsByClassName("blocker-time");
-        blckrttime[0].classList.remove("visible");
-        blckrttime[0].classList.add("collapsed");
+      let blckr = document.getElementsByClassName("blocker");
+      blckr[0].classList.remove("visible");
+      blckr[0].classList.add("collapsed");
+      let blckrline = document.getElementsByClassName("blocker-line");
+      blckrline[0].classList.remove("visible");
+      blckrline[0].classList.add("collapsed");
+      let blckrttime = document.getElementsByClassName("blocker-time");
+      blckrttime[0].classList.remove("visible");
+      blckrttime[0].classList.add("collapsed");
     }
 
   }
@@ -451,7 +444,7 @@ export class Tab2Page implements OnInit {
 
 
   working = false;
-  async getTimeSlots(date?) {
+  getTimeSlots(date?) {
 
     if (this.working == true) {
       return;
@@ -475,121 +468,129 @@ export class Tab2Page implements OnInit {
     this.selectedCount = 0;
     this.bookingsQueue = [];
 
-    await this.getUserBookings();
 
-    if (date != null) {
-      this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    }
-    //formattedDateString = '2019-6-7';
+    this.apiService.getUser()
+      .pipe(first())
+      .subscribe(
+        user => {
+          this.userBookingsArray = user.bookings;
+          console.log(user.bookings);
+          this.findBookings();
 
-    //this.findBookings();
 
-    // get data from server
-    await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
-      console.log('LOADING TIMESLOTS');
 
-      // data from server not formatted properly; using workaround:
-      // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
-      for (var propertyName in data) {
-        // propertyName is what you want
-        // you can get the value like this: myObject[propertyName]
-
-        // if-statement makes sure that data will show properly, even when corrupted on server
-        if (parseInt(propertyName) > 0 && parseInt(propertyName) <= 27) {
-          let tmp = {
-            content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
-            state: data[propertyName]
+          if (date != null) {
+            this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
           }
+          //formattedDateString = '2019-6-7';
 
-          // DEBUG DATA:
+          //this.findBookings();
 
-          // if (
-          //   //   propertyName == '1' ||
-          //   // propertyName == '3' || 
-          //   // propertyName == '5' || 
-          //   // propertyName == '7' || 
-          //   // propertyName == '10' || 
-          //   propertyName == '11' ||
-          //   propertyName == '12' ||
-          //   propertyName == '15' ||
-          //   propertyName == '16' ||
-          //   propertyName == '18' || 
-          //   propertyName == '19' || 
+          // get data from server
+          this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
+            console.log('LOADING TIMESLOTS');
 
-          //   // propertyName == '9' || 
-          //   // propertyName == '11' || 
-          //   // propertyName == '12' || 
-          //   // propertyName == '13' || 
-          //   // propertyName == '14' || 
-          //   // propertyName == '15' || 
-          //   // propertyName == '16' || 
-          //   propertyName == '26') {
-          //   tmp.state = 'booked';
-          // }
+            // data from server not formatted properly; using workaround:
+            // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
+            for (var propertyName in data) {
+              // propertyName is what you want
+              // you can get the value like this: myObject[propertyName]
 
+              // if-statement makes sure that data will show properly, even when corrupted on server
+              if (parseInt(propertyName) > 0 && parseInt(propertyName) <= 27) {
+                let tmp = {
+                  content: this.timeService.getTimeRange(parseInt(propertyName), parseInt(propertyName)),
+                  state: data[propertyName]
+                }
 
-          this.timeslots.push(tmp);
-        }
+                // DEBUG DATA:
 
-      }
-      this.timeslots.splice(0, 1);
+                // if (
+                //   //   propertyName == '1' ||
+                //   // propertyName == '3' || 
+                //   // propertyName == '5' || 
+                //   // propertyName == '7' || 
+                //   // propertyName == '10' || 
+                //   propertyName == '11' ||
+                //   propertyName == '12' ||
+                //   propertyName == '15' ||
+                //   propertyName == '16' ||
+                //   propertyName == '18' || 
+                //   propertyName == '19' || 
 
-      for (let val in this.userBookingsSlotsArray) {
-        // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
-        this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
-      }
-
-
-      if (this.segment.value == '0') {
-        let blckr = document.getElementsByClassName("blocker");
-        blckr[0].classList.remove("collapsed");
-        blckr[0].classList.add("visible");
-        let blckrline = document.getElementsByClassName("blocker-line");
-        blckrline[0].classList.remove("collapsed");
-        blckrline[0].classList.add("visible");
-        let blckrttime = document.getElementsByClassName("blocker-time");
-        blckrttime[0].classList.remove("collapsed");
-        blckrttime[0].classList.add("visible");
+                //   // propertyName == '9' || 
+                //   // propertyName == '11' || 
+                //   // propertyName == '12' || 
+                //   // propertyName == '13' || 
+                //   // propertyName == '14' || 
+                //   // propertyName == '15' || 
+                //   // propertyName == '16' || 
+                //   propertyName == '26') {
+                //   tmp.state = 'booked';
+                // }
 
 
-        // TODO: Make proper async
-        setTimeout(() => {
-          console.log('LOADING TIMESLOTS DONE', this.timeslots.length);
-          if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
-            let tselem = document.getElementsByClassName("tsitem");
+                this.timeslots.push(tmp);
+              }
 
-            for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
-              tselem[t].classList.add("blurred");
             }
-          }
-        }, 300);
+            this.timeslots.splice(0, 1);
 
-        setTimeout(() => {
-          let listelem = document.getElementById('listr');
-          if ((listelem.offsetHeight - 40) < this.timepixels) {
-            this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
-          } else {
-            this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
-          }
-        }, 500);
-      } else {
-        let blckr = document.getElementsByClassName("blocker");
-        blckr[0].classList.remove("visible");
-        blckr[0].classList.add("collapsed");
-        let blckrline = document.getElementsByClassName("blocker-line");
-        blckrline[0].classList.remove("visible");
-        blckrline[0].classList.add("collapsed");
-        let blckrttime = document.getElementsByClassName("blocker-time");
-        blckrttime[0].classList.remove("visible");
-        blckrttime[0].classList.add("collapsed");
-      }
+            for (let val in this.userBookingsSlotsArray) {
+              // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
+              this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
+            }
 
 
-      this.working = false;
-    },
-      error => {
-        console.error(error);
-      });
+            if (this.segment.value == '0') {
+              let blckr = document.getElementsByClassName("blocker");
+              blckr[0].classList.remove("collapsed");
+              blckr[0].classList.add("visible");
+              let blckrline = document.getElementsByClassName("blocker-line");
+              blckrline[0].classList.remove("collapsed");
+              blckrline[0].classList.add("visible");
+              let blckrttime = document.getElementsByClassName("blocker-time");
+              blckrttime[0].classList.remove("collapsed");
+              blckrttime[0].classList.add("visible");
+
+
+              // TODO: Make proper async
+              setTimeout(() => {
+                this.blurTimeSlots();
+              }, 300);
+
+              setTimeout(() => {
+                let listelem = document.getElementById('listr');
+                if ((listelem.offsetHeight - 40) < this.timepixels) {
+                  this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
+                } else {
+                  this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
+                }
+              }, 500);
+            } else {
+              let blckr = document.getElementsByClassName("blocker");
+              blckr[0].classList.remove("visible");
+              blckr[0].classList.add("collapsed");
+              let blckrline = document.getElementsByClassName("blocker-line");
+              blckrline[0].classList.remove("visible");
+              blckrline[0].classList.add("collapsed");
+              let blckrttime = document.getElementsByClassName("blocker-time");
+              blckrttime[0].classList.remove("visible");
+              blckrttime[0].classList.add("collapsed");
+            }
+
+
+            this.working = false;
+          },
+            error => {
+              console.error(error);
+            });
+        },
+        error => {
+          console.log(error);
+        });
+
+
   }
 
 
@@ -1086,6 +1087,10 @@ export class Tab2Page implements OnInit {
 
     }
 
+    setTimeout(() => {
+      this.blurTimeSlots();
+    }, 100);
+
   }
 
   // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
@@ -1185,8 +1190,20 @@ export class Tab2Page implements OnInit {
           ).subscribe(data => {
 
             if (b == this.bookingsQueue.length - 1) {
-              //this.getUserBookings();
-              this.getTimeSlots(this.activeDate);
+              this.apiService.getUser()
+                .pipe(first())
+                .subscribe(
+                  user => {
+                    this.userBookingsArray = user.bookings;
+                    console.log(user.bookings);
+                    this.findBookings();
+                    this.getTimeSlots(this.activeDate);
+                  },
+                  error => {
+                    console.log(error);
+                  });
+
+
               this.toast("booked: " + this.capName);
               console.log(data);
             }
@@ -1270,7 +1287,7 @@ export class Tab2Page implements OnInit {
   }
 
   async getUserBookings() {
-    console.log('LOADING BOOKINGS');
+
 
     await this.apiService.getUser()
       .pipe(first())
@@ -1318,41 +1335,22 @@ export class Tab2Page implements OnInit {
   }
 
 
+  blurTimeSlots() {
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0' && this.segment.value == '0') {
+      try {
+        if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
+          let tselem = document.getElementsByClassName("tsitem");
+          for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
+            tselem[t].classList.add("blurred");
+          }
+        }
+      } catch {
+
+      }
+    }
+  }
 
 
 
 
-  // results: Observable<any>;
-  // searchTerm: string = '';
-  // @ViewChild('slides') slides : IonSlides;
-  // @ViewChild('segment') segment: IonSegment;
-  // @ViewChild('searchbar') searchbar: IonSearchbar;
-
-  // //Search bar controller
-  // onSearchChange($event: any) {
-  //   console.log(this.searchTerm)
-  // }
-
-  // //Fab controller
-  // onFabSelect() {
-  //   console.log("Fab Pressed")
-  //   this.searchbar.setFocus();
-  // }
-
-  // //Segments-Slides controller
-  // onSegmentChange($event: any) {
-  //   this.slides.slideTo($event.detail.value);
-  //   //console.log(this.segment.value);
-  // }
-
-  // async onSlideDidChange($event: any) {
-  //   let index = await this.slides.getActiveIndex();
-  //   //console.log(index)
-  //   this.clickSegment(index);
-  // }
-
-  // clickSegment(index: number) {
-  //   // @ts-ignore
-  //   this.segment.value = index;
-  // }
 }
