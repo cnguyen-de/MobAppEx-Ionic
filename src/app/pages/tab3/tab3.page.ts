@@ -189,7 +189,7 @@ export class Tab3Page {
       if (typeof value.data != 'undefined') {
         this.notificationTime = value.data;
         this.saveToStorage('notificationPref', this.notificationTime).then(() => {
-          this.toast("Volume preference set to: " + this.notificationTime);
+          this.toast("Notification preference saved");
         });
       }
     });
