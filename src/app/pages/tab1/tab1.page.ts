@@ -4,7 +4,6 @@ import {Storage} from '@ionic/storage';
 import {TimeService} from '../../_services/time/time.service';
 import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
-
 import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 
@@ -34,6 +33,11 @@ export class Tab1Page {
     if (this.futureBookings.length == 0) {
       this.loading = true;
     }
+    this.storage.get('notificationPref').then(notificationPref => {
+      if (typeof notificationPref == 'number') {
+        this.MINUTES_BEFORE_START = notificationPref;
+      }
+    })
     this.storage.get('isFirstTime').then(data => {
       if (typeof data == 'boolean') {
         this.isFirstTime = data;
