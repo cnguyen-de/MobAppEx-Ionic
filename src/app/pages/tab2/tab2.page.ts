@@ -12,6 +12,7 @@ import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 
 import {booking} from '../../_services/booking';
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 
 
 @Component({
@@ -60,7 +61,8 @@ export class Tab2Page implements OnInit {
     private timeService: TimeService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private storage: Storage) { }
+    private storage: Storage,
+    private localNotifications: LocalNotifications) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -1202,7 +1204,7 @@ export class Tab2Page implements OnInit {
     const modal = await this.modalController.create({
       component: CheckoutModalPage,
       componentProps: {
-        paymentAmount: this.selectedCount,
+        paymentAmount: this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT,
         timeStart: this.timeService.getStartTime(this.firstSelected + 1),
         timeEnd: this.timeService.getEndTime(this.lastSelected + 1),
         date: this.activeDate_String,
@@ -1214,8 +1216,13 @@ export class Tab2Page implements OnInit {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
-        this.toast("Paypal payment successful, sending data to Server..");
-
+        //this.toast("Paypal payment successful, sending data to Server..");
+        this.localNotifications.schedule({
+          id: parseInt(this.capId),
+          title: 'Paypal payment successful',
+          text: 'At ' + Date.now().toString() + ' you paid ' + this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT
+              + ' for Capsule ' + this.capName
+        });
         // loop through bookingsQueue
         for (let b = 0; b < this.bookingsQueue.length; b++) {
           this.apiService.bookCapsule(
