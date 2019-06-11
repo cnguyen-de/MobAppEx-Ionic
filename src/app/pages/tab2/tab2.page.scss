@@ -142,8 +142,8 @@ ion-segment-button {
 .blocker {
   position: absolute;
   width: 100%;
-  //background: var(--darker-color);
-  background: var(--ion-item-background-color);
+  background: var(--darker-color);
+  //background: var(--ion-item-background-color);
   opacity: .7;
   z-index:100;
 }
