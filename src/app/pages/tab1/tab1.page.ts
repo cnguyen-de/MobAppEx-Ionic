@@ -134,7 +134,7 @@ export class Tab1Page {
           return aDateTime - bDateTime;
         }
     );
-    let combinedBookings = sortedBookings;
+    //let combinedBookings = sortedBookings;
     //console.log(combinedBookings);
     //console.log(sortedBookings.length);
     //Combine consecutive bookings into one session
@@ -165,7 +165,15 @@ export class Tab1Page {
 
 
     if (sortedBookings.length > 0) {
-      this.createNotificationFor(sortedBookings[0]);
+      this.storage.get('pushNotificationID').then(notificationID => {
+        if (typeof notificationID == 'number') {
+          if (sortedBookings[0].id != notificationID) {
+            this.createNotificationFor(sortedBookings[0]);
+          }
+        } else {
+          this.createNotificationFor(sortedBookings[0]);
+        }
+      })
     }
     return sortedBookings
   }
@@ -192,6 +200,7 @@ export class Tab1Page {
         at: date
       }
     });
+    this.saveToStorage('pushNotificationID', closestBooking.id);
 
   }
   doRefresh($event) {
