@@ -352,7 +352,7 @@ export class Tab2Page implements OnInit {
         let blckrline = document.getElementsByClassName("blocker-line");
         blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
         let blckrttime = document.getElementsByClassName("blocker-time");
-        blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 13) + "px;");
+        blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 12) + "px;");
 
 
         this.blurTimeSlots();
