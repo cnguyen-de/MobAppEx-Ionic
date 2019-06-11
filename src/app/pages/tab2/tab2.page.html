@@ -74,7 +74,7 @@
     <ion-slide *ngFor="let item of capsules; let i = index">
       <ion-card id="slideCard" class="slideCards" *ngIf="item" (click)="cardClicked(i)">
         <ion-card-header>
-            <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 80px; width: 80px; z-index: 100; position: absolute; left: 0; top:0;"/>
+            <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
             <h4>
               {{ item.Name }}
