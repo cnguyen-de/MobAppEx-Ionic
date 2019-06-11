@@ -135,35 +135,34 @@ export class Tab1Page {
         }
     );
     let combinedBookings = sortedBookings;
-    console.log(combinedBookings);
-    console.log(sortedBookings.length);
+    //console.log(combinedBookings);
+    //console.log(sortedBookings.length);
     //Combine consecutive bookings into one session
-    if (sortedBookings.length > 1) {
-      let combined = false;
-      let i = 0;
-      while (!combined) {
-        console.log(i);
-        if (sortedBookings.length > 1) {
-          if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame) {
-            console.log("combined " + sortedBookings[i].LastTimeFrame, sortedBookings[i + 1].LastTimeFrame);
-            sortedBookings[i].LastTimeFrame = sortedBookings[i + 1].LastTimeFrame;
-            sortedBookings[i].duration = sortedBookings[i].FirstTimeFrame + " - " + sortedBookings[i].LastTimeFrame;
-            sortedBookings.splice(i + 1, 1);
-            console.log("sliced " + (i + 1));
-            i = 0;
-            continue;
-          }
-        } else {
-          break;
+    let combined = false;
+    let i = 0;
+    while (!combined) {
+      //console.log(i);
+      if (sortedBookings.length > 1) {
+        if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame) {
+          //console.log("combined " + sortedBookings[i].LastTimeFrame, sortedBookings[i + 1].LastTimeFrame);
+          sortedBookings[i].LastTimeFrame = sortedBookings[i + 1].LastTimeFrame;
+          sortedBookings[i].duration = sortedBookings[i].FirstTimeFrame + " - " + sortedBookings[i].LastTimeFrame;
+          sortedBookings.splice(i + 1, 1);
+          //console.log("sliced " + (i + 1));
+          i = 0;
+          continue;
         }
-        if (i == sortedBookings.length - 2) {
-          console.log("combined");
-          combined = true;
-          break;
-        }
-        i++;
+      } else {
+        break;
       }
+      if (i == sortedBookings.length - 2) {
+        console.log("combined");
+        combined = true;
+        break;
+      }
+      i++;
     }
+
 
     if (sortedBookings.length > 0) {
       this.createNotificationFor(sortedBookings[0]);
