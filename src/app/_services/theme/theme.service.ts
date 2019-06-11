@@ -56,6 +56,8 @@ export class ThemeService {
       --ion-text-color: #fff;
       --ion-text-color-step-400: #fff;
       --ion-text-color-step-600: #fff;
+
+      --snooze-logo: url('../../../assets/images/SnoozeLogo_Dark.svg');
     `
   }
 
@@ -78,6 +80,9 @@ export class ThemeService {
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;
+
+      --snooze-logo: url('../../../assets/images/SnoozeLogo_Light.svg');
+
     `
   }
 }
