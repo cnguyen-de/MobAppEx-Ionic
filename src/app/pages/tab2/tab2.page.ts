@@ -303,11 +303,6 @@ export class Tab2Page implements OnInit {
           console.error('dynamic elements not rendered yet, catched by us!')
         }
 
-        
-
-
-
-
         this.updateClock();
         setInterval(() => {
           this.updateClock();
@@ -316,11 +311,14 @@ export class Tab2Page implements OnInit {
 
       }, 100);
 
-      setTimeout(() => {
-        let elemo = document.getElementById('listr');
-        this.tscontent.scrollByPoint(0, (this.timepixels + elemo.offsetHeight - 40), 1000);
-
-      }, 500);
+      // setTimeout(() => {
+      //   let listelem = document.getElementById('listr');
+      //   if((listelem.offsetHeight - 40) < this.timepixels) {
+      //   this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
+      //   } else {
+      //     this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
+      //   }
+      // }, 500);
 
 
       if (this.timeslots.length == 0) {
@@ -331,32 +329,47 @@ export class Tab2Page implements OnInit {
     }
   }
   timepixels = 0;
+  timeitems = 0;
   updateClock() {
 
     let h = new Date().getHours();
     let m = new Date().getMinutes();
-    
-    this.currentTime = (h<10?'0':'') + h + ':' + (m<10?'0':'') + m;
 
-    let timeitems = ((h - 9) * 60) + m;
+    this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 
-    let percent = 100 / 540 * timeitems;
-    console.log(timeitems);
+    this.timeitems = ((h - 9) * 60) + m;
+
+    let percent = 100 / 540 * this.timeitems;
+    console.log(this.timeitems);
     this.timepixels = 1328 * percent / 100;
 
+    console.log('timeslotsrounded: ', ((this.timeitems / 20) | 0));
 
+    if (this.timepixels >= 0 && this.timepixels <= 1328) {
+      try {
+        let blckr = document.getElementsByClassName("blocker");
+        blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
+        let blckrline = document.getElementsByClassName("blocker-line");
+        blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
+        let blckrttime = document.getElementsByClassName("blocker-time");
+        blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 13) + "px;");
 
+        if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
+          let tselem = document.getElementsByClassName("tsitem");
+          console.log('length: ', tselem.length);
 
-    try {
-      let blckr = document.getElementsByClassName("blocker");
-      blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
-      let blckrline = document.getElementsByClassName("blocker-line");
-      blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
-      let blckrttime = document.getElementsByClassName("blocker-time");
-      blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 13) + "px;");
-    } catch {
+          for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
+            tselem[t].classList.add("blurred");
 
+          }
+        }
+
+      } catch {
+
+      }
     }
+
+
 
   }
 
@@ -401,6 +414,16 @@ export class Tab2Page implements OnInit {
       let elemx2 = document.getElementsByClassName("odd2");
       elemx2[0].setAttribute("style", "visibility:hidden");
       elemx2[1].setAttribute("style", "visibility:hidden");
+
+        let blckr = document.getElementsByClassName("blocker");
+        blckr[0].classList.remove("visible");
+        blckr[0].classList.add("collapsed");
+        let blckrline = document.getElementsByClassName("blocker-line");
+        blckrline[0].classList.remove("visible");
+        blckrline[0].classList.add("collapsed");
+        let blckrttime = document.getElementsByClassName("blocker-time");
+        blckrttime[0].classList.remove("visible");
+        blckrttime[0].classList.add("collapsed");
     }
 
   }
@@ -463,6 +486,8 @@ export class Tab2Page implements OnInit {
 
     // get data from server
     await this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
+      console.log('LOADING TIMESLOTS');
+
       // data from server not formatted properly; using workaround:
       // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
       for (var propertyName in data) {
@@ -513,6 +538,53 @@ export class Tab2Page implements OnInit {
         // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
         this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
       }
+
+
+      if (this.segment.value == '0') {
+        let blckr = document.getElementsByClassName("blocker");
+        blckr[0].classList.remove("collapsed");
+        blckr[0].classList.add("visible");
+        let blckrline = document.getElementsByClassName("blocker-line");
+        blckrline[0].classList.remove("collapsed");
+        blckrline[0].classList.add("visible");
+        let blckrttime = document.getElementsByClassName("blocker-time");
+        blckrttime[0].classList.remove("collapsed");
+        blckrttime[0].classList.add("visible");
+
+
+        // TODO: Make proper async
+        setTimeout(() => {
+          console.log('LOADING TIMESLOTS DONE', this.timeslots.length);
+          if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
+            let tselem = document.getElementsByClassName("tsitem");
+
+            for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
+              tselem[t].classList.add("blurred");
+            }
+          }
+        }, 300);
+
+        setTimeout(() => {
+          let listelem = document.getElementById('listr');
+          if ((listelem.offsetHeight - 40) < this.timepixels) {
+            this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
+          } else {
+            this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
+          }
+        }, 500);
+      } else {
+        let blckr = document.getElementsByClassName("blocker");
+        blckr[0].classList.remove("visible");
+        blckr[0].classList.add("collapsed");
+        let blckrline = document.getElementsByClassName("blocker-line");
+        blckrline[0].classList.remove("visible");
+        blckrline[0].classList.add("collapsed");
+        let blckrttime = document.getElementsByClassName("blocker-time");
+        blckrttime[0].classList.remove("visible");
+        blckrttime[0].classList.add("collapsed");
+      }
+
+
       this.working = false;
     },
       error => {
@@ -975,24 +1047,24 @@ export class Tab2Page implements OnInit {
     }
 
 
-    console.log('first: ' + this.firstSelected);
-    console.log('last: ' + this.lastSelected);
-    console.log('selectedCount: ' + this.selectedCount);
-    console.log('up after: ' + this.bookedArray_AfterNext_Up.length + ': ', this.bookedArray_AfterNext_Up);
-    console.log('up: ' + this.bookedArray_Up.length + ': ', this.bookedArray_Up);
-    console.log('between: ' + this.bookedArray_Between.length + ': ', this.bookedArray_Between);
-    console.log('down: ' + this.bookedArray_Down.length + ': ', this.bookedArray_Down);
-    console.log('down after: ' + this.bookedArray_AfterNext_Down.length + ': ', this.bookedArray_AfterNext_Down);
-    console.log('total: ', this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Up.length +
-      this.bookedArray_AfterNext_Down.length +
-      this.bookedArray_Between.length);
-    console.log('totalcore: ', this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_Between.length);
+    // console.log('first: ' + this.firstSelected);
+    // console.log('last: ' + this.lastSelected);
+    // console.log('selectedCount: ' + this.selectedCount);
+    // console.log('up after: ' + this.bookedArray_AfterNext_Up.length + ': ', this.bookedArray_AfterNext_Up);
+    // console.log('up: ' + this.bookedArray_Up.length + ': ', this.bookedArray_Up);
+    // console.log('between: ' + this.bookedArray_Between.length + ': ', this.bookedArray_Between);
+    // console.log('down: ' + this.bookedArray_Down.length + ': ', this.bookedArray_Down);
+    // console.log('down after: ' + this.bookedArray_AfterNext_Down.length + ': ', this.bookedArray_AfterNext_Down);
+    // console.log('total: ', this.selectedCount +
+    //   this.bookedArray_Up.length +
+    //   this.bookedArray_Down.length +
+    //   this.bookedArray_AfterNext_Up.length +
+    //   this.bookedArray_AfterNext_Down.length +
+    //   this.bookedArray_Between.length);
+    // console.log('totalcore: ', this.selectedCount +
+    //   this.bookedArray_Up.length +
+    //   this.bookedArray_Down.length +
+    //   this.bookedArray_Between.length);
 
 
 
@@ -1198,6 +1270,8 @@ export class Tab2Page implements OnInit {
   }
 
   async getUserBookings() {
+    console.log('LOADING BOOKINGS');
+
     await this.apiService.getUser()
       .pipe(first())
       .subscribe(
@@ -1242,6 +1316,9 @@ export class Tab2Page implements OnInit {
     }
     console.log(this.bookingsQueue);
   }
+
+
+
 
 
 

@@ -149,9 +149,9 @@
         
               <ion-icon class="odd" name=""></ion-icon>
 
-                <div class="blocker"></div>
-              <div class="blocker-line"></div>
-            <div class="blocker-time" >{{currentTime}}</div>
+                <div class="blocker collapsed"></div>
+              <div class="blocker-line collapsed"></div>
+            <div class="blocker-time collapsed" >{{currentTime}}</div>
 
             
 
@@ -162,22 +162,22 @@
             </ion-refresher>
 
             <ion-list class="odd2" lines="full">
-              <div *ngFor="let item of timeslots; let i = index">
-                <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
+              <div *ngFor="let item of timeslots; let i = index" >
+                <ion-item class="tsitem" button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == false"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == false"
                   style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">TAKEN</div>
                 </ion-item>
-                <ion-item  button="true" *ngIf="item.state == 'selected'"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'selected'"
                   style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">SELECTED</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'booked'"
+                <ion-item class="tsitem" class="tsitem" button="true" *ngIf="item.state == 'booked'"
                   style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">YOURS</div>
@@ -187,7 +187,7 @@
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'inprogress'"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'inprogress'"
                   style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">IN SELECTION...</div>
@@ -199,7 +199,7 @@
         <ion-slide>
           <ion-content>
             
-              <ion-icon class="even" name="hand"></ion-icon>
+              <ion-icon class="even" name=""></ion-icon>
            
 
             <!-- <ion-refresher  slot="fixed" (ionRefresh)="doRefresh($event)">
