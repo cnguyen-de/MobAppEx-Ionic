@@ -183,8 +183,8 @@ export class Tab1Page {
               if (typeof notificationID != 'undefined') {
                 let sameId = false;
                 // Compare each ids
-                for (let i = 0; i < notificationID.length; i++) {
-                  if (sortedBookings[0].id == notificationID) {
+                for (let id of notificationID) {
+                  if (sortedBookings[0].id == id) {
                     sameId = true;
                   }
                 }
