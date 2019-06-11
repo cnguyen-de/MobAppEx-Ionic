@@ -11,6 +11,8 @@ import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.pa
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 
+import {booking} from '../../_services/booking';
+
 
 @Component({
   selector: "app-tab2",
@@ -125,7 +127,7 @@ export class Tab2Page implements OnInit {
   userBookingsArray = [];
   userBookingsSlotsArray = [];
 
-  futureBookings = [];
+  futureBookings: booking[] = [];
 
   activeDate = new Date();
   activeDate_String = '';
@@ -193,28 +195,7 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
-    this.apiService.getCapsules().subscribe(data => {
-      this.capsules = data;
-
-      //Open marker-popup for first marker
-      this.capsules[0].isOpen = true;
-    });
-
-    // get User.Bookings from server
-    this.getUserBookings();
-
-
-
-    /** 
-     * Retrieve Current Position
-     */
-    if (!this.fixedLocation) {
-      this.locationService.getCurrentPosition().then(data => {
-        console.log('Result getting location in Component', data);
-        this.latMapCenter = data.coords.latitude;
-        this.lngMapCenter = data.coords.longitude;
-      });
-    }
+    
 
     this.platform.backButton.subscribe(() => {
       if (this.cardTSS_state == 'top') {
@@ -227,14 +208,47 @@ export class Tab2Page implements OnInit {
 
   ionViewWillEnter() {
     this.storage.get('futureBookings').then(bookings => {
-      try {
-        this.futureBookings = bookings;
-        console.log('future', this.futureBookings);
-      } catch {
-        console.error('Error getting future bookings');
-      }
+      console.log('fbookings', bookings);
+        try {
+          this.futureBookings = bookings;
+          console.log('future', this.futureBookings);
+        } catch {
+          console.error('Error getting future bookings');
+        }
+      
+    });
 
-    })
+
+    this.apiService.getCapsules().subscribe(data => {
+      this.capsules = data;
+
+      //Open marker-popup for first marker
+      this.capsules[0].isOpen = true;
+
+     // Find capsule id in futire bookings and apply booked label to capsule
+      for(let book in this.futureBookings) {
+        var result = this.capsules.find(obj => {
+          return obj.id == this.futureBookings[book].Capsule_id;
+        });
+
+        this.capsules[this.capsules.indexOf(result)].isBooked = true;
+      }
+    });
+
+
+    // get User.Bookings from server
+    this.getUserBookings();
+
+    /** 
+     * Retrieve Current Position
+     */
+    if (!this.fixedLocation) {
+      this.locationService.getCurrentPosition().then(data => {
+        console.log('Result getting location in Component', data);
+        this.latMapCenter = data.coords.latitude;
+        this.lngMapCenter = data.coords.longitude;
+      });
+    }
   }
 
 
