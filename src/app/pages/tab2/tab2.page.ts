@@ -9,6 +9,7 @@ import { AgmMap, AgmCoreModule } from '@agm/core';
 import { LightModalPage } from '../../modals/light-modal/light-modal.page';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
 import { first } from 'rxjs/operators';
+import { Storage } from '@ionic/storage';
 
 
 @Component({
@@ -56,7 +57,8 @@ export class Tab2Page implements OnInit {
     private platform: Platform,
     private timeService: TimeService,
     private modalController: ModalController,
-    private toastController: ToastController) { }
+    private toastController: ToastController,
+    private storage: Storage) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -122,6 +124,8 @@ export class Tab2Page implements OnInit {
 
   userBookingsArray = [];
   userBookingsSlotsArray = [];
+
+  futureBookings = [];
 
   activeDate = new Date();
   activeDate_String = '';
@@ -218,6 +222,19 @@ export class Tab2Page implements OnInit {
       }
     });
 
+  }
+
+
+  ionViewWillEnter() {
+    this.storage.get('futureBookings').then(bookings => {
+      try {
+        this.futureBookings = bookings;
+        console.log('future', this.futureBookings);
+      } catch {
+        console.error('Error getting future bookings');
+      }
+
+    })
   }
 
 
