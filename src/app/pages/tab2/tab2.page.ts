@@ -1204,7 +1204,7 @@ export class Tab2Page implements OnInit {
     const modal = await this.modalController.create({
       component: CheckoutModalPage,
       componentProps: {
-        paymentAmount: this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT,
+        paymentAmount: this.selectedCount * this.PRICE_PER_SLOT,
         timeStart: this.timeService.getStartTime(this.firstSelected + 1),
         timeEnd: this.timeService.getEndTime(this.lastSelected + 1),
         date: this.activeDate_String,
@@ -1217,11 +1217,13 @@ export class Tab2Page implements OnInit {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
         //this.toast("Paypal payment successful, sending data to Server..");
+        let today = new Date()
+        let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + " " +
+            today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         this.localNotifications.schedule({
           id: parseInt(this.capId),
           title: 'Paypal payment successful',
-          text: 'At ' + Date.now().toString() + ' you paid ' + this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT
-              + ' for Capsule ' + this.capName
+          text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
         });
         // loop through bookingsQueue
         for (let b = 0; b < this.bookingsQueue.length; b++) {
