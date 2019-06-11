@@ -210,10 +210,8 @@ export class Tab2Page implements OnInit {
 
   ionViewWillEnter() {
     this.storage.get('futureBookings').then(bookings => {
-      console.log('fbookings', bookings);
         try {
           this.futureBookings = bookings;
-          console.log('future', this.futureBookings);
         } catch {
           console.error('Error getting future bookings');
         }
