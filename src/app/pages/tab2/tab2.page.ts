@@ -259,18 +259,18 @@ export class Tab2Page implements OnInit {
   async animatecardtotopDone(event) {
     let animState: string = event.toState;
     if (animState == 'bottom') {
+
       let elem = await document.getElementById("cardTSS_top");
       elem.setAttribute("style", "visibility: hidden");
       let elem2 = await document.getElementById("slider");
       elem2.setAttribute("style", "visibility: visible");
 
-      clearInterval();
-
+      
     } else {
       //this.test = true;
       //this.timeslots = [{ content: 'pull to refresh', status: '' }];
 
-
+      
       setTimeout(() => {
         let elem2 = document.getElementById("root");
         elem2.setAttribute("style", "visibility: visible");
@@ -391,6 +391,13 @@ export class Tab2Page implements OnInit {
 
 
     if (this.cardTSS_state == 'bottom') {
+
+      // clear interval for clock
+      clearInterval();
+
+      // reset list position, so next scroll effect can be done properly
+      this.tscontent.scrollToTop();
+
       let elem1 = document.getElementsByClassName("even");
       elem1[0].setAttribute("style", "visibility:hidden");
       elem1[1].setAttribute("style", "visibility:hidden");
@@ -417,6 +424,8 @@ export class Tab2Page implements OnInit {
       let blckrttime = document.getElementsByClassName("blocker-time");
       blckrttime[0].classList.remove("visible");
       blckrttime[0].classList.add("collapsed");
+
+      
     }
 
   }
@@ -488,7 +497,6 @@ export class Tab2Page implements OnInit {
 
           // get data from server
           this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
-            console.log('LOADING TIMESLOTS');
 
             // data from server not formatted properly; using workaround:
             // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
@@ -561,11 +569,12 @@ export class Tab2Page implements OnInit {
 
               setTimeout(() => {
                 let listelem = document.getElementById('listr');
-                if ((listelem.offsetHeight - 40) < this.timepixels) {
-                  this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
-                } else {
+
+                // if ((listelem.offsetHeight*2) < this.timepixels) {
+                //   this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
+                // } else {
                   this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
-                }
+                // }
               }, 500);
             } else {
               let blckr = document.getElementsByClassName("blocker");
