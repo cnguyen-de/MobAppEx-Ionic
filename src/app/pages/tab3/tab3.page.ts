@@ -27,7 +27,7 @@ export class Tab3Page {
   darkMode: boolean;
   lightPref: number = 0;
   volumePref: number = 0;
-  notificationTime: number = 0;
+  notificationTime: number = 10;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,

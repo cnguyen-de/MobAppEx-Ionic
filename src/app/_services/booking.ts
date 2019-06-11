@@ -1,4 +1,5 @@
 export interface booking {
+  combinedIds: [];
   SnoozeUser_id: number;
   Capsule_id: number;
   Pin: number;
@@ -11,7 +12,7 @@ export interface booking {
   PayedAmount: number;
   PayedDate: string;
   PayerEmail: string;
-  Payment_id: string
+  Payment_id: string;
   capsule: {
     Latitude: number,
     Longitude: number,

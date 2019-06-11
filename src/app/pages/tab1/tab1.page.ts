@@ -106,6 +106,7 @@ export class Tab1Page {
       booking.FirstTimeFrame = this.timeService.getStartTime(booking.FirstTimeFrame);
       booking.LastTimeFrame = this.timeService.getEndTime(booking.LastTimeFrame);
       booking.Date = booking.Date.substring(0, 10);
+      booking.combinedIds = [booking.id];
       if (date > dateToday) {
         sortedBookings.push(booking);
       } else if (date.getDate() == dateToday.getDate()) {
@@ -145,6 +146,8 @@ export class Tab1Page {
       if (sortedBookings.length > 1) {
         if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame) {
           //console.log("combined " + sortedBookings[i].LastTimeFrame, sortedBookings[i + 1].LastTimeFrame);
+
+          sortedBookings[i].combinedIds.push(sortedBookings[i + 1].id);
           sortedBookings[i].LastTimeFrame = sortedBookings[i + 1].LastTimeFrame;
           sortedBookings[i].duration = sortedBookings[i].FirstTimeFrame + " - " + sortedBookings[i].LastTimeFrame;
           sortedBookings.splice(i + 1, 1);
@@ -152,7 +155,9 @@ export class Tab1Page {
           i = 0;
           continue;
         }
+
       } else {
+        combined = true;
         break;
       }
       if (i == sortedBookings.length - 2) {
@@ -163,17 +168,25 @@ export class Tab1Page {
       i++;
     }
 
-
+    // Get Notification Preference
     this.storage.get('notificationPref').then(pref => {
       if (typeof pref == 'number') {
         if (pref > 0) {
+          //Check if booking exists
           if (sortedBookings.length > 0) {
+            //Get list of ids (1-6 possible ids)
             this.storage.get('pushNotificationID').then(notificationID => {
-              if (typeof notificationID == 'number') {
-                if (sortedBookings[0].id != notificationID) {
-                  this.createNotificationFor(sortedBookings[0]);
+              if (typeof notificationID != 'undefined') {
+                let sameId = false;
+                // Compare each ids
+                for (let i = 0; i < notificationID.length; i++) {
+                  if (sortedBookings[0].id == notificationID) {
+                    sameId = true;
+                  }
                 }
-              } else {
+                //If no matching id = new booking -> new notification
+                if (!sameId) this.createNotificationFor(sortedBookings[0]);
+              } else { //If no id, and booking exists -> create new notification for this new booking
                 this.createNotificationFor(sortedBookings[0]);
               }
             })
@@ -199,7 +212,7 @@ export class Tab1Page {
     }
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
     this.localNotifications.schedule({
-      id: closestBooking.id,
+      id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
       text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
       trigger: {
