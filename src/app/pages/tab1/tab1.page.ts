@@ -164,17 +164,23 @@ export class Tab1Page {
     }
 
 
-    if (sortedBookings.length > 0) {
-      this.storage.get('pushNotificationID').then(notificationID => {
-        if (typeof notificationID == 'number') {
-          if (sortedBookings[0].id != notificationID) {
-            this.createNotificationFor(sortedBookings[0]);
+    this.storage.get('notificationPref').then(pref => {
+      if (typeof pref == 'number') {
+        if (pref > 0) {
+          if (sortedBookings.length > 0) {
+            this.storage.get('pushNotificationID').then(notificationID => {
+              if (typeof notificationID == 'number') {
+                if (sortedBookings[0].id != notificationID) {
+                  this.createNotificationFor(sortedBookings[0]);
+                }
+              } else {
+                this.createNotificationFor(sortedBookings[0]);
+              }
+            })
           }
-        } else {
-          this.createNotificationFor(sortedBookings[0]);
         }
-      })
-    }
+      }
+    })
     return sortedBookings
   }
 

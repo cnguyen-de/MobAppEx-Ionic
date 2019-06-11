@@ -33,6 +33,8 @@
   "CHANGE_LANGUAGE": "Sprache Ändern",
   "ENABLE_DARK_MODE": "Night Mode Aktivieren",
   "ENABLE_LIGHT_MODE": "Light Mode Aktivieren",
+  "TIMER_SETTING": "Benachrichtigung vor",
+  "NOTIFICATION_OFF": "Benachrichtigung Ausgeschaltet",
   "CAPSULE_PREF": "Kapselpräferenz",
   "VOLUME": "Volumen",
   "LIGHT_BRIGHTNESS": "Helligkeit",

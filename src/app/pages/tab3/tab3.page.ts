@@ -12,6 +12,7 @@ import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 import {User} from '../../_services/auth/user';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import {NotificationTimeChooserModalPage} from '../../modals/notification-time-chooser-modal/notification-time-chooser-modal.page';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class Tab3Page {
   darkMode: boolean;
   lightPref: number = 0;
   volumePref: number = 0;
+  notificationTime: number = 0;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
@@ -38,6 +40,11 @@ export class Tab3Page {
   ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
+    this.storage.get('notificationPref').then(pref => {
+      if (typeof pref == 'number') {
+        this.notificationTime = pref;
+      }
+    })
   }
 
   // User Info
@@ -163,6 +170,31 @@ export class Tab3Page {
     this.darkMode = !this.darkMode;
     this.themeService.enableDarkMode(this.darkMode);
     this.saveToStorage('dark', this.darkMode);
+  }
+
+  //Change notification timer
+  notificationTimer() {
+    this.presentNotificationTimerModal();
+  }
+  async presentNotificationTimerModal() {
+    const modal = await this.modalController.create({
+      component: NotificationTimeChooserModalPage,
+      componentProps: {
+        value: this.notificationTime
+      },
+      cssClass: 'chooser-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data != 'undefined') {
+        this.notificationTime = value.data;
+        this.saveToStorage('notificationPref', this.notificationTime).then(() => {
+          this.toast("Volume preference set to: " + this.notificationTime);
+        });
+      }
+    });
+
+    return await modal.present();
   }
 
   //Choose Volume Preference

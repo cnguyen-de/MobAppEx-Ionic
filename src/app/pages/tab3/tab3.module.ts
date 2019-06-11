@@ -11,6 +11,7 @@ import {VolumeModalPageModule} from '../../modals/volume-modal/volume-modal.modu
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpLoaderFactory} from '../../app.module';
 import {HttpClient} from '@angular/common/http';
+import {NotificationTimeChooserModalPageModule} from '../../modals/notification-time-chooser-modal/notification-time-chooser-modal.module';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import {HttpClient} from '@angular/common/http';
     LanguageChooserModalPageModule,
     LightModalPageModule,
     VolumeModalPageModule,
+    NotificationTimeChooserModalPageModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

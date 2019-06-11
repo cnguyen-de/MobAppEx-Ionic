@@ -53,6 +53,12 @@
                     <ion-label *ngIf="!darkMode">{{ 'ENABLE_DARK_MODE' | translate }}</ion-label>
                     <ion-label *ngIf="darkMode">{{ 'ENABLE_LIGHT_MODE' | translate }}</ion-label>
                 </ion-item>
+
+                <ion-item lines="full" button="true" (click)="notificationTimer()">
+                    <ion-icon name="timer" slot="start"></ion-icon>
+                    <ion-label *ngIf="notificationTime != 0">{{ 'TIMER_SETTING' | translate }} {{notificationTime}} Min</ion-label>
+                    <ion-label *ngIf="notificationTime == 0">{{ 'NOTIFICATION_OFF' | translate }}</ion-label>
+                </ion-item>
         </ion-list>
 
         <ion-list>
