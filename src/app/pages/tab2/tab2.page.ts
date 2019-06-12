@@ -136,15 +136,18 @@ export class Tab2Page implements OnInit {
 
   test = false;
 
-
+  minDate = new Date();
+  maxDate = new Date();
 
   ngOnInit() {
-
-
 
     // Set current date
     let currentDate = new Date();
     console.log(currentDate);
+
+    this.maxDate.setDate(currentDate.getDate() + this.daysRange - 1);
+
+
     this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
     //Create 30 days for days-segment
@@ -153,6 +156,7 @@ export class Tab2Page implements OnInit {
       date.setDate(date.getDate() + i);
 
       let formattedDate = new Intl.DateTimeFormat('en-US', {
+        // weekday: 'short',
         month: 'short',
         day: '2-digit'
       }).format(date);
@@ -1399,6 +1403,37 @@ export class Tab2Page implements OnInit {
 
       }
     }
+  }
+
+  async onDatePickerChanged(value) {
+    let date = new Date(value);
+    console.log(date);
+
+    
+    
+      let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate()) ) /(1000 * 60 * 60 * 24));
+
+      console.log('fiff: ',diff);
+    console.log('segm: ',this.segment.value);  
+    //this.segment.value = (parseInt(this.segment.value) + diff +1).toString();
+
+      let index = await +this.segment.value;
+    console.log('segmnew: ',index + diff);  
+      
+      this.segment.value = (index + diff).toString();
+      this.content.scrollToPoint((index + diff) * this.segmentWidth, 0, 200);
+
+      
+      this.getTimeSlots(this.days[this.segment.value].dateRAW);
+
+      console.log(this.activeDate);
+      // this.getTimeSlots(this.activeDate.setDate(this.activeDate.getDate() + diff +1));
+
+    
+
+    
+
+
   }
 
 

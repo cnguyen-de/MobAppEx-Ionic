@@ -128,13 +128,15 @@
 
   <ion-card id="listr">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
-      <ion-segment id="segmt" #segment mode="md">
+      <ion-segment id="segmt" #segment mode="md" >
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           {{day.date}}
         </ion-segment-button>
       </ion-segment>
     </ion-content>
-    <ion-button id="btn-calendar" fill="clear">
+    <input #matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
+      <mat-datepicker #picker></mat-datepicker>
+    <ion-button id="btn-calendar" fill="clear" (click)="picker.open()">
       <ion-icon id="ico_calendar" name="calendar"></ion-icon>
     </ion-button>
 
