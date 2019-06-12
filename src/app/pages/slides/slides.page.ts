@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {Router} from '@angular/router';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import { IonSlides } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-slides',
@@ -9,6 +11,7 @@ import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/nati
   styleUrls: ['./slides.page.scss'],
 })
 export class SlidesPage implements OnInit {
+  @ViewChild('slides') slides: IonSlides;
   slideOpts = {
     initialSlide: 0,
     speed: 400
@@ -33,6 +36,10 @@ export class SlidesPage implements OnInit {
   async finish() {
     await this.storage.set('slidesDone', true);
     this.router.navigateByUrl('/registration');
+  }
+
+  next() {
+    this.slides.slideTo(1, 400);
   }
 
 
