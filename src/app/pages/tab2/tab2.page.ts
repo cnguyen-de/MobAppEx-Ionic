@@ -1472,6 +1472,8 @@ export class Tab2Page implements OnInit {
       
       this.getTimeSlots(this.days[this.segment.value].dateRAW);
 
+      value = null;
+
   }
 
 
