@@ -136,15 +136,18 @@ export class Tab2Page implements OnInit {
 
   test = false;
 
-
+  minDate = new Date();
+  maxDate = new Date();
 
   ngOnInit() {
-
-
 
     // Set current date
     let currentDate = new Date();
     console.log(currentDate);
+
+    this.maxDate.setDate(currentDate.getDate() + this.daysRange - 1);
+
+
     this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
     //Create 30 days for days-segment
@@ -153,6 +156,7 @@ export class Tab2Page implements OnInit {
       date.setDate(date.getDate() + i);
 
       let formattedDate = new Intl.DateTimeFormat('en-US', {
+        // weekday: 'short',
         month: 'short',
         day: '2-digit'
       }).format(date);
@@ -391,6 +395,16 @@ export class Tab2Page implements OnInit {
       } catch {
 
       }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let blckr = document.getElementsByClassName("blocker");
+      blckr[0].setAttribute("style", "height:1328px;");
+      let blckrline = document.getElementsByClassName("blocker-line");
+      blckrline[0].setAttribute("style", "top:1328px;");
+      let blckrttime = document.getElementsByClassName("blocker-time");
+      blckrttime[0].setAttribute("style", "top:" + (1328 - 12) + "px;");
+
+
+      this.blurTimeSlots();
     }
 
 
@@ -1427,7 +1441,7 @@ export class Tab2Page implements OnInit {
 
 
   blurTimeSlots() {
-    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0' && this.segment.value == '0') {
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
       try {
         if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
           let tselem = document.getElementsByClassName("tsitem");
@@ -1438,7 +1452,26 @@ export class Tab2Page implements OnInit {
       } catch {
 
       }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let tselem = document.getElementsByClassName("tsitem");
+      for (let t = 0; t <= 26; t++) {
+        tselem[t].classList.add("blurred");
+      }
     }
+  }
+
+  async onDatePickerChanged(value) {
+    let date = new Date(value);
+
+      let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate()) ) /(1000 * 60 * 60 * 24));
+    
+      let index = await +this.segment.value;
+      
+      this.segment.value = (index + diff).toString();
+      this.content.scrollToPoint((index + diff) * this.segmentWidth, 0, 200);
+      
+      this.getTimeSlots(this.days[this.segment.value].dateRAW);
+
   }
 
 
