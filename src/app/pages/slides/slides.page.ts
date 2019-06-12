@@ -3,6 +3,7 @@ import {Storage} from '@ionic/storage';
 import {Router} from '@angular/router';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 import { IonSlides } from '@ionic/angular';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
 
 
 @Component({
@@ -17,10 +18,15 @@ export class SlidesPage implements OnInit {
     speed: 400
   };
 
-  constructor(private storage: Storage, private router: Router, private nativePageTransitions: NativePageTransitions) {
+  constructor(private storage: Storage, private router: Router, private nativePageTransitions: NativePageTransitions,
+              private statusBar: StatusBar) {
   }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
+    this.statusBar.backgroundColorByHexString("#08a0e9");
   }
 
   ionViewWillLeave() {
@@ -31,6 +37,7 @@ export class SlidesPage implements OnInit {
       androiddelay: 0,
     };
     this.nativePageTransitions.slide(options);
+    this.statusBar.backgroundColorByHexString("#ffffff");
   }
 
   async finish() {
