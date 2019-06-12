@@ -1401,7 +1401,7 @@ export class Tab2Page implements OnInit {
 
 
   blurTimeSlots() {
-    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0' && this.segment.value == '0') {
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
       try {
         if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
           let tselem = document.getElementsByClassName("tsitem");
@@ -1411,6 +1411,11 @@ export class Tab2Page implements OnInit {
         }
       } catch {
 
+      }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let tselem = document.getElementsByClassName("tsitem");
+      for (let t = 0; t <= 26; t++) {
+        tselem[t].classList.add("blurred");
       }
     }
   }
