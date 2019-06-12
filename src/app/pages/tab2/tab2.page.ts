@@ -1208,7 +1208,7 @@ export class Tab2Page implements OnInit {
         date: this.activeDate_String,
         capsule: this.capName
       },
-      cssClass: 'chooser-modal'
+      cssClass: 'password-changer-modal'
     });
 
     modal.onDidDismiss().then(value => {
