@@ -188,6 +188,11 @@
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'impossible'"
+                style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180); opacity: .5;">
+                <div slot="start">{{ item.content }}</div>
+                <div slot="end">FREE</div>
+              </ion-item>
                 <!-- <ion-item class="tsitem" button="true" *ngIf="item.state == 'blocked'"
                   style="opacity: .25;">
                   <div slot="start">{{ item.content }}</div>

@@ -619,6 +619,8 @@ export class Tab2Page implements OnInit {
               blckrttime[0].classList.add("collapsed");
             }
 
+            this.findImpossibles();
+
 
             this.working = false;
           },
@@ -1309,6 +1311,7 @@ export class Tab2Page implements OnInit {
     }
   }
 
+  // finds own bookings to mark time slots as YOURS
   findBookings() {
     let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
     //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
@@ -1327,6 +1330,42 @@ export class Tab2Page implements OnInit {
       }
     }
     console.log(this.userBookingsSlotsArray);
+  }
+
+  // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
+  findImpossibles() {
+
+    // sort slot numbers to be in line
+    this.userBookingsSlotsArray.sort(this.compare_Numbers);
+
+    let impossibles = [];
+    for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
+      
+      while ((((this.userBookingsSlotsArray[s]) + 1) == (this.userBookingsSlotsArray[s + 1])) ||
+      (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
+      console.log('hello: ',this.userBookingsSlotsArray[s]);
+        impossibles.push(this.userBookingsSlotsArray[s]);
+        s++;
+      }
+    }
+
+    if(impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+      this.timeslots[impossibles[0]-2].state = 'impossible';
+      this.timeslots[impossibles[impossibles.length-1]].state = 'impossible';
+
+    }
+  }
+
+  // Sort function for numbers
+  // Quelle: Javascript - Das umfassende Handbuch, Rheinwerk Verlag
+  compare_Numbers(value1, value2) {
+    if (value1 < value2) {
+      return -1; // Der erste Wert ist kleiner als der zweite Wert.
+    } else if(value1 > value2) {
+      return 1; // Der erste Wert ist größer als der zweite Wert.
+    } else {
+      return 0; // Beide Werte sind gleich groß.
+    }
   }
 
   addBookedSlot(item) {
@@ -1353,6 +1392,7 @@ export class Tab2Page implements OnInit {
         });
   }
 
+  // analyzes the time slot selction and slits it into single bookings if already booked slots are inbetween this selection
   createBookings() {
 
     this.bookingsQueue = [];
