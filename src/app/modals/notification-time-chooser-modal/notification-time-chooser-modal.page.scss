@@ -1,7 +1,11 @@
+ion-content {
+  --ion-background-color: var(--modal-color);
+}
 ion-list-header {
   color: var(--ion-text-color)
 }
 ion-range {
+  margin-top: 10px;
   --knob-background: var(--ion-color-primary);
   //--knob-size: 30px;
   //--bar-height: 7px;
@@ -9,6 +13,13 @@ ion-range {
 .container {
   text-align: center;
 }
-ion-content {
-  --ion-background-color: var(--modal-color);
+
+.labels {
+  position: absolute;
+  margin-left: 45px;
+  top: 0px;
+}
+
+.number {
+  padding-right: calc((100vw - 190px)/8);
 }

@@ -6,11 +6,19 @@
       </ion-list-header>
 
       <ion-item lines="none">
-        <ion-range min="0" max="60" step="10" snaps="true" ticks="true" pin="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
-          <ion-icon name="notifications-off" size="small" slot="start" *ngIf="sliderValue==0"></ion-icon>
-          <ion-icon name="notifications" size="small" slot="start" *ngIf="sliderValue!=0"></ion-icon>
-          <ion-icon name="notifications" slot="end"></ion-icon>
+        <ion-range min="0" max="60" step="10" snaps="true" ticks="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
+          <ion-icon name="timer" size="small" slot="start"></ion-icon>
+          <ion-icon name="timer" slot="end"></ion-icon>
         </ion-range>
+        <div class="labels">
+          <span class="number">0 </span>
+          <span class="number">10</span>
+          <span class="number">20</span>
+          <span class="number">30</span>
+          <span class="number">40</span>
+          <span class="number">50</span>
+          <span class="number">60</span>
+        </div>
       </ion-item>
       <div class="container">
         <ion-button (click)="confirm()" class="confirm-button" shape="round">

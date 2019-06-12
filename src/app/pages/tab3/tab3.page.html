@@ -55,8 +55,10 @@
                 </ion-item>
 
                 <ion-item lines="full" button="true" (click)="notificationTimer()">
-                    <ion-icon name="timer" slot="start"></ion-icon>
+                    <ion-icon name="notifications" slot="start" *ngIf="notificationTime != 0"></ion-icon>
                     <ion-label *ngIf="notificationTime != 0">{{ 'TIMER_SETTING' | translate }} {{notificationTime}} Min</ion-label>
+
+                    <ion-icon name="notifications-off" slot="start" *ngIf="notificationTime == 0"></ion-icon>
                     <ion-label *ngIf="notificationTime == 0">{{ 'NOTIFICATION_OFF' | translate }}</ion-label>
                 </ion-item>
         </ion-list>
