@@ -682,6 +682,8 @@ export class Tab2Page implements OnInit {
 
   onIonSlidePrevEnd() {
     console.log('prev ended')
+
+    this.tscontent.scrollToTop();
     this.slides.slideTo(1, 0);
     // console.log(this.segment.value);
     // console.log(this.days[this.segment.value].dateRAW);
@@ -713,6 +715,8 @@ export class Tab2Page implements OnInit {
 
   onIonSlideNextEnd() {
     //console.log('next ended')
+    
+    this.tscontent.scrollToTop();
     this.slides.slideTo(1, 0);
 
     // console.log(this.segment.value);
@@ -1318,7 +1322,7 @@ export class Tab2Page implements OnInit {
         this.addBookedSlot(this.userBookingsArray[a].LastTimeFrame);
 
         for (let s = this.userBookingsArray[a].FirstTimeFrame + 1; s <= this.userBookingsArray[a].LastTimeFrame - 1; s++) {
-          this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame + 1);
+          this.addBookedSlot(s);
         }
       }
     }
