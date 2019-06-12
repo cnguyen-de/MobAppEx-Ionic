@@ -134,7 +134,7 @@
         </ion-segment-button>
       </ion-segment>
     </ion-content>
-    <input #matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
+    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
       <mat-datepicker #picker></mat-datepicker>
     <ion-button id="btn-calendar" fill="clear" (click)="picker.open()">
       <ion-icon id="ico_calendar" name="calendar"></ion-icon>
