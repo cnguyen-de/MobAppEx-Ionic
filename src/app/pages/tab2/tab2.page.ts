@@ -395,6 +395,16 @@ export class Tab2Page implements OnInit {
       } catch {
 
       }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let blckr = document.getElementsByClassName("blocker");
+      blckr[0].setAttribute("style", "height:1328px;");
+      let blckrline = document.getElementsByClassName("blocker-line");
+      blckrline[0].setAttribute("style", "top:1328px;");
+      let blckrttime = document.getElementsByClassName("blocker-time");
+      blckrttime[0].setAttribute("style", "top:" + (1328 - 12) + "px;");
+
+
+      this.blurTimeSlots();
     }
 
 
@@ -1407,32 +1417,15 @@ export class Tab2Page implements OnInit {
 
   async onDatePickerChanged(value) {
     let date = new Date(value);
-    console.log(date);
 
-    
-    
       let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate()) ) /(1000 * 60 * 60 * 24));
-
-      console.log('fiff: ',diff);
-    console.log('segm: ',this.segment.value);  
-    //this.segment.value = (parseInt(this.segment.value) + diff +1).toString();
-
+    
       let index = await +this.segment.value;
-    console.log('segmnew: ',index + diff);  
       
       this.segment.value = (index + diff).toString();
       this.content.scrollToPoint((index + diff) * this.segmentWidth, 0, 200);
-
       
       this.getTimeSlots(this.days[this.segment.value].dateRAW);
-
-      console.log(this.activeDate);
-      // this.getTimeSlots(this.activeDate.setDate(this.activeDate.getDate() + diff +1));
-
-    
-
-    
-
 
   }
 
