@@ -133,7 +133,7 @@ export class Tab2Page implements OnInit {
   userBookingsArray = [];
   userBookingsSlotsArray = [];
 
-  futureBookings: booking[] = [];
+  futureBookings = [];
 
   activeDate = new Date();
   activeDate_String = '';
@@ -218,14 +218,14 @@ export class Tab2Page implements OnInit {
 
 
   ionViewWillEnter() {
-    this.storage.get('futureBookings').then(bookings => {
-      try {
-        this.futureBookings = bookings;
-      } catch {
-        console.error('Error getting future bookings');
-      }
+    // this.storage.get('futureBookings').then(bookings => {
+    //   try {
+    //     this.futureBookings = bookings;
+    //   } catch {
+    //     console.error('Error getting future bookings');
+    //   }
 
-    });
+    // });
 
 
     this.apiService.getCapsules().subscribe(data => {
@@ -234,19 +234,16 @@ export class Tab2Page implements OnInit {
       //Open marker-popup for first marker
       this.capsules[0].isOpen = true;
 
-      // Find capsule id in futire bookings and apply booked label to capsule
-      for (let book in this.futureBookings) {
-        var result = this.capsules.find(obj => {
-          return obj.id == this.futureBookings[book].Capsule_id;
-        });
+      
 
-        this.capsules[this.capsules.indexOf(result)].isBooked = true;
-      }
     });
 
 
     // get User.Bookings from server
     this.getUserBookings();
+
+
+
 
     /** 
      * Retrieve Current Position
@@ -540,7 +537,7 @@ export class Tab2Page implements OnInit {
 
 
           this.findOwnBookingsForActiveCapsule();
-
+          this.findFutureBookingsForAllCapsules();
 
 
           if (date != null) {
@@ -1410,6 +1407,7 @@ export class Tab2Page implements OnInit {
           this.userBookingsArray = user.bookings;
           console.log('userBookingsArray @ getUserBookings()', user.bookings);
           this.findOwnBookingsForActiveCapsule();
+          this.findFutureBookingsForAllCapsules();
         },
         error => {
           console.log(error);
@@ -1522,6 +1520,66 @@ export class Tab2Page implements OnInit {
         // https://stackoverflow.com/questions/45057191/angular-4-material-2-md-datepicker-set-first-day-of-the-week
         this._adapter.getFirstDayOfWeek = () => { return 1; };
         break;
+    }
+  }
+
+  findFutureBookingsForAllCapsules(){
+
+    
+    this.futureBookings = [];
+    for(let b = 0; b < this.userBookingsArray.length; b++) {
+
+      let date = new Date(this.userBookingsArray[b].Date);
+      let dateToday = new Date();
+
+      let futureBooking = {
+        date: new Date(this.userBookingsArray[b].Date).toISOString(),
+        startingTime: this.timeService.getEndTime(this.userBookingsArray[b].FirstTimeFrame),
+        endingTime: this.timeService.getEndTime(this.userBookingsArray[b].LastTimeFrame),
+        capsuleId:  this.userBookingsArray[b].Capsule_id
+      }
+
+      // let bookingStartDate = new Date(this.userBookingsArray[b].Date);
+      // bookingStartDate.setHours(futureBooking.startingTime.split(':')[0]);
+      // bookingStartDate.setMinutes(futureBooking.startingTime.split(':')[0]);
+
+      // Source: tab1.page.ts, author: Chi
+      if (date > dateToday) {
+        this.futureBookings.push(futureBooking);
+      } else if (date.getDate() == dateToday.getDate()) {
+        let hourNow = new Date().getHours();
+        let endTime = futureBooking.endingTime.split(':');
+        // compare the hours, if bigger then add to future booking
+        if (endTime[0] > hourNow) {
+          this.futureBookings.push(futureBooking);
+          // if same hour, compare minutes
+        } else if (endTime[0] == hourNow) {
+          if (endTime[1] >= new Date().getMinutes()) {
+            this.futureBookings.push(futureBooking);
+          }
+        }
+      }
+
+      //if(new Date(this.userBookingsArray[b].Date).setHours(futureBooking.startingTime.split(':')[0]))
+      //let date = new Date(this.userBookingsArray[b].Date);
+      //console.log(bookingStartDate.toISOString());
+    }
+    console.log('future: ', this.futureBookings);
+    this.setBookedLabel()
+  }
+
+  setBookedLabel() {
+    if (this.capsules.length > 0 && this.futureBookings.length > 0) {
+
+      
+      // Find capsule id in futire bookings and apply booked label to capsule
+      for (let book in this.futureBookings) {
+        var result = this.capsules.find(obj => {
+          return obj.id == this.futureBookings[book].capsuleId;
+        });
+
+        this.capsules[this.capsules.indexOf(result)].isBooked = true;
+      }
     }
   }
 
