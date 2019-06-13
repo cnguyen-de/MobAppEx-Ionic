@@ -44,10 +44,11 @@ ion-toolbar {
 ion-chip {
   background: var(--darker-color);
 }
-ion-text {
-  color: var(--ion-text-color)
-}
+
 .theme-icon {
   margin-left: 1px;
   margin-right: 1px;
+}
+ion-label {
+  margin-left: 2px;
 }
