@@ -109,7 +109,21 @@ export class LoginPage implements OnInit {
 
   //Change Language
   changeLanguage() {
-    this.presentLanguageChooserModal();
+    //this.presentLanguageChooserModal();
+    let languages = ['en', 'de'];
+    for (let i = 0; i < languages.length; i++) {
+      if (this.language == languages[i]) {
+        if (i < this.language.length - 1) {
+          this.language = languages[i + 1];
+          this.saveToStorage('language', this.language);
+          break;
+        } else if (i == this.language.length - 1) {
+          this.language = languages[0];
+          this.saveToStorage('language', this.language);
+          break;
+        }
+      }
+    }
   }
   async presentLanguageChooserModal() {
     const modal = await this.modalController.create({

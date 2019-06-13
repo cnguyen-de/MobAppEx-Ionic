@@ -62,11 +62,8 @@
     </div>
   </div>
 </ion-content>
-<ion-footer>
+<ion-footer translucent="true" no-border>
   <ion-toolbar>
-    <ion-chip slot="start" (click)="transitionTo('/this-app')">
-      <ion-text style="color: var(--ion-text-color);">Group 9 - MobAppEx</ion-text>
-    </ion-chip>
     <span slot="primary">
           <ion-chip (click)="switchTheme()">
               <ion-icon class="theme-icon" name="sunny" color="primary" *ngIf="!darkMode"></ion-icon>

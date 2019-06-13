@@ -44,11 +44,8 @@ ion-input {
   background-image: var(--snooze-logo);
 }
 
-ion-toolbar {
-  --background: var(--ion-item-background-color)
-}
 ion-chip {
-  background: var(--darker-color);
+  background: var(--background-surface-color);
 }
 
 .theme-icon {
