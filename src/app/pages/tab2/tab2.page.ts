@@ -497,7 +497,7 @@ export class Tab2Page implements OnInit {
   doRefresh(event) {
     setTimeout(() => {
       // Slowing down operation for better refresher UX
-      this.getTimeSlots(this.activeDate);
+      this.getTimeSlots(this.days[this.segment.value].dateRAW);
 
       event.target.complete();
     }, 500);
@@ -1470,6 +1470,9 @@ export class Tab2Page implements OnInit {
 
   async onDatePickerChanged(value) {
 
+    this.tscontent.scrollToTop();
+
+
     console.log(value);
 
     let date;
@@ -1496,7 +1499,6 @@ export class Tab2Page implements OnInit {
 
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
 
-    this.tscontent.scrollToTop();
 
 
   }
