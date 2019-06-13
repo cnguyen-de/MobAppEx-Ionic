@@ -16,10 +16,8 @@ ion-range {
 
 .labels {
   position: absolute;
-  margin-left: 45px;
+  margin-left: 8vw;
   top: 0px;
+  min-width: 78vw;
 }
 
-.number {
-  padding-right: calc((100vw - 190px)/8);
-}
