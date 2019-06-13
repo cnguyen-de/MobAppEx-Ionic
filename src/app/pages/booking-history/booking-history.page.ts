@@ -64,7 +64,7 @@ export class BookingHistoryPage implements OnInit {
   getBookings() {
     this.apiService.getUser().pipe(first()).subscribe(
         user => {
-              this.bookings = user.bookings;
+              this.bookings = this.sortData(user.bookings);
             for (var i = 0; i < this.bookings.length; i++) {
               this.bookings[i].FirstTimeFrame = this.timeService.getStartTime(this.bookings[i].FirstTimeFrame);
               this.bookings[i].LastTimeFrame = this.timeService.getEndTime(this.bookings[i].LastTimeFrame);
@@ -79,7 +79,7 @@ export class BookingHistoryPage implements OnInit {
   sortData(data) {
     try {
       return data.sort((a, b) => {
-        return <any>new Date(b.PayedDate) - <any>new Date(a.PayedDate);
+        return <any>new Date(b.Date) - <any>new Date(a.Date);
       });
     } catch (error) {
       // console.log("Failed");
