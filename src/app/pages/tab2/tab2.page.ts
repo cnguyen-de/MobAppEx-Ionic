@@ -1221,6 +1221,9 @@ export class Tab2Page implements OnInit {
 
 
   onSegmentClick(day) {
+
+    this.tscontent.scrollToTop();
+
     let date = new Date();
     date.setDate(date.getDate() + parseInt(day.value));
 
@@ -1278,7 +1281,7 @@ export class Tab2Page implements OnInit {
                     this.userBookingsArray = user.bookings;
                     console.log(user.bookings);
                     this.findOwnBookingsForActiveCapsule();
-                    this.getTimeSlots(this.activeDate);
+                    this.getTimeSlots(this.days[this.segment.value].dateRAW);
                   },
                   error => {
                     console.log(error);
