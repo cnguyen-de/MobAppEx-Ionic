@@ -59,6 +59,7 @@ export class AppComponent {
         this.translateService.use(pref);
       } else {
         this.translateService.setDefaultLang('en')
+        this.setData('language', 'en');
       }
     })
   }
@@ -69,6 +70,7 @@ export class AppComponent {
         this.themeService.enableDarkMode(dark);
       } else {
         this.themeService.enableDarkMode(false);
+        this.setData('dark', false);
       }
     })
   }
