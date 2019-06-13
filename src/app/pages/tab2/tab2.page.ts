@@ -13,6 +13,7 @@ import { Storage } from '@ionic/storage';
 
 import {booking} from '../../_services/booking';
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 
 @Component({
@@ -45,7 +46,8 @@ import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
       })),
       transition('bottom <=> top', animate('300ms ease-in'))
     ])
-  ]
+  ],
+ 
 })
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
@@ -62,7 +64,8 @@ export class Tab2Page implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     private storage: Storage,
-    private localNotifications: LocalNotifications) { }
+    private localNotifications: LocalNotifications,
+    private _adapter: DateAdapter<any>) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -140,6 +143,13 @@ export class Tab2Page implements OnInit {
   maxDate = new Date();
 
   ngOnInit() {
+
+    //this._adapter.setLocale('de');
+
+    // set first weekday to monday in datepicker
+    // https://stackoverflow.com/questions/45057191/angular-4-material-2-md-datepicker-set-first-day-of-the-week
+    this._adapter.getFirstDayOfWeek = () => { return 1; };
+
 
     // Set current date
     let currentDate = new Date();
