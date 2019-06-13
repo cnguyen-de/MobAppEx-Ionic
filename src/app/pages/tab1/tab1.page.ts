@@ -176,25 +176,35 @@ export class Tab1Page {
     this.storage.get('notificationPref').then(pref => {
       if (typeof pref == 'number') {
         if (pref > 0) {
-          //Check if booking exists
-          if (sortedBookings.length > 0) {
-            //Get list of ids (1-6 possible ids)
-            this.storage.get('pushNotificationID').then(notificationID => {
-              if (typeof notificationID != 'undefined') {
-                let sameId = false;
-                // Compare each ids
-                for (let id of notificationID) {
-                  if (sortedBookings[0].id == id) {
-                    sameId = true;
+          this.localNotifications.requestPermission().then(accept => {
+            if (accept) {
+              //Check if booking exists
+              if (sortedBookings.length > 0) {
+                //Get list of ids (1-6 possible ids)
+                this.storage.get('pushNotificationID').then(notificationID => {
+                  if (typeof notificationID != 'undefined') {
+                    let sameId = false;
+                    // Compare each ids
+                    for (let id of notificationID) {
+                      if (sortedBookings[0].id == id) {
+                        sameId = true;
+                      }
+                    }
+                    //If no matching id = new booking -> new notification
+                    if (!sameId) this.createNotificationFor(sortedBookings[0]);
+                  } else { //If no id, and booking exists -> create new notification for this new booking
+                    this.createNotificationFor(sortedBookings[0]);
                   }
-                }
-                //If no matching id = new booking -> new notification
-                if (!sameId) this.createNotificationFor(sortedBookings[0]);
-              } else { //If no id, and booking exists -> create new notification for this new booking
-                this.createNotificationFor(sortedBookings[0]);
+                })
               }
-            })
-          }
+            }
+          })
+        } else {
+          this.storage.get('pushNotificationID').then(notificationID => {
+            if (typeof notificationID != 'undefined') {
+              this.localNotifications.clear(notificationID);
+            }
+          })
         }
       }
     })
