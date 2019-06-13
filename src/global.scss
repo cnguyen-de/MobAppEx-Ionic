@@ -65,6 +65,10 @@ $font-family-base: 'Roboto', sans-serif;
     min-height: 23% !important;
     top: 77% !important;
   }
+  .language-chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 80% !important;
+  }
 }
 
 //Big phones
@@ -78,6 +82,10 @@ $font-family-base: 'Roboto', sans-serif;
   .chooser-modal .modal-wrapper {
     min-height: 25% !important;
     top: 73% !important;
+  }
+  .language-chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 78% !important;
   }
 }
 
@@ -94,6 +102,14 @@ $font-family-base: 'Roboto', sans-serif;
 .chooser-modal .modal-wrapper {
   min-height: 30%;
   top: 70%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}
+.language-chooser-modal .modal-wrapper {
+  min-height: 30%;
+  top: 75%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;

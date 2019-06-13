@@ -62,3 +62,21 @@
     </div>
   </div>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-chip slot="start" (click)="transitionTo('/this-app')">
+      <ion-text>Group 9 - MobAppEx</ion-text>
+    </ion-chip>
+    <span slot="primary">
+          <ion-chip (click)="switchTheme()">
+              <ion-icon class="theme-icon" name="sunny" color="primary" *ngIf="!darkMode"></ion-icon>
+              <ion-icon class="theme-icon" name="moon" color="primary" *ngIf="darkMode"></ion-icon>
+          </ion-chip>
+          <ion-chip color="primary" (click)="changeLanguage()">
+            <ion-icon class="theme-icon" src="/assets/germany.svg" *ngIf="language == 'de'"></ion-icon>
+            <ion-icon class="theme-icon" src="/assets/united-kingdom.svg" *ngIf="language == 'en'"></ion-icon>
+            <ion-label style="text-transform: uppercase;">{{language}}</ion-label>
+          </ion-chip>
+    </span>
+  </ion-toolbar>
+</ion-footer>

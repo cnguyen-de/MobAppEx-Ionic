@@ -16,7 +16,7 @@ ion-toolbar {
 ion-item {
   padding-bottom: 8px;
 }
-ion-icon {
+.login-icon {
   position: absolute;
   color: var(--ion-text-color-step-400);
   z-index: 2;
@@ -42,4 +42,18 @@ ion-input {
   height: 200px;
   background-size: 100% 100%;
   background-image: var(--snooze-logo);
+}
+
+ion-toolbar {
+  --background: var(--ion-item-background-color)
+}
+ion-chip {
+  background: var(--darker-color);
+}
+ion-text {
+  color: var(--ion-text-color)
+}
+.theme-icon {
+  margin-left: 1px;
+  margin-right: 1px;
 }

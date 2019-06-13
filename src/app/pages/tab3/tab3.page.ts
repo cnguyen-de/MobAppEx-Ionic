@@ -148,7 +148,7 @@ export class Tab3Page {
       componentProps: {
         value: 'en'
       },
-      cssClass: 'chooser-modal'
+      cssClass: 'language-chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
