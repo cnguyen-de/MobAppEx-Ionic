@@ -11,9 +11,9 @@ import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.pa
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 
-import {booking} from '../../_services/booking';
-import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { booking } from '../../_services/booking';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 
 @Component({
@@ -47,7 +47,7 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
       transition('bottom <=> top', animate('300ms ease-in'))
     ])
   ],
- 
+
 })
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
@@ -144,12 +144,6 @@ export class Tab2Page implements OnInit {
 
   ngOnInit() {
 
-    //this._adapter.setLocale('de');
-
-    // set first weekday to monday in datepicker
-    // https://stackoverflow.com/questions/45057191/angular-4-material-2-md-datepicker-set-first-day-of-the-week
-    this._adapter.getFirstDayOfWeek = () => { return 1; };
-
 
     // Set current date
     let currentDate = new Date();
@@ -211,7 +205,7 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
-    
+
 
     this.platform.backButton.subscribe(() => {
       if (this.cardTSS_state == 'top') {
@@ -224,12 +218,12 @@ export class Tab2Page implements OnInit {
 
   ionViewWillEnter() {
     this.storage.get('futureBookings').then(bookings => {
-        try {
-          this.futureBookings = bookings;
-        } catch {
-          console.error('Error getting future bookings');
-        }
-      
+      try {
+        this.futureBookings = bookings;
+      } catch {
+        console.error('Error getting future bookings');
+      }
+
     });
 
 
@@ -239,8 +233,8 @@ export class Tab2Page implements OnInit {
       //Open marker-popup for first marker
       this.capsules[0].isOpen = true;
 
-     // Find capsule id in futire bookings and apply booked label to capsule
-      for(let book in this.futureBookings) {
+      // Find capsule id in futire bookings and apply booked label to capsule
+      for (let book in this.futureBookings) {
         var result = this.capsules.find(obj => {
           return obj.id == this.futureBookings[book].Capsule_id;
         });
@@ -263,6 +257,9 @@ export class Tab2Page implements OnInit {
         this.lngMapCenter = data.coords.longitude;
       });
     }
+
+
+    this.setDatePickerFormat();
   }
 
 
@@ -310,12 +307,12 @@ export class Tab2Page implements OnInit {
       let elem2 = await document.getElementById("slider");
       elem2.setAttribute("style", "visibility: visible");
 
-      
+
     } else {
       //this.test = true;
       //this.timeslots = [{ content: 'pull to refresh', status: '' }];
 
-      
+
       setTimeout(() => {
         let elem2 = document.getElementById("root");
         elem2.setAttribute("style", "visibility: visible");
@@ -480,7 +477,7 @@ export class Tab2Page implements OnInit {
       blckrttime[0].classList.remove("visible");
       blckrttime[0].classList.add("collapsed");
 
-      
+
     }
 
   }
@@ -628,7 +625,7 @@ export class Tab2Page implements OnInit {
                 // if ((listelem.offsetHeight*2) < this.timepixels) {
                 //   this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
                 // } else {
-                  this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
+                this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
                 // }
               }, 500);
             } else {
@@ -741,7 +738,7 @@ export class Tab2Page implements OnInit {
 
   onIonSlideNextEnd() {
     //console.log('next ended')
-    
+
     this.tscontent.scrollToTop();
     this.slides.slideTo(1, 0);
 
@@ -1247,7 +1244,7 @@ export class Tab2Page implements OnInit {
         //this.toast("Paypal payment successful, sending data to Server..");
         let today = new Date()
         let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + " " +
-            today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+          today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         this.localNotifications.schedule({
           id: parseInt(this.capId),
           title: 'Paypal payment successful',
@@ -1364,18 +1361,18 @@ export class Tab2Page implements OnInit {
 
     let impossibles = [];
     for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
-      
+
       while ((((this.userBookingsSlotsArray[s]) + 1) == (this.userBookingsSlotsArray[s + 1])) ||
-      (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
-      console.log('hello: ',this.userBookingsSlotsArray[s]);
+        (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
+        console.log('hello: ', this.userBookingsSlotsArray[s]);
         impossibles.push(this.userBookingsSlotsArray[s]);
         s++;
       }
     }
 
-    if(impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-      this.timeslots[impossibles[0]-2].state = 'impossible';
-      this.timeslots[impossibles[impossibles.length-1]].state = 'impossible';
+    if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+      this.timeslots[impossibles[0] - 2].state = 'impossible';
+      this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
 
     }
   }
@@ -1385,7 +1382,7 @@ export class Tab2Page implements OnInit {
   compare_Numbers(value1, value2) {
     if (value1 < value2) {
       return -1; // Der erste Wert ist kleiner als der zweite Wert.
-    } else if(value1 > value2) {
+    } else if (value1 > value2) {
       return 1; // Der erste Wert ist größer als der zweite Wert.
     } else {
       return 0; // Beide Werte sind gleich groß.
@@ -1473,17 +1470,37 @@ export class Tab2Page implements OnInit {
   async onDatePickerChanged(value) {
     let date = new Date(value);
 
-      let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate()) ) /(1000 * 60 * 60 * 24));
-    
-      let index = await +this.segment.value;
-      
-      this.segment.value = (index + diff).toString();
-      this.content.scrollToPoint((index + diff) * this.segmentWidth, 0, 200);
-      
-      this.getTimeSlots(this.days[this.segment.value].dateRAW);
+    let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate())) / (1000 * 60 * 60 * 24));
 
-      value = null;
+    let index = await +this.segment.value;
 
+    this.segment.value = (index + diff).toString();
+    this.content.scrollToPoint((index + diff) * this.segmentWidth, 0, 200);
+
+    this.getTimeSlots(this.days[this.segment.value].dateRAW);
+
+    value = null;
+
+  }
+
+  async setDatePickerFormat() {
+    let value = await this.storage.get('language');
+    switch (value) {
+      case 'en':
+        this._adapter.setLocale('en');
+
+        // set first weekday to monday in datepicker
+        // https://stackoverflow.com/questions/45057191/angular-4-material-2-md-datepicker-set-first-day-of-the-week
+        this._adapter.getFirstDayOfWeek = () => { return 1; };
+        break;
+      case 'de':
+        this._adapter.setLocale('de');
+
+        // set first weekday to monday in datepicker
+        // https://stackoverflow.com/questions/45057191/angular-4-material-2-md-datepicker-set-first-day-of-the-week
+        this._adapter.getFirstDayOfWeek = () => { return 1; };
+        break;
+    }
   }
 
 
