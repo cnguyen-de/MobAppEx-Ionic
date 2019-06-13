@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { BookingHistoryPage } from './booking-history.page';
 
-import {MatExpansionModule} from '@angular/material';
+import {MatExpansionModule, MatDatepickerModule, MatFormFieldModule, MatNativeDateModule, MatInputModule} from '@angular/material';
 
 const routes: Routes = [
   {
@@ -22,9 +22,13 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     MatExpansionModule,
-    // MatFormField,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [BookingHistoryPage]
+  declarations: [BookingHistoryPage],
+  // providers: [MatDatepickerModule]
 })
 export class BookingHistoryPageModule {}
