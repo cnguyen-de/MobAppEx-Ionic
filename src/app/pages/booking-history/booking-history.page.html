@@ -7,24 +7,33 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let booking of bookings">
-      <ion-label>Capsule Name: {{booking.capsule.Name}}</ion-label>
-    </ion-item>
-  </ion-list>
-</ion-content> -->
+  <input style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;" 
+    matInput [matDatepicker]="picker" placeholder="Input & change events" (dateChange)="addEvent('change', $event)">
+  <mat-datepicker touchUi #picker></mat-datepicker>
+
+  <div *ngIf="!isFiltered; else clearButton">
+    <ion-button expand="block" style="margin: 10px 10px 5px 10px" (click)="picker.open()">search by date</ion-button>
+  </div>
+  <ng-template #clearButton>
+    <ion-button expand="block" style="margin: 10px 60px 5px 10px" (click)="picker.open()">search by date</ion-button>
+    <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:62px; right:10px; z-index:100;" (click)="clearFilter()">
+      <ion-icon id="ico_calendar" name="trash" ></ion-icon>
+    </ion-button>
+  </ng-template>
+
 
 <ion-content>
   <mat-accordion>
-    <div class="expansion">
+    <div class="expansion" *ngIf="!isFiltered; else filtered">
       <mat-expansion-panel  *ngFor="let booking of bookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
-              Date: {{booking.Date | date : "dd.MM.y"}}
+            Date: {{booking.Date | date : "dd.MM.y"}} 
           </mat-panel-title>
           <mat-panel-description>
-            <!-- Currently I am {{panelOpenState ? 'open' : 'closed'}} -->
+              {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}
+          </mat-panel-description>
+          <mat-panel-description>
           </mat-panel-description>
         </mat-expansion-panel-header>
         <p>Capsule Name: {{booking.capsule.Name}}</p>
@@ -33,5 +42,24 @@
         <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
       </mat-expansion-panel>
     </div>
+
+    <ng-template #filtered>
+        <mat-expansion-panel  *ngFor="let booking of filteredBookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Date: {{booking.Date | date : "dd.MM.y"}} 
+              </mat-panel-title>
+              <mat-panel-description>
+                  {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}
+              </mat-panel-description>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>Capsule Name: {{booking.capsule.Name}}</p>
+            <p>Amount: {{booking.Amount}} €</p>
+            <p>PayedDate: {{booking.PayedDate | date : "dd.MM.y"}}</p>
+            <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
+          </mat-expansion-panel>
+    </ng-template>
   </mat-accordion>
 </ion-content>

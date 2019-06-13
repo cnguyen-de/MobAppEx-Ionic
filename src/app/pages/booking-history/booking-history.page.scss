@@ -5,11 +5,11 @@ ion-toolbar {
    --background: var(--ion-item-background-color)
 }
 .expansion{
-   padding: 3%; 
+   padding: 10px; 
 }
 
-mat-panel-title {
-   font-weight: bold;
+mat-expansion-panel {
+   margin: 10px 0px 10px 0px; 
 }
 
 .mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{
