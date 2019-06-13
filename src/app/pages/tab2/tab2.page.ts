@@ -536,8 +536,10 @@ export class Tab2Page implements OnInit {
       .subscribe(
         user => {
           this.userBookingsArray = user.bookings;
-          console.log(user.bookings);
-          this.findBookings();
+          console.log('userBookingsArray', user.bookings);
+
+
+          this.findOwnBookingsForActiveCapsule();
 
 
 
@@ -1271,7 +1273,7 @@ export class Tab2Page implements OnInit {
                   user => {
                     this.userBookingsArray = user.bookings;
                     console.log(user.bookings);
-                    this.findBookings();
+                    this.findOwnBookingsForActiveCapsule();
                     this.getTimeSlots(this.activeDate);
                   },
                   error => {
@@ -1334,7 +1336,7 @@ export class Tab2Page implements OnInit {
   }
 
   // finds own bookings to mark time slots as YOURS
-  findBookings() {
+  findOwnBookingsForActiveCapsule() {
     let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
     //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
     for (let a = 0; a < this.userBookingsArray.length; a++) {
@@ -1351,7 +1353,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log(this.userBookingsSlotsArray);
+    console.log('userBookingsSlotsArray',this.userBookingsSlotsArray);
   }
 
   // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
@@ -1406,8 +1408,8 @@ export class Tab2Page implements OnInit {
       .subscribe(
         user => {
           this.userBookingsArray = user.bookings;
-          console.log(user.bookings);
-          this.findBookings();
+          console.log('userBookingsArray @ getUserBookings()', user.bookings);
+          this.findOwnBookingsForActiveCapsule();
         },
         error => {
           console.log(error);
