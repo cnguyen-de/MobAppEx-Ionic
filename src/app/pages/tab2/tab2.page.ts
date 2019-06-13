@@ -538,6 +538,7 @@ export class Tab2Page implements OnInit {
 
           this.findOwnBookingsForActiveCapsule();
           this.findFutureBookingsForAllCapsules();
+          this.setTimeSlotsCrossCapsuleBooking();
 
 
           if (date != null) {
@@ -600,6 +601,12 @@ export class Tab2Page implements OnInit {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
             }
+
+            for (let val in this.crossCapsuleBookingsArray) {
+              // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
+              this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
+              this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
+            } 
 
 
             if (this.segment.value == '0') {
@@ -1353,6 +1360,8 @@ export class Tab2Page implements OnInit {
     console.log('userBookingsSlotsArray',this.userBookingsSlotsArray);
   }
 
+  
+
   // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
   findImpossibles() {
 
@@ -1394,7 +1403,6 @@ export class Tab2Page implements OnInit {
     if (index === -1) {
       this.userBookingsSlotsArray.push(item);
     }
-
   }
 
   async getUserBookings() {
@@ -1580,6 +1588,53 @@ export class Tab2Page implements OnInit {
 
         this.capsules[this.capsules.indexOf(result)].isBooked = true;
       }
+    }
+  }
+
+  crossCapsuleBookingsArray = [];
+  
+  setTimeSlotsCrossCapsuleBooking() {
+    this.crossCapsuleBookingsArray = [];
+    
+
+    let date = this.days[this.segment.value].dateRAW;
+
+    
+    for(let b in this.userBookingsArray) {
+      let date2 = new Date(this.userBookingsArray[b].Date);
+      if(date.getDate() == date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+        //console.log(this.userBookingsArray[b]);
+        //console.log(this.userBookingsArray[b].capsule.Name);
+
+        let crossCapsuleBooking = {
+          capName: this.userBookingsArray[b].capsule.Name,
+          slot: this.userBookingsArray[b].FirstTimeFrame
+        }
+        this.addBookedCapsuleSlot(crossCapsuleBooking);
+
+        let crossCapsuleBooking2 = {
+          capName: this.userBookingsArray[b].capsule.Name,
+          slot: this.userBookingsArray[b].LastTimeFrame
+        }
+        this.addBookedCapsuleSlot(crossCapsuleBooking2);
+
+        for (let s = this.userBookingsArray[b].FirstTimeFrame + 1; s <= this.userBookingsArray[b].LastTimeFrame - 1; s++) {
+          let crossCapsuleBooking3 = {
+            capName: this.userBookingsArray[b].capsule.Name,
+            slot: s
+          }
+          this.addBookedCapsuleSlot(crossCapsuleBooking3);
+        }
+      }
+    }
+    console.log(this.crossCapsuleBookingsArray);
+    
+  }
+
+  addBookedCapsuleSlot(item) {
+    var index = this.crossCapsuleBookingsArray.findIndex(x => x.slot == item.slot)
+    if (index === -1) {
+      this.crossCapsuleBookingsArray.push(item);
     }
   }
 
