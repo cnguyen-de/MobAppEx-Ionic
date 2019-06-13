@@ -48,6 +48,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
     ])
   ],
 
+
 })
 export class Tab2Page implements OnInit {
   @ViewChild("slider") slider: IonSlides;
@@ -259,7 +260,7 @@ export class Tab2Page implements OnInit {
     }
 
 
-    this.setDatePickerFormat();
+     TODO: this.setDatePickerFormat();
   }
 
 
@@ -1468,7 +1469,23 @@ export class Tab2Page implements OnInit {
   }
 
   async onDatePickerChanged(value) {
-    let date = new Date(value);
+
+    console.log(value);
+
+    let date;
+    let datePortions;
+    let lang = await this.storage.get('language');
+    switch (lang) {
+      case 'en':
+        datePortions = value.split('/');
+        date = new Date(datePortions[2], datePortions[0] - 1, datePortions[1]);
+        break;
+      case 'de':
+        datePortions = value.split('.');
+        date = new Date(datePortions[2], datePortions[1] - 1, datePortions[0]);
+        break;
+    }
+
 
     let diff = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(this.days[this.segment.value].dateRAW.getFullYear(), this.days[this.segment.value].dateRAW.getMonth(), this.days[this.segment.value].dateRAW.getDate())) / (1000 * 60 * 60 * 24));
 
@@ -1479,7 +1496,8 @@ export class Tab2Page implements OnInit {
 
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
 
-    value = null;
+    this.tscontent.scrollToTop();
+
 
   }
 
