@@ -15,7 +15,7 @@
 </ion-header>
 
 
-<ion-content>
+<ion-content *ngIf="!viewActive">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
             pullingIcon="arrow-down"
@@ -48,7 +48,7 @@
     <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
       <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios">
+      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios" (click)="viewActiveCapsule()">
         <div class="active-capsule-bar">
               <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
               </ion-icon>
@@ -129,4 +129,9 @@
     </div>
 
   </div>
+</ion-content>
+
+<ion-content *ngIf="viewActive">
+  <ion-button (click)="viewActive = !viewActive">Back to list</ion-button>
+  <h1>CAPSULE CONTROOOOOOOOL</h1>
 </ion-content>

@@ -20,9 +20,10 @@ export class Tab1Page {
   today = new Date();
   futureBookings: booking[] = [];
   isFirstTime: boolean = true;
-  loading: boolean;
+  loading: boolean = true;
   countDownTime: number;
   farFuture: boolean = false;
+  viewActive:boolean = false;
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService, private localNotifications: LocalNotifications){
@@ -48,7 +49,7 @@ export class Tab1Page {
       }
       this.getFutureBookings();
       if (this.futureBookings.length == 0) {
-        this.loading = false;
+        setTimeout(() => this.loading = false, 100);
       }
     });
   }
@@ -69,7 +70,7 @@ export class Tab1Page {
               } else {
                 console.log("from database");
                 this.futureBookings = sortedBooking;
-                this.loading = false;
+                setTimeout(() => this.loading = false, 100);
               }
             } else {
               this.loading = true;
@@ -80,9 +81,10 @@ export class Tab1Page {
               this.bookings = JSON.parse(JSON.stringify(user.bookings));
               this.futureBookings = this.getFutureBookingsFromBookings(this.bookings);
               this.saveToStorage('futureBookings', this.futureBookings);
-              this.loading = false;
+              setTimeout(() => this.loading = false, 100);
             }
           });
+
         }, err => {
           console.log(err);
           this.storage.get('futureBookings').then(bookings => {
@@ -221,6 +223,7 @@ export class Tab1Page {
       let nowTimeStamp = this.today.getTime() / 1000;
       this.farFuture = this.countDownTime - nowTimeStamp > 86400;
     }
+
     return sortedBookings
   }
 
@@ -249,8 +252,12 @@ export class Tab1Page {
       }
     });
     this.saveToStorage('pushNotificationID', closestBooking.id);
-
   }
+
+  viewActiveCapsule() {
+    this.viewActive = !this.viewActive;
+  }
+
   doRefresh($event) {
     this.getFutureBookings();
     setTimeout(() => {
