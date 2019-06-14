@@ -6,7 +6,8 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
-
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -22,8 +23,8 @@ export class Tab1Page {
   isFirstTime: boolean = true;
   loading: boolean;
 
-  constructor(private apiService: ApiService, private storage: Storage,
-              private timeService: TimeService, private localNotifications: LocalNotifications){
+  constructor(private apiService: ApiService, private storage: Storage, private nativePageTransitions: NativePageTransitions,
+              private router: Router, private timeService: TimeService, private localNotifications: LocalNotifications){
   }
 
   ngOnInit() {
@@ -50,6 +51,22 @@ export class Tab1Page {
       }
     });
   }
+
+    //Navigate to capsule control
+    capsuleControl(){
+      this.transitionTo('/capsule-control', 'left');
+    }
+
+    transitionTo(path, direction) {
+      let options: NativeTransitionOptions = {
+        direction: direction,
+        duration: 200,
+        slowdownfactor: 1,
+        androiddelay: 200,
+      };
+      this.nativePageTransitions.slide(options);
+      this.router.navigateByUrl(path);
+    }
 
   hideCard() {
     this.hide = true;
