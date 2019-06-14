@@ -44,7 +44,7 @@ ion-item {
 }
 .info-icon {
   padding-top: 4px;
-  padding-left: 4px;
+  padding-left: 16px;
   color: white !important;
 }
 .active-capsule-header {
@@ -74,6 +74,11 @@ ion-list-header {
 .mat-expansion-panel-header-title {
   color: var(--ion-text-color) !important;
 }
+//Tab 1 ion-item pin
+.item-pin {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 .pin {
   margin-bottom: 2px;
   padding-right: 2px;
@@ -89,6 +94,6 @@ ion-list-header {
 }
 .countdown {
   float:right;
-  margin-top: 2px;
-  margin-right: 8px;
+  margin-top: 1px;
+  margin-right: 16px;
 }

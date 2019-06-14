@@ -89,13 +89,11 @@
           </ion-card-subtitle>
         </ion-card-header>
 
-        <ion-card-content>
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-pin">
             <ion-icon name="ios-log-in" class="pin"></ion-icon>
             <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
             <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
           </ion-item>
-        </ion-card-content>
       </ion-card>
 
       <!-- LIST VIEW: FUTURE CAPSULES-->
@@ -111,7 +109,7 @@
         </ion-list>
 
         <mat-accordion>
-          <mat-expansion-panel #matExpansionPanel>
+          <mat-expansion-panel #matExpansionPanel class="pin-panel">
             <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
             <ion-chip>
               <ion-icon name="calendar"></ion-icon>
@@ -121,7 +119,7 @@
               <ion-icon name="time"></ion-icon>
               <ion-label>{{booking.duration}}</ion-label>
             </ion-chip>
-            <ion-item lines="none">
+            <ion-item lines="none" class="small-pin">
               <ion-icon name="ios-log-in" class="pin-list"></ion-icon>
               <ion-text color="primary"><h5>{{booking.Pin}}</h5></ion-text>
             </ion-item>
