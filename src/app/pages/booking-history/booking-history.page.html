@@ -11,14 +11,16 @@
     matInput [matDatepicker]="picker" placeholder="Input & change events" (dateChange)="addEvent('change', $event)">
   <mat-datepicker touchUi #picker></mat-datepicker>
 
-  <div *ngIf="!isFiltered; else clearButton">
+  <div class="button" *ngIf="!isFiltered; else clearButton">
     <ion-button expand="block" style="margin: 10px 10px 5px 10px" (click)="picker.open()">search by date</ion-button>
   </div>
   <ng-template #clearButton>
-    <ion-button expand="block" style="margin: 10px 60px 5px 10px" (click)="picker.open()">search by date</ion-button>
-    <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:62px; right:10px; z-index:100;" (click)="clearFilter()">
-      <ion-icon id="ico_calendar" name="trash" ></ion-icon>
-    </ion-button>
+    <div class="button">
+      <ion-button expand="block" style="margin: 10px 60px 5px 10px" (click)="picker.open()">search by date</ion-button>
+      <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:62px; right:10px; z-index:100;" (click)="clearFilter()">
+        <ion-icon id="ico_calendar" name="trash" ></ion-icon>
+      </ion-button>
+    </div>
   </ng-template>
 
 

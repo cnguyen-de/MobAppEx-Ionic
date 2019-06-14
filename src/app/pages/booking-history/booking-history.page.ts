@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import {delay, first, share} from 'rxjs/operators';
 import { ApiService } from '../../_services/api/api.service';
@@ -15,6 +15,7 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['./booking-history.page.scss'],
 })
 export class BookingHistoryPage implements OnInit {
+  @ViewChild('picker') picker;
 
   bookings: any;
   filteredBookings: any = [];
@@ -30,11 +31,8 @@ export class BookingHistoryPage implements OnInit {
 
   ngOnInit() {
     this.getBookings();
-
-    this.platform.backButton.subscribe(() => {
-      console.log("test");
-    });
   }
+
   ionViewWillLeave() {
     let options: NativeTransitionOptions = {
       direction: 'right',
@@ -43,6 +41,8 @@ export class BookingHistoryPage implements OnInit {
       androiddelay: 0,
     };
     this.nativePageTransitions.slide(options);
+
+    this.picker.close(); 
   }
 
   addEvent(type: Date, event: MatDatepickerInputEvent<Date>) {

@@ -12,10 +12,19 @@ mat-expansion-panel {
    margin: 10px 0px 10px 0px; 
 }
 
+.button{
+   color: var(--ion-text-color);
+   background: var(--ion-item-background-color);
+}
+
 .mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{
    color: var(--ion-text-color);
    background: var(--ion-item-background-color);
 }
 .mat-expansion-panel-header-title {
+   color: var(--ion-text-color) !important;
+}
+
+.mat-expansion-panel-header-description {
    color: var(--ion-text-color) !important;
 }
