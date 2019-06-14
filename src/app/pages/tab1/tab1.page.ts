@@ -21,6 +21,8 @@ export class Tab1Page {
   futureBookings: booking[] = [];
   isFirstTime: boolean = true;
   loading: boolean;
+  countDownTime: number;
+  farFuture: boolean = false;
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService, private localNotifications: LocalNotifications){
@@ -208,6 +210,17 @@ export class Tab1Page {
         }
       }
     })
+
+    //Create countdown timer for most recent booking
+    if (sortedBookings.length > 0) {
+      let dateArray = sortedBookings[0].Date.split('-');
+      let timeArray = sortedBookings[0].FirstTimeFrame.split(':');
+      let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
+      this.countDownTime = date.getTime() / 1000;
+      console.log(this.countDownTime)
+      let nowTimeStamp = this.today.getTime() / 1000;
+      this.farFuture = this.countDownTime - nowTimeStamp > 86400;
+    }
     return sortedBookings
   }
 
