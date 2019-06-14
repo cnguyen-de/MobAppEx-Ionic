@@ -42,9 +42,11 @@
         <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
       </mat-expansion-panel>
     </div>
+  </mat-accordion>
+</ion-content>
 
     <ng-template #filtered>
-        <mat-expansion-panel  *ngFor="let booking of filteredBookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel style="margin: 10px 10px 10px 10px; "  *ngFor="let booking of filteredBookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 Date: {{booking.Date | date : "dd.MM.y"}} 
@@ -61,5 +63,4 @@
             <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
           </mat-expansion-panel>
     </ng-template>
-  </mat-accordion>
-</ion-content>
+

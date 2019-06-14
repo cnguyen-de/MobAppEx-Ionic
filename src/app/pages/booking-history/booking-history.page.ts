@@ -6,7 +6,7 @@ import { TimeService } from '../../_services/time/time.service';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 import isEqual from 'lodash.isequal'
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
-
+import { Platform } from '@ionic/angular';
 
 
 @Component({
@@ -25,10 +25,15 @@ export class BookingHistoryPage implements OnInit {
   isFiltered: boolean = false;
 
   constructor(private apiService: ApiService, private timeService: TimeService,
-              private nativePageTransitions: NativePageTransitions) { }
+              private nativePageTransitions: NativePageTransitions,
+              private platform: Platform) { }
 
   ngOnInit() {
     this.getBookings();
+
+    this.platform.backButton.subscribe(() => {
+      console.log("test");
+    });
   }
   ionViewWillLeave() {
     let options: NativeTransitionOptions = {
