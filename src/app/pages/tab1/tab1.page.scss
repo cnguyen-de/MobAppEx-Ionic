@@ -97,3 +97,10 @@ ion-list-header {
   margin-top: 1px;
   margin-right: 16px;
 }
+.capsule-control {
+}
+.capsule-control-card {
+  margin-top: 24px !important;
+  width: calc(100vw - 24px);
+  height: calc(100vh - 148px)
+}

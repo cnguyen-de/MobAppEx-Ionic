@@ -48,7 +48,8 @@
     <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
       <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios" (click)="viewActiveCapsule()">
+      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios"
+                (click)="viewActiveCapsule()"  [@changeDivSize]=currentState>
         <div class="active-capsule-bar">
               <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
               </ion-icon>
@@ -131,7 +132,23 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="viewActive">
-  <ion-button (click)="viewActive = !viewActive">Back to list</ion-button>
-  <h1>CAPSULE CONTROOOOOOOOL</h1>
+<ion-content *ngIf="viewActive" class="capsule-control">
+  <ion-card class="capsule-control-card" mode="ios" [@changeDivSize]=currentState>
+    <div class="active-capsule-bar" (click)="viewActiveCapsule()" >
+      <ion-icon name="arrow-back" class="info-icon" slot="start" size="large"></ion-icon>
+
+      <!-- change countDownTime to time of lastTimeFrame-->
+      countdowntolasttimeframe
+      <span class="countdown" simpleCountdown slot="end"
+            [reactive]="false"
+            [dateTo]=countDownTime
+            [endMessage]="'Capsule Active'"
+            [styles]="'font-size: 14px; color: white;' +
+                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+              </span>
+    </div>
+    <ion-card-content>
+      CAPSULE CONTROL
+    </ion-card-content>
+  </ion-card>
 </ion-content>

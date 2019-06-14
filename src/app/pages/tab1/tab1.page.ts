@@ -6,12 +6,29 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  styleUrls: ['tab1.page.scss'],
+  animations: [
+    trigger('changeDivSize', [
+      state('initial', style({
+        //backgroundColor: 'green',
+        width: 'calc(100vw - 24px)',
+        height: '198px'
+      })),
+      state('final', style({
+        //backgroundColor: 'red',
+        width: 'calc(100vw - 24px)',
+        height: 'calc(100vh - 148px)'
+      })),
+      transition('initial=>final', animate('300ms')),
+      transition('final=>initial', animate('300ms'))
+    ])
+  ]
 })
 export class Tab1Page {
   MINUTES_BEFORE_START = 10;
@@ -24,6 +41,7 @@ export class Tab1Page {
   countDownTime: number;
   farFuture: boolean = false;
   viewActive:boolean = false;
+  currentState = 'initial';
 
   constructor(private apiService: ApiService, private storage: Storage,
               private timeService: TimeService, private localNotifications: LocalNotifications){
@@ -255,7 +273,8 @@ export class Tab1Page {
   }
 
   viewActiveCapsule() {
-    this.viewActive = !this.viewActive;
+    this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+    setTimeout(() => this.viewActive = !this.viewActive,300)
   }
 
   doRefresh($event) {
