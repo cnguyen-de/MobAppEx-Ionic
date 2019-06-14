@@ -30,27 +30,46 @@ export class CheckoutModalPage implements OnInit {
     this.date = this.navParams.get('date');
     this.timeStart = this.navParams.get('timeStart');
     this.timeEnd = this.navParams.get('timeEnd');
+    let _this = this;
+
+    setTimeout(() => {
+      // Render the PayPal button into #paypal-button-container
+      // @ts-ignore
+      window.paypal.Buttons({
+        style: {
+          color:  'blue',
+          shape:  'pill',
+          label:  'pay',
+          height: 40
+        },
+        // Set up the transaction
+        createOrder: function (data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: _this.paymentAmount
+              }
+            }]
+          });
+        },
+
+        // Finalize the transaction
+        onApprove: function (data, actions) {
+          return actions.order.capture()
+              .then(function (details) {
+                // Show a success message to the buyer
+                //alert('You have paid ' + _this.paymentAmount + ' for Capsule ' + _this.capsule);
+                console.log(details);
+                _this.modalController.dismiss(details.id);
+              })
+              .catch(err => {
+                console.log(err);
+              })
+        }
+      }).render('#paypal-button-container');
+    }, 500)
   }
 
   ngOnInit() {
-  }
-
-  payWithPayPal() {
-    this.payPal.init({
-      PayPalEnvironmentProduction: 'Ae0rLWsukh4CEYjyOx2a1jO_27XN9ZUtvYcN1GTjfkPc2Q5e1rQlNRv-65ikwfgIct-5MoEx8fQJ9ssT',
-      PayPalEnvironmentSandbox: 'AcuTHx8v5tlyGqbRiNVviT1-yc5MMciXSg1E1srIgObOU8Y5Q6sGyAw2taBmqBSgLDe5akHCe8aqmaO5',
-    }).then(() => {
-      this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({
-
-      })).then(() => {
-        let payment = new PayPalPayment(this.paymentAmount, this.currency, 'Description', 'sale');
-        this.payPal.renderSinglePaymentUI(payment).then((res) => {
-          console.log(res);
-          this.modalController.dismiss(res.response.id);
-        }, (err) => {
-          console.log("ERROR rendering")
-        })
-      }, (err) => console.log("ERROR configuration"))
-    }, (err) => console.log("ERROR initializing"))
   }
 }

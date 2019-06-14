@@ -11,27 +11,6 @@ ion-content {
   padding-bottom: 8px;
 }
 
-.paypal-text {
-  position: absolute;
-  padding-left: 32px;
-  padding-top: 12px;
-  font-weight: bolder;
-  font-size: 16px;
-  color: var(--ion-inverted-color);
-  z-index: 3;
-}
-.paypal-button {
-  z-index: 1;
-  --background: white;
-  margin-top: 24px;
-  margin-bottom: 24px;
-}
-
 .container {
-  //position: absolute;
-  text-align: center;
-  z-index: 2;
-}
-.paypal-logo {
-  height: 24px;
+  padding: 0 16px;
 }

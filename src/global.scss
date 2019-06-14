@@ -124,6 +124,14 @@ $font-family-base: 'Roboto', sans-serif;
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
 }
+.paypal-modal .modal-wrapper {
+  min-height: 50%;
+  top: 55%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}
 
 .swiper-pagination {
   bottom: 40px !important;

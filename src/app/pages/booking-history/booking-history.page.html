@@ -8,7 +8,7 @@
 </ion-header>
 
   <input style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;" 
-    matInput [matDatepicker]="picker" placeholder="Input & change events" (dateChange)="addEvent('change', $event)">
+    matInput [matDatepicker]="picker" placeholder="Input & change events">
   <mat-datepicker touchUi #picker></mat-datepicker>
 
   <div class="button" *ngIf="!isFiltered; else clearButton">
