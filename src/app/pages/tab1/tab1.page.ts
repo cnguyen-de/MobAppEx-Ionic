@@ -184,7 +184,7 @@ export class Tab1Page {
               if (sortedBookings.length > 0) {
                 //Get list of ids (1-6 possible ids)
                 this.storage.get('pushNotificationID').then(notificationID => {
-                  if (typeof notificationID != 'undefined') {
+                  if (notificationID != null) {
                     let sameId = false;
                     // Compare each ids
                     for (let id of notificationID) {
@@ -203,7 +203,8 @@ export class Tab1Page {
           })
         } else {
           this.storage.get('pushNotificationID').then(notificationID => {
-            if (typeof notificationID != 'undefined') {
+            if (notificationID != null) {
+              console.log("deleted notification id: " + notificationID);
               this.localNotifications.clear(notificationID);
             }
           })
@@ -217,7 +218,6 @@ export class Tab1Page {
       let timeArray = sortedBookings[0].FirstTimeFrame.split(':');
       let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
       this.countDownTime = date.getTime() / 1000;
-      console.log(this.countDownTime)
       let nowTimeStamp = this.today.getTime() / 1000;
       this.farFuture = this.countDownTime - nowTimeStamp > 86400;
     }
@@ -229,6 +229,7 @@ export class Tab1Page {
     let timeArray = closestBooking.FirstTimeFrame.split(':');
     let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
 
+    console.log("created notification " + this.MINUTES_BEFORE_START + " min before, ID: " + closestBooking.combinedIds);
     //Check if the time start is less than 10 minutes then set notification to now.
     if (new Date(closestBooking.Date).getDate() == this.today.getDate()) {
       if (timeArray[0] - this.today.getHours() == 0) {
@@ -241,6 +242,7 @@ export class Tab1Page {
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
+      icon: 'https://mobappex.web.app/assets/icon/favicon.png',
       text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
       trigger: {
         at: date
