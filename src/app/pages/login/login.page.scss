@@ -4,6 +4,11 @@ ion-header {
 ion-toolbar {
   --background: var(--ion-background-color)
 }
+
+ion-footer {
+  position: absolute;
+}
+
 .container {
   text-align: center;
   padding: 8px 32px 0px 32px;
