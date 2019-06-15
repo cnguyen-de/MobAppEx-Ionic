@@ -37,8 +37,8 @@ export class CheckoutModalPage implements OnInit {
 
   payWithPayPal() {
     this.payPal.init({
-      PayPalEnvironmentProduction: 'Ae0rLWsukh4CEYjyOx2a1jO_27XN9ZUtvYcN1GTjfkPc2Q5e1rQlNRv-65ikwfgIct-5MoEx8fQJ9ssT',
-      PayPalEnvironmentSandbox: 'AcuTHx8v5tlyGqbRiNVviT1-yc5MMciXSg1E1srIgObOU8Y5Q6sGyAw2taBmqBSgLDe5akHCe8aqmaO5',
+      PayPalEnvironmentProduction: 'AVrCx9YQO4BT3KveehZMD8XTIibHjdp_xrjBa4W7kVjxu5WjT23fQQpe_pLYqaEuOY-vEgj4ARvb-35w',
+      PayPalEnvironmentSandbox: 'AZA2I4hP0M3e2yEBPFL1Hd7dVgdop525d7ay5AMJ1tVNMTq29Rf3yq9ONUymsWXVStXyobGpC9qPEnLp',
     }).then(() => {
       this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({
 

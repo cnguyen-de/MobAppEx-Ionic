@@ -18,12 +18,12 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
       state('initial', style({
         //backgroundColor: 'green',
         width: 'calc(100vw - 24px)',
-        height: '198px'
+        height: '210px'
       })),
       state('final', style({
         //backgroundColor: 'red',
         width: 'calc(100vw - 24px)',
-        height: 'calc(100vh - 148px)'
+        height: 'calc(95vh - 148px)'
       })),
       transition('initial=>final', animate('300ms')),
       transition('final=>initial', animate('300ms'))
