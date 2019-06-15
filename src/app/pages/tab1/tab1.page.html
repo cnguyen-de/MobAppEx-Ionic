@@ -1,5 +1,5 @@
 
-<ion-header>
+<ion-header no-border>
   <ion-toolbar>
     <!--
     <ion-item lines="none">
@@ -48,7 +48,7 @@
     <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
       <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios"
+      <ion-card button="true" *ngIf="i == 0" class="active-capsule animated slideInLeft" mode="ios"
                 (click)="viewActiveCapsule()"  [@changeDivSize]=currentState>
         <div class="active-capsule-bar">
               <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
@@ -89,7 +89,6 @@
 
           </ion-card-subtitle>
         </ion-card-header>
-
           <ion-item lines="none" class="item-pin">
             <ion-icon name="ios-log-in" class="pin"></ion-icon>
             <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
@@ -98,7 +97,7 @@
       </ion-card>
 
       <!-- LIST VIEW: FUTURE CAPSULES-->
-      <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
+      <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="animated slideInLeft capsule-info-list">
         <ion-list (click)="matExpansionPanel.toggle()">
           <ion-list-header mode="ios">
             <span><ion-icon name="pin"></ion-icon>
