@@ -2,7 +2,18 @@
 // http://ionicframework.com/docs/theming/
 
 /** Ionic CSS Variables **/
+
+@font-face {
+  font-family: 'Product Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../assets/fonts/ProductSans-Regular.ttf');
+}
+
 :root {
+  --ion-font-family: "Product Sans";
+
+
 
   //Default white theme
   --ion-background-color: #fff;
@@ -22,6 +33,7 @@
   --ion-text-color-step-600: #222;
 
   --snooze-logo: url('../assets/images/SnoozeLogo_Light.svg');
+
 
   /** primary **/
   --ion-color-primary: #09ABF5;

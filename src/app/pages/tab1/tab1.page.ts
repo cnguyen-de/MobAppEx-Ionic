@@ -170,7 +170,8 @@ export class Tab1Page {
     while (!combined) {
       //console.log(i);
       if (sortedBookings.length > 1) {
-        if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame) {
+        if (sortedBookings[i].LastTimeFrame == sortedBookings[i + 1].FirstTimeFrame &&
+            sortedBookings[i].Capsule_id == sortedBookings[i + 1].Capsule_id) {
           //console.log("combined " + sortedBookings[i].LastTimeFrame, sortedBookings[i + 1].LastTimeFrame);
 
           sortedBookings[i].combinedIds.push(sortedBookings[i + 1].id);
