@@ -1258,6 +1258,7 @@ export class Tab2Page implements OnInit {
         this.localNotifications.schedule({
           id: parseInt(this.capId),
           title: 'Paypal payment successful',
+          icon: 'https://mobappex.web.app/assets/icon/favicon.png',
           text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
         });
         // loop through bookingsQueue

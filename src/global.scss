@@ -14,7 +14,16 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 $font-family-base: 'Roboto', sans-serif;
 
-
+.pin-panel {
+  .mat-expansion-panel-body {
+    padding-right: 4px;
+    padding-left: 16px !important;
+  }
+  .small-pin .item-native {
+    --padding-start: 0px !important;
+    --inner-padding-start: 0px !important;
+  }
+}
 //more indicator card
 .mat-expansion-indicator::after{
   color: var(--ion-text-color) !important;

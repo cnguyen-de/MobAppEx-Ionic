@@ -8,11 +8,29 @@ import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 import { Router } from '@angular/router';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  styleUrls: ['tab1.page.scss'],
+  animations: [
+    trigger('changeDivSize', [
+      state('initial', style({
+        //backgroundColor: 'green',
+        width: 'calc(100vw - 24px)',
+        height: '198px'
+      })),
+      state('final', style({
+        //backgroundColor: 'red',
+        width: 'calc(100vw - 24px)',
+        height: 'calc(100vh - 148px)'
+      })),
+      transition('initial=>final', animate('300ms')),
+      transition('final=>initial', animate('300ms'))
+    ])
+  ]
 })
 export class Tab1Page {
   MINUTES_BEFORE_START = 10;
@@ -21,7 +39,11 @@ export class Tab1Page {
   today = new Date();
   futureBookings: booking[] = [];
   isFirstTime: boolean = true;
-  loading: boolean;
+  loading: boolean = true;
+  countDownTime: number;
+  farFuture: boolean = false;
+  viewActive:boolean = false;
+  currentState = 'initial';
 
   constructor(private apiService: ApiService, private storage: Storage, private nativePageTransitions: NativePageTransitions,
               private router: Router, private timeService: TimeService, private localNotifications: LocalNotifications){
@@ -47,7 +69,7 @@ export class Tab1Page {
       }
       this.getFutureBookings();
       if (this.futureBookings.length == 0) {
-        this.loading = false;
+        setTimeout(() => this.loading = false, 100);
       }
     });
   }
@@ -84,7 +106,7 @@ export class Tab1Page {
               } else {
                 console.log("from database");
                 this.futureBookings = sortedBooking;
-                this.loading = false;
+                setTimeout(() => this.loading = false, 100);
               }
             } else {
               this.loading = true;
@@ -95,9 +117,10 @@ export class Tab1Page {
               this.bookings = JSON.parse(JSON.stringify(user.bookings));
               this.futureBookings = this.getFutureBookingsFromBookings(this.bookings);
               this.saveToStorage('futureBookings', this.futureBookings);
-              this.loading = false;
+              setTimeout(() => this.loading = false, 100);
             }
           });
+
         }, err => {
           console.log(err);
           this.storage.get('futureBookings').then(bookings => {
@@ -199,7 +222,7 @@ export class Tab1Page {
               if (sortedBookings.length > 0) {
                 //Get list of ids (1-6 possible ids)
                 this.storage.get('pushNotificationID').then(notificationID => {
-                  if (typeof notificationID != 'undefined') {
+                  if (notificationID != null) {
                     let sameId = false;
                     // Compare each ids
                     for (let id of notificationID) {
@@ -218,13 +241,25 @@ export class Tab1Page {
           })
         } else {
           this.storage.get('pushNotificationID').then(notificationID => {
-            if (typeof notificationID != 'undefined') {
+            if (notificationID != null) {
+              console.log("deleted notification id: " + notificationID);
               this.localNotifications.clear(notificationID);
             }
           })
         }
       }
     })
+
+    //Create countdown timer for most recent booking
+    if (sortedBookings.length > 0) {
+      let dateArray = sortedBookings[0].Date.split('-');
+      let timeArray = sortedBookings[0].FirstTimeFrame.split(':');
+      let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
+      this.countDownTime = date.getTime() / 1000;
+      let nowTimeStamp = this.today.getTime() / 1000;
+      this.farFuture = this.countDownTime - nowTimeStamp > 86400;
+    }
+
     return sortedBookings
   }
 
@@ -233,6 +268,7 @@ export class Tab1Page {
     let timeArray = closestBooking.FirstTimeFrame.split(':');
     let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
 
+    console.log("created notification " + this.MINUTES_BEFORE_START + " min before, ID: " + closestBooking.combinedIds);
     //Check if the time start is less than 10 minutes then set notification to now.
     if (new Date(closestBooking.Date).getDate() == this.today.getDate()) {
       if (timeArray[0] - this.today.getHours() == 0) {
@@ -245,14 +281,20 @@ export class Tab1Page {
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
+      icon: 'https://mobappex.web.app/assets/icon/favicon.png',
       text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
       trigger: {
         at: date
       }
     });
     this.saveToStorage('pushNotificationID', closestBooking.id);
-
   }
+
+  viewActiveCapsule() {
+    this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+    setTimeout(() => this.viewActive = !this.viewActive,300)
+  }
+
   doRefresh($event) {
     this.getFutureBookings();
     setTimeout(() => {

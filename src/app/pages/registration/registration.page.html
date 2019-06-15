@@ -1,11 +1,23 @@
-<ion-header translucent="true">
+<!-- <ion-header translucent="true">
   <ion-toolbar class="header-toolbar">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Registration</ion-title>
+
+    <span slot="end">
+      <ion-chip (click)="switchTheme()">
+          <ion-icon class="theme-icon" name="sunny" color="primary" *ngIf="!darkMode"></ion-icon>
+          <ion-icon class="theme-icon" name="moon" color="primary" *ngIf="darkMode"></ion-icon>
+      </ion-chip>
+      <ion-chip color="primary" (click)="changeLanguage()">
+        <ion-icon class="theme-icon" src="/assets/germany.svg" *ngIf="language == 'de'"></ion-icon>
+        <ion-icon class="theme-icon" src="/assets/united-kingdom.svg" *ngIf="language == 'en'"></ion-icon>
+        <ion-label style="text-transform: uppercase;">{{language}}</ion-label>
+      </ion-chip>
+</span>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
   <div class="container">
@@ -77,5 +89,5 @@
             <ion-label style="text-transform: uppercase;">{{language}}</ion-label>
           </ion-chip>
     </span>
-  </ion-toolbar>
+  </ion-toolbar> 
 </ion-footer>

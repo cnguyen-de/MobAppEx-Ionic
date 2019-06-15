@@ -8,6 +8,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpLoaderFactory} from '../../app.module';
 import {HttpClient} from '@angular/common/http';
 import {MatExpansionModule} from '@angular/material';
+import {NgxSimpleCountdownModule} from 'ngx-simple-countdown';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import {MatExpansionModule} from '@angular/material';
     CommonModule,
     FormsModule,
     MatExpansionModule,
+    NgxSimpleCountdownModule,
     RouterModule.forChild([{ path: '', component: Tab1Page }]),
     TranslateModule.forChild({
       loader: {
