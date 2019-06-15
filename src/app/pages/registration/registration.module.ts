@@ -9,6 +9,7 @@ import { RegistrationPage } from './registration.page';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpLoaderFactory} from '../../app.module';
 import {HttpClient} from '@angular/common/http';
+import {LanguageChooserModalPageModule} from '../../modals/language-chooser-modal/language-chooser-modal.module';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+    LanguageChooserModalPageModule,
     RouterModule.forChild(routes),
     TranslateModule.forChild({
       loader: {

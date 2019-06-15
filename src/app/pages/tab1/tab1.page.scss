@@ -12,11 +12,13 @@ ion-chip{
   color: var(--ion-text-color);
   --background: var(--darker-color)
 }
-
 ion-icon {
   color: var(--ion-text-color)
 }
-
+.loading-icon {
+  text-align: center;
+  padding-top: 20px;
+}
 .header {
   text-align: right;
   background: var(--ion-color-warning)
@@ -42,7 +44,8 @@ ion-item {
 }
 .info-icon {
   padding-top: 4px;
-  padding-left: 4px;
+  padding-left: 16px;
+  color: white !important;
 }
 .active-capsule-header {
   padding-bottom: 0px;
@@ -71,6 +74,11 @@ ion-list-header {
 .mat-expansion-panel-header-title {
   color: var(--ion-text-color) !important;
 }
+//Tab 1 ion-item pin
+.item-pin {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 .pin {
   margin-bottom: 2px;
   padding-right: 2px;
@@ -83,4 +91,16 @@ ion-list-header {
 }
 .text {
   color: var(--ion-text-color);
+}
+.countdown {
+  float:right;
+  margin-top: 1px;
+  margin-right: 16px;
+}
+.capsule-control {
+}
+.capsule-control-card {
+  margin-top: 24px !important;
+  width: calc(100vw - 24px);
+  height: calc(100vh - 148px)
 }

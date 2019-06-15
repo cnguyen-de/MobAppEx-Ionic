@@ -1,0 +1,23 @@
+ion-content {
+  --ion-background-color: var(--modal-color);
+}
+ion-list-header {
+  color: var(--ion-text-color)
+}
+ion-range {
+  margin-top: 10px;
+  --knob-background: var(--ion-color-primary);
+  //--knob-size: 30px;
+  //--bar-height: 7px;
+}
+.container {
+  text-align: center;
+}
+
+.labels {
+  position: absolute;
+  margin-left: 8vw;
+  top: 0px;
+  min-width: 78vw;
+}
+

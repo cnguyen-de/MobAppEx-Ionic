@@ -8,14 +8,19 @@ import { AgmCoreModule } from '@agm/core';
 import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import { HttpLoaderFactory} from '../../app.module';
 import { HttpClient} from '@angular/common/http';
+import {CheckoutModalPageModule} from '../../modals/checkout-modal/checkout-modal.module';
+import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     RouterModule.forChild([{ path: '', component: Tab2Page }]),
     AgmCoreModule.forRoot({ apiKey: 'AIzaSyAKHOw3h06vjiAXLaXCqklkOsO7xDw02Ks' }),
+    CheckoutModalPageModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

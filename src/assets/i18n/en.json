@@ -33,10 +33,13 @@
   "CHANGE_LANGUAGE": "Change Language",
   "ENABLE_DARK_MODE": "Enable Night Mode",
   "ENABLE_LIGHT_MODE": "Enable Light Mode",
+  "TIMER_SETTING": "Notification before",
+  "NOTIFICATION_OFF": "Notification Off",
   "CAPSULE_PREF": "Capsule Preferences",
   "VOLUME": "Volume",
   "LIGHT_BRIGHTNESS": "Light Brightness",
   "ABOUT": "About",
+  "REPORT_A_BUG": "Report a Bug",
   "THIS_APP": "Acknowledgement",
   "CONTACT": "Contact",
   "LEGAL": "Legal"

@@ -1,0 +1,31 @@
+<ion-content>
+  <div>
+    <ion-list>
+      <ion-list-header mode="ios">
+        <ion-label>Notification Preference</ion-label>
+      </ion-list-header>
+
+      <ion-item lines="none">
+          <ion-row class="labels">
+            <ion-col>Off</ion-col>
+            <ion-col>10</ion-col>
+            <ion-col>20</ion-col>
+            <ion-col>30</ion-col>
+            <ion-col>40</ion-col>
+            <ion-col>50</ion-col>
+            <ion-col>60</ion-col>
+          </ion-row>
+          <ion-range min="0" max="60" step="10" snaps="true" ticks="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
+            <ion-icon name="timer" size="small" slot="start"></ion-icon>
+            <ion-icon name="timer" slot="end"></ion-icon>
+          </ion-range>
+      </ion-item>
+      <div class="container">
+        <ion-button (click)="confirm()" class="confirm-button" shape="round">
+          <ion-text *ngIf="!buttonPressed">Confirm</ion-text>
+          <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
+        </ion-button>
+      </div>
+    </ion-list>
+  </div>
+</ion-content>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import {ModalController, ToastController} from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
@@ -8,6 +8,9 @@ import { first } from 'rxjs/operators';
 import { User } from '../../_services/auth/user';
 import {ApiService} from '../../_services/api/api.service';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import {LanguageChooserModalPage} from '../../modals/language-chooser-modal/language-chooser-modal.page';
+import {TranslateService} from '@ngx-translate/core';
+import {ThemeService} from '../../_services/theme/theme.service';
 
 
 @Component({
@@ -23,14 +26,18 @@ export class LoginPage implements OnInit {
   options: NativeTransitionOptions = {
     direction: 'left',
     duration: 200,
-    slowdownfactor: 4,
+    slowdownfactor: 1,
     androiddelay: 0,
   };
   forward: boolean = false;
+  darkMode: boolean;
+  language: string;
   constructor(public toastController: ToastController, private http : HttpClient,
               private router : Router, private storage: Storage,
               private formBuilder: FormBuilder,
-              private apiService: ApiService, private nativePageTransitions: NativePageTransitions) {
+              private apiService: ApiService, private nativePageTransitions: NativePageTransitions,
+              private translateService: TranslateService, private modalController: ModalController,
+              private themeService: ThemeService) {
 
   }
 
@@ -41,15 +48,17 @@ export class LoginPage implements OnInit {
     });
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.forward = false;
+    this.getDarkValue();
+    this.getLanguage();
   }
   ionViewWillLeave() {
     if (!this.forward) {
       let options: NativeTransitionOptions = {
         direction: 'right',
         duration: 200,
-        slowdownfactor: 4,
+        slowdownfactor: 1,
         androiddelay: 0,
       };
       this.nativePageTransitions.slide(options);
@@ -88,6 +97,65 @@ export class LoginPage implements OnInit {
                 this.toast(error)
               }
             });
+  }
+
+
+  //Switch Light-Dark Theme
+  switchTheme() {
+    this.darkMode = !this.darkMode;
+    this.themeService.enableDarkMode(this.darkMode);
+    this.saveToStorage('dark', this.darkMode);
+  }
+
+  //Change Language
+  changeLanguage() {
+    //this.presentLanguageChooserModal();
+    let languages = ['en', 'de'];
+    for (let i = 0; i < languages.length; i++) {
+      if (this.language == languages[i]) {
+        if (i < this.language.length - 1) {
+          this.language = languages[i + 1];
+          this.saveToStorage('language', this.language);
+          break;
+        } else if (i == this.language.length - 1) {
+          this.language = languages[0];
+          this.saveToStorage('language', this.language);
+          break;
+        }
+      }
+    }
+  }
+  async presentLanguageChooserModal() {
+    const modal = await this.modalController.create({
+      component: LanguageChooserModalPage,
+      componentProps: {
+        value: this.language
+      },
+      cssClass: 'language-chooser-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        this.language = value.data;
+        this.translateService.use(this.language);
+        this.saveToStorage('language', this.language);
+        /*
+        switch (value.data) {
+          case 'en': this.toast("Language set to English!"); break;
+          case 'de': this.toast("Sprache als Deutsch gesetzt!"); break;
+        }
+        */
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async getDarkValue() {
+    this.darkMode = await this.storage.get('dark')
+  }
+  async getLanguage() {
+    this.language = await this.storage.get('language')
   }
 
   transitionTo(path) {

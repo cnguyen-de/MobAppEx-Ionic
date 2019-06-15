@@ -1,21 +1,22 @@
 export interface booking {
-  Amount: number;
+  combinedIds: [];
+  SnoozeUser_id: number;
   Capsule_id: number;
+  Pin: number;
   Date: string;
   FirstTimeFrame: number;
-  IsVerified: boolean;
   LastTimeFrame: number
+  Vendor: string;
+  Amount: number;
+  IsVerified: boolean;
   PayedAmount: number;
   PayedDate: string;
   PayerEmail: string;
-  Pin: number;
-  SnoozeUser_id: number;
-  Vendor: string;
+  Payment_id: string;
   capsule: {
     Latitude: number,
     Longitude: number,
     Name: string,
     id: number
   };
-  duration: string;
 }

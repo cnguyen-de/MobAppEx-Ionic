@@ -1,14 +1,29 @@
 <ion-content>
-  <ion-slides pager="true" [options]="slideOpts">
-    <ion-slide class="slide-one">
-      <h1>Slide 1</h1>
+  <ion-slides #slides pager="true" [options]="slideOpts">
+    <ion-slide>
+      <h1>Welcome</h1>
+
+      <img id="snooze-logo" src="../../../assets/images/SnoozeLogo_WB.svg" alt="smiley_tired" />
+      <h3>Snooze app lets you find, book and control Snooze sleeping capsules</h3>
+
+      <ion-button id="btn-skip" shape="round" fill="clear" color="light" (click)="finish()">Skip</ion-button>
+      <ion-button id="btn-tour" shape="round" fill="clear" color="light" (click)="next()">Learn More</ion-button>
+
+
     </ion-slide>
-    <ion-slide class="slide-two">
-      <h1>Slide 2</h1>
+    <ion-slide>
+      <h3>Being tired at moments when full concentration is needed can be very frustrating...</h3>
+      <img src="../../../assets/images/Smiley_Tired.svg" alt="smiley_tired" />
     </ion-slide>
-    <ion-slide class="slide-three">
-      <h1>Slide 3</h1>
-      <ion-button color="light" fill="outline" shape="round" (click)="finish()">START</ion-button>
+    <ion-slide>
+      <h3>Use a Snooze capsule to recharge yourself by taking a power nap right at the campus</h3>
+      <img src="../../../assets/images/Smiley_Sleep.svg" alt="smiley_sleep" />
+    </ion-slide>
+    <ion-slide>
+      <h3>You'll be happy and powerd up again to get your work done</h3>
+      <img src="../../../assets/images/Smiley_Happy.svg" alt="smiley_happy" />
+
+      <ion-button id="btn-start" color="light" fill="outline" shape="round" (click)="finish()">START</ion-button>
     </ion-slide>
   </ion-slides>
 </ion-content>

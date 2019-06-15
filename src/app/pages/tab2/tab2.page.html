@@ -63,7 +63,7 @@
       <ion-spinner name="crescent" style="color: red" *ngIf="spinBtnPositionPressed"></ion-spinner>
     </ion-button>
   </div>
-
+  
   <ion-fab id="fab" horizontal="center" slot="fixed" hidden>
     <ion-fab-button size="small">
       <ion-icon name="arrow-up"></ion-icon>
@@ -72,8 +72,8 @@
 
   <ion-slides #slider id="slider" [options]="slidesConfig" (ionSlideDidChange)="onSlideChanged()">
     <ion-slide *ngFor="let item of capsules; let i = index">
-      <ion-card id="slideCard" class="slideCards" *ngIf="item" (click)="cardClicked(i)">
-        <ion-card-header>
+      <ion-card id="slideCard" class="slideCards" mode="ios" *ngIf="item" (click)="cardClicked(i)">
+          <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
             <h4>
               {{ item.Name }}
@@ -91,7 +91,6 @@
           </ion-card-subtitle>
           <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one
           </ion-button>
-        </ion-card-header>
       </ion-card>
     </ion-slide>
   </ion-slides>
@@ -100,16 +99,22 @@
 
 <ion-card id="cardTSS_top" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
   <ion-card-header>
+      <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:0; right:0; z-index:100;" (click)="animateTSS_Click()">
+          <ion-icon id="ico_calendar" name="close" ></ion-icon>
+      </ion-button>
     <ion-card-title>
-      {{capName}}
+      <h4>
+          {{capName}}
+      </h4>
     </ion-card-title>
-    <ion-card-subtitle>
-      blabla
+    <ion-card-subtitle *ngFor="let booking of futureBookings">
+      {{booking.startingTime}} {{booking.endingTime}}
     </ion-card-subtitle>
   </ion-card-header>
-  <!-- <ion-card-content>
-    <ion-button shape="round" (click)="animateTSS_Click()">back down bla</ion-button>
-  </ion-card-content> -->
+  <ion-card-content>
+
+  </ion-card-content>
+ 
 </ion-card>
 
 
@@ -117,31 +122,38 @@
 
   <ion-card id="headr" mode="md" style="visibility:collapse">
     <ion-card-header>
-      <h4>Bibliothek</h4>
+      <h4></h4>
     </ion-card-header>
   </ion-card>
 
   <ion-card id="listr">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
-      <ion-segment id="segmt" #segment mode="md">
-        <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked>
+      <ion-segment id="segmt" #segment mode="md" >
+        <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           {{day.date}}
         </ion-segment-button>
       </ion-segment>
     </ion-content>
-    <ion-button id="btn-calendar" fill="clear">
+    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
+      <mat-datepicker #picker></mat-datepicker>
+    <ion-button id="btn-calendar" fill="clear" (click)="picker.open()">
       <ion-icon id="ico_calendar" name="calendar"></ion-icon>
     </ion-button>
 
     <ion-content>
-      <ion-slides #slides [options]="slideOpts" style="height: 100%;" (ionSlideDidChange)="onIonSlideDidChange($event)"
+      <ion-slides id="slides" #slides [options]="slideOpts" style="height: 100%;" (ionSlideDidChange)="onIonSlideDidChange($event)"
         (ionSlidePrevStart)="onIonSlidePrevStart()" (ionSlidePrevEnd)="onIonSlidePrevEnd()"
         (ionSlideNextStart)="onIonSlideNextStart()" (ionSlideNextEnd)="onIonSlideNextEnd()"
         (ionSlideTouchStart)="onIonSlideTouchStart()" *ngIf="timeslots && timeslots.length">
         <ion-slide>
-          <ion-content id="hallo">
+          <ion-content id="hallo" #tscontent>
         
-              <ion-icon class="odd" name="hand"></ion-icon>
+              <ion-icon class="odd" name=""></ion-icon>
+
+                <div class="blocker collapsed"></div>
+              <div class="blocker-line collapsed"></div>
+            <div class="blocker-time collapsed" >{{currentTime}}</div>
+
             
 
             <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -151,34 +163,49 @@
             </ion-refresher>
 
             <ion-list class="odd2" lines="full">
-              <div *ngFor="let item of timeslots; let i = index">
-                <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+              <div *ngFor="let item of timeslots; let i = index" >
+                <ion-item class="tsitem" button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == false"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == false"
                   style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">TAKEN</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'selected'"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'selected'"
                   style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">SELECTED</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'booked'"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'booked'"
                   style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">YOURS</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'blocked'"
-                  style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180);">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'crossbooked'"
+                  style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
+                  <div slot="start">{{ item.content }}</div>
+                  <div slot="end">{{ item.capName }}</div>
+                </ion-item>
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'blocked'"
+                  style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180); opacity: .5;">
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">FREE</div>
                 </ion-item>
-                <ion-item button="true" *ngIf="item.state == 'inprogress'"
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'impossible'"
+                style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180); opacity: .5;">
+                <div slot="start">{{ item.content }}</div>
+                <div slot="end">FREE</div>
+              </ion-item>
+                <!-- <ion-item class="tsitem" button="true" *ngIf="item.state == 'blocked'"
+                  style="opacity: .25;">
+                  <div slot="start">{{ item.content }}</div>
+                  <div slot="end">FREE</div>
+                </ion-item> -->
+                <ion-item class="tsitem" button="true" *ngIf="item.state == 'inprogress'"
                   style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
-                  <div id="idero" slot="start">{{ item.content }}</div>
+                  <div slot="start">{{ item.content }}</div>
                   <div slot="end">IN SELECTION...</div>
                 </ion-item>
               </div>
@@ -188,7 +215,7 @@
         <ion-slide>
           <ion-content>
             
-              <ion-icon class="even" name="hand"></ion-icon>
+              <ion-icon class="even" name=""></ion-icon>
            
 
             <!-- <ion-refresher  slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -200,32 +227,32 @@
             <ion-list class="even2" lines="full">
                 <div *ngFor="let item of timeslots; let i = index">
                   <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">FREE</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == false"
                     style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">TAKEN</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'selected'"
                     style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">SELECTED</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'booked'"
                     style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">YOURS</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'blocked'"
                     style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180);">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">FREE</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'inprogress'"
                     style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
-                    <div id="idero" slot="start">{{ item.content }}</div>
+                    <div slot="start">{{ item.content }}</div>
                     <div slot="end">IN SELECTION...</div>
                   </ion-item>
                 </div>
@@ -239,9 +266,9 @@
   <ion-card id="footr">
     <ion-item id="summary" lines="none">
       <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
-      <div slot="end">{{selectedCount}}.00 €</div>
+      <div slot="end">{{selectedCount * PRICE_PER_SLOT}}.00 €</div>
     </ion-item>
-    <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="animateTSS_Click()">
+    <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="proceedToCheckoutClick()" [disabled]="!canProceedCheckout()">
       Proceed To Checkout
     </ion-button>
   </ion-card>

@@ -1,11 +1,10 @@
 ion-list-header {
+  margin-top: 12px;
   color: var(--ion-text-color)
 }
 ion-content {
   --ion-background-color: var(--modal-color);
   --ion-border-color: var(--darker-color);
-}
-.payment-info {
 }
 
 .label {
@@ -22,15 +21,17 @@ ion-content {
   z-index: 3;
 }
 .paypal-button {
-  padding-top: 8px;
   z-index: 1;
+  --background: white;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .container {
-  position: absolute;
+  //position: absolute;
   text-align: center;
   z-index: 2;
 }
 .paypal-logo {
-  height: 32px;
+  height: 24px;
 }

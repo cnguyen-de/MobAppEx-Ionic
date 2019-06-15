@@ -1,5 +1,5 @@
 
-<ion-header>
+<ion-header no-border>
   <ion-toolbar>
     <!--
     <ion-item lines="none">
@@ -15,15 +15,18 @@
 </ion-header>
 
 
-<ion-content>
+<ion-content *ngIf="!viewActive">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
             pullingIcon="arrow-down"
             refreshingSpinner="crescent"></ion-refresher-content>
   </ion-refresher>
+  <div class="loading-icon" *ngIf="loading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
 
   <!-- NO RESERVED CAPSULE WELCOME CARD -->
-  <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !hide">
+  <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !hide && !loading">
     <div class="header" (click)="hideCard()">
       <ion-icon class="close-icon" name="close" slot="end" size="large"></ion-icon>
     </div>
@@ -40,74 +43,112 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- CAPSULE RESERVATION LIST -->
-  <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
+  <div *ngIf="!loading">
+    <!-- CAPSULE RESERVATION LIST -->
+    <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
-    <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-    <ion-card *ngIf="i == 0" class="active-capsule" mode="ios">
-      <div class="active-capsule-bar">
-        <ion-icon name="information-circle-outline" class="info-icon" slot="end" size="large"></ion-icon>
-      </div>
+      <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
+      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios"
+                (click)="viewActiveCapsule()"  [@changeDivSize]=currentState>
+        <div class="active-capsule-bar">
+              <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
+              </ion-icon>
+              <span *ngIf="!farFuture" class="countdown" simpleCountdown slot="end"
+                           [reactive]="true"
+                           [dateTo]=countDownTime
+                           [endMessage]="'Capsule Active'"
+                           [styles]="'font-size: 14px; color: white;' +
+                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+              </span>
+              <span *ngIf="farFuture" class="countdown" simpleCountdown slot="end"
+                           [reactive]="false"
+                           [dateTo]=countDownTime
+                           [endMessage]="'Capsule Active'"
+                           [styles]="'font-size: 14px; color: white;' +
+                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+              </span>
+          </div>
 
-      <ion-card-header class="active-capsule-header">
-        <ion-card-title>
+        <ion-card-header class="active-capsule-header">
+          <ion-card-title>
           <span class="active-capsule-header">
             <ion-icon name="pin" slot="start"></ion-icon>
             <ion-label> {{booking.capsule.Name}}</ion-label>
           </span>
-        </ion-card-title>
-        <ion-card-subtitle class="active-capsule-header">
-          
-          <ion-chip>
-            <ion-icon name="calendar"></ion-icon>
-            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
-          </ion-chip>
-          <ion-chip>
-            <ion-icon name="time"></ion-icon>
-            <ion-label>{{booking.duration}}</ion-label>
-          </ion-chip>
-          
-        </ion-card-subtitle>
-      </ion-card-header>
+          </ion-card-title>
+          <ion-card-subtitle class="active-capsule-header">
 
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-icon name="ios-log-in" class="pin"></ion-icon>
-          <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
-          <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
+            <ion-chip>
+              <ion-icon name="calendar"></ion-icon>
+              <ion-label>{{booking.Date | date : "dd.MM.y"}}</ion-label>
+            </ion-chip>
+            <ion-chip>
+              <ion-icon name="time"></ion-icon>
+              <ion-label>{{booking.duration}}</ion-label>
+            </ion-chip>
 
-    <!-- LIST VIEW: FUTURE CAPSULES-->
-    <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
-      <ion-list>
-        <ion-list-header mode="ios">
-          <span><ion-icon name="pin"></ion-icon> {{booking.capsule.Name}}</span>
-          <ion-text class="date" style="float: right;">
-            {{booking.FirstTimeFrame}} - {{booking.Date | date : "dd.MM.y"}}
-          </ion-text>
-        </ion-list-header>
-      </ion-list>
+          </ion-card-subtitle>
+        </ion-card-header>
 
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
-          <ion-chip>
-            <ion-icon name="calendar"></ion-icon>
-            <ion-label >{{booking.Date | date : "dd.MM.y"}}</ion-label>
-          </ion-chip>
-          <ion-chip>
-            <ion-icon name="time"></ion-icon>
-            <ion-label>{{booking.duration}}</ion-label>
-          </ion-chip>
-          <ion-item lines="none">
-            <ion-icon name="ios-log-in" class="pin-list"></ion-icon>
-            <ion-text color="primary"><h5>{{booking.Pin}}</h5></ion-text>
+          <ion-item lines="none" class="item-pin">
+            <ion-icon name="ios-log-in" class="pin"></ion-icon>
+            <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+            <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
           </ion-item>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </ion-card>
+      </ion-card>
+
+      <!-- LIST VIEW: FUTURE CAPSULES-->
+      <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
+        <ion-list (click)="matExpansionPanel.toggle()">
+          <ion-list-header mode="ios">
+            <span><ion-icon name="pin"></ion-icon>
+              {{booking.capsule.Name}}</span>
+            <ion-text class="date" style="float: right;">
+              {{booking.FirstTimeFrame}} - {{booking.Date | date : "dd.MM.y"}}
+            </ion-text>
+          </ion-list-header>
+        </ion-list>
+
+        <mat-accordion>
+          <mat-expansion-panel #matExpansionPanel class="pin-panel">
+            <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
+            <ion-chip>
+              <ion-icon name="calendar"></ion-icon>
+              <ion-label>{{booking.Date | date : "dd.MM.y"}}</ion-label>
+            </ion-chip>
+            <ion-chip>
+              <ion-icon name="time"></ion-icon>
+              <ion-label>{{booking.duration}}</ion-label>
+            </ion-chip>
+            <ion-item lines="none" class="small-pin">
+              <ion-icon name="ios-log-in" class="pin-list"></ion-icon>
+              <ion-text color="primary"><h5>{{booking.Pin}}</h5></ion-text>
+            </ion-item>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </ion-card>
+    </div>
 
   </div>
+</ion-content>
+
+<ion-content *ngIf="viewActive" class="capsule-control">
+  <ion-card class="capsule-control-card" mode="ios" [@changeDivSize]=currentState>
+    <div class="active-capsule-bar" (click)="viewActiveCapsule()" >
+      <ion-icon name="arrow-back" class="info-icon" slot="start" size="large"></ion-icon>
+
+      <!-- change countDownTime to time of lastTimeFrame-->
+      countdowntolasttimeframe
+      <span class="countdown" simpleCountdown slot="end"
+            [reactive]="false"
+            [dateTo]=countDownTime
+            [endMessage]="'Capsule Active'"
+            [styles]="'font-size: 14px; color: white;' +
+                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+              </span>
+    </div>
+    <ion-card-content>
+      CAPSULE CONTROL
+    </ion-card-content>
+  </ion-card>
 </ion-content>

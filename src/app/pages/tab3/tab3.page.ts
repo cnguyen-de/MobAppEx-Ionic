@@ -12,6 +12,7 @@ import {ApiService} from '../../_services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 import {User} from '../../_services/auth/user';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import {NotificationTimeChooserModalPage} from '../../modals/notification-time-chooser-modal/notification-time-chooser-modal.page';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class Tab3Page {
   darkMode: boolean;
   lightPref: number = 0;
   volumePref: number = 0;
+  notificationTime: number = 10;
 
   constructor(public modalController: ModalController, private storage: Storage,
               private router: Router, private themeService: ThemeService,
@@ -38,6 +40,11 @@ export class Tab3Page {
   ionViewWillEnter() {
     this.getUserInfo();
     this.getDarkValue();
+    this.storage.get('notificationPref').then(pref => {
+      if (typeof pref == 'number') {
+        this.notificationTime = pref;
+      }
+    })
   }
 
   // User Info
@@ -141,7 +148,7 @@ export class Tab3Page {
       componentProps: {
         value: 'en'
       },
-      cssClass: 'chooser-modal'
+      cssClass: 'language-chooser-modal'
     });
 
     modal.onDidDismiss().then(value => {
@@ -165,6 +172,31 @@ export class Tab3Page {
     this.saveToStorage('dark', this.darkMode);
   }
 
+  //Change notification timer
+  notificationTimer() {
+    this.presentNotificationTimerModal();
+  }
+  async presentNotificationTimerModal() {
+    const modal = await this.modalController.create({
+      component: NotificationTimeChooserModalPage,
+      componentProps: {
+        value: this.notificationTime
+      },
+      cssClass: 'chooser-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data != 'undefined') {
+        this.notificationTime = value.data;
+        this.saveToStorage('notificationPref', this.notificationTime).then(() => {
+          this.toast("Notification preference saved");
+        });
+      }
+    });
+
+    return await modal.present();
+  }
+
   //Choose Volume Preference
   changeVolume() {
     this.presentVolumeChangerModal();
@@ -179,9 +211,9 @@ export class Tab3Page {
     });
 
     modal.onDidDismiss().then(value => {
-      if (typeof value.data == 'number') {
-        this.volumePref = value.data;
-        this.user.capsulePreference.VolumenLevel = this.volumePref;
+      if (typeof value.data != 'undefined') {
+        this.volumePref = value.data.VolumenLevel;
+        this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
           this.toast("Volume preference set to: " + this.volumePref)
         });
@@ -205,9 +237,9 @@ export class Tab3Page {
     });
 
     modal.onDidDismiss().then(value => {
-      if (typeof value.data == 'number') {
-        this.lightPref = value.data;
-        this.user.capsulePreference.LightLevel = this.lightPref;
+      if (typeof value.data != 'undefined') {
+        this.lightPref = value.data.LightLevel;
+        this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
           this.toast("Light preference set to: " + this.lightPref)
         })
@@ -224,9 +256,9 @@ export class Tab3Page {
   transitionTo(path, direction) {
     let options: NativeTransitionOptions = {
       direction: direction,
-      duration: 150,
-      slowdownfactor: 2,
-      androiddelay: 150,
+      duration: 200,
+      slowdownfactor: 1,
+      androiddelay: 200,
     };
     this.nativePageTransitions.slide(options);
     this.router.navigateByUrl(path);

@@ -11,10 +11,19 @@
 @import '~@ionic/angular/css/flex-utils.css';
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-$font-family-base: 'Roboto', sans-serif;
+//@import url('https://fonts.googleapis.com/css?family=Roboto');
+//$font-family-base: 'Roboto', sans-serif;
 
-
+.pin-panel {
+  .mat-expansion-panel-body {
+    padding-right: 4px;
+    padding-left: 16px !important;
+  }
+  .small-pin .item-native {
+    --padding-start: 0px !important;
+    --inner-padding-start: 0px !important;
+  }
+}
 //more indicator card
 .mat-expansion-indicator::after{
   color: var(--ion-text-color) !important;
@@ -65,6 +74,10 @@ $font-family-base: 'Roboto', sans-serif;
     min-height: 23% !important;
     top: 77% !important;
   }
+  .language-chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 80% !important;
+  }
 }
 
 //Big phones
@@ -77,7 +90,11 @@ $font-family-base: 'Roboto', sans-serif;
 
   .chooser-modal .modal-wrapper {
     min-height: 25% !important;
-    top: 75% !important;
+    top: 73% !important;
+  }
+  .language-chooser-modal .modal-wrapper {
+    min-height: 23% !important;
+    top: 78% !important;
   }
 }
 
@@ -98,4 +115,16 @@ $font-family-base: 'Roboto', sans-serif;
   display: block;
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
+}
+.language-chooser-modal .modal-wrapper {
+  min-height: 30%;
+  top: 75%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}
+
+.swiper-pagination {
+  bottom: 40px !important;
 }

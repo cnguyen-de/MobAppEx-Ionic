@@ -1,11 +1,23 @@
 ion-header {
-  background: var(--ion-background-color)
+  background: var(--ion-item-background-color)
 }
-ion-toolbar {
-  --background: var(--ion-background-color)
+
+ion-footer {
+  position: absolute;
+}
+
+
+.header-toolbar {
+  --background: var(--ion-item-background-color)
 }
 .container {
+  margin-top: 40px;
   padding: 32px 32px 0px 32px;
+  text-align: center;
+}
+
+form {
+  margin-top: 20px; 
 }
 
 .sign-up-text {
@@ -22,14 +34,11 @@ ion-toolbar {
   text-align: center;
 }
 
-.login-icon {
-  padding-left: 8px;
-}
-
 ion-item {
   padding-bottom: 8px;
 }
-ion-icon {
+.login-icon {
+  padding-left: 8px;
   position: absolute;
   color: var(--ion-text-color-step-400);
   z-index: 2;
@@ -39,4 +48,19 @@ ion-input {
   border-radius: 25px;
   z-index: 1;
   border:1px solid var(--ion-border-color);
+}
+
+ion-toolbar {
+  --background: var(--ion-background-color)
+}
+ion-chip {
+  background: var(--background-surface-color)
+}
+
+.theme-icon {
+  margin-left: 1px;
+  margin-right: 1px;
+}
+ion-label {
+  margin-left: 2px;
 }

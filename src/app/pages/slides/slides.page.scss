@@ -1,16 +1,71 @@
+
+ion-slides {
+  --bullet-background: white;
+  --bullet-background-active: white;
+}
 ion-slide {
   height: 100vh;
   flex-direction: column;
+  
 }
 
+.swiper-pagination {
+  position: absolute;
+  bottom: 100px;
+  width: 50% !important;
+}
+
+ion-button {
+  position: absolute;
+  --z-index: 100;
+}
+#btn-skip {
+  bottom: 0;
+  left:0;
+}
+#btn-tour {
+  bottom: 0;
+  right:0;
+}
+
+#btn-start {
+  bottom: 10%;
+}
+
+img {
+  position: absolute;
+  top: 20%;
+  width: 50%;
+  max-width: 300px;
+  
+}
+#snooze-logo {
+  top: 25%;
+  width: 55%;
+}
+h1 {
+  position: absolute;
+  top: 8%;
+}
+
+h3 {
+  position: absolute;
+  top: 60%;
+  max-width: 300px;
+}
+
+ion-content {
+  --background: var(--ion-color-primary)
+}
 .slide-one {
-  background: var(--ion-color-success)
+  background: var(--ion-color-primary)
 }
 
 .slide-two {
-  background: var(--ion-color-warning)
+  background: var(--ion-color-primary)
 }
 
 .slide-three {
-  background: var(--ion-color-danger)
+  background: var(--ion-color-primary)
 }
+

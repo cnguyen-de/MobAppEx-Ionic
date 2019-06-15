@@ -36,7 +36,7 @@ export class LightModalPage implements OnInit {
         .pipe(first())
         .subscribe(
             data => {
-              this.dismiss();
+              this.dismiss(data);
               this.buttonPressed = !this.buttonPressed;
             },
             error => {
@@ -46,7 +46,7 @@ export class LightModalPage implements OnInit {
             });
   }
 
-  dismiss() {
-    this.modalController.dismiss(this.value);
+  dismiss(value) {
+    this.modalController.dismiss(value);
   }
 }

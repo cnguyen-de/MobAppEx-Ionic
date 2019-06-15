@@ -56,6 +56,8 @@ export class ThemeService {
       --ion-text-color: #fff;
       --ion-text-color-step-400: #fff;
       --ion-text-color-step-600: #fff;
+
+      --snooze-logo: url('../../../assets/images/SnoozeLogo_Dark.svg');
     `
   }
 
@@ -74,10 +76,19 @@ export class ThemeService {
       --toast-color: #000;
       --ion-inverted-color: #fff;
 
-      --ion-color-primary: #08a0e9;
+      --ion-color-primary: #09ABF5;
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;
+
+      --snooze-logo: url('../../../assets/images/SnoozeLogo_Light.svg');
+
     `
   }
 }
+
+
+
+// old primaray light: #08a0e9
+// snooze og-color: 09ABF5
+// splash color: 42A5FF

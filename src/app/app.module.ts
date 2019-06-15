@@ -27,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatExpansionModule } from '@angular/material';
 
 import { Animation, NavOptions } from '@ionic/core'
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -43,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       // MatFormField,
       IonicModule.forRoot({
         //mode: 'ios'
-        navAnimation: myTransitionAnimation,
+        navAnimation: noAnimation,
       }),
       AppRoutingModule,
       IonicStorageModule.forRoot(),
@@ -64,6 +65,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     Geolocation,
     PayPal,
     NativePageTransitions,
+    LocalNotifications,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
@@ -73,6 +75,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 })
 export class AppModule {}
 
-export function myTransitionAnimation(): Promise<Animation> {
-  return null
+export function noAnimation(): Promise<Animation> {
+  return null;
 }
