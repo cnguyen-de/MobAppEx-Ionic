@@ -53,6 +53,10 @@ export class Tab1Page {
   volumeSlider: number = 0;
   lightSlider: number = 0;
   isNextSlotAvailable: boolean = false;
+  selectedCount: number;
+  PRICE_PER_SLOT: number = 2;
+  extendSlots: number = 1;
+  freeSlots: string[] = [];
 
   constructor(private apiService: ApiService,
     private storage: Storage,
@@ -325,12 +329,7 @@ export class Tab1Page {
     .pipe(first())
     .subscribe(
       data => {
-        console.clear();
-        console.log("Volume: " + this.volumeSlider + " | Light: " + this.lightSlider);
-        console.log(data);
-        // console.log(this.user.capsulePreference);
         this.user.capsulePreference = data;
-        console.log(this.user);
         this.saveToStorage('user', this.user).then(() => {
         });
       },
@@ -340,9 +339,25 @@ export class Tab1Page {
   }
 
   extendBooking(){
+    this.extendSlots ++;
+    this.presentCheckOutModal();
+  }
+
+  checkFreeSlots(){
     this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data =>{
       if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + "")]){
-        this.toast("passt");
+
+        var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ""));
+        var i = 0;
+        this.freeSlots = [];
+        while(data[lastFrame] && i < 5){
+
+          this.freeSlots.push(this.timeService.getEndTime(lastFrame));
+
+          lastFrame ++;
+          i++;
+        }
+        // console.log(this.freeSlots);
       }else{
         this.toast("Next slot already taken");
       }
@@ -354,7 +369,7 @@ export class Tab1Page {
     this.storage.get('user').then(user => {
       if (user != null || typeof user != 'undefined') {
         console.log("Setting user data from memory");
-        console.log(user);
+        // console.log(user);
         this.user = user;
         this.username = user.username;
         this.email = user.email;
@@ -368,7 +383,7 @@ export class Tab1Page {
             .pipe(first())
             .subscribe(
                 user => {
-                  console.log(user);
+                  // console.log(user);
                   this.user = user;
                   this.username = user.username;
                   this.email = user.email;
@@ -398,5 +413,93 @@ export class Tab1Page {
 
   async saveToStorage(key, val) {
     await this.storage.set(key, val);
+  }
+
+  async presentCheckOutModal() {
+    const modal = await this.modalController.create({
+      component: CheckoutModalPage,
+      componentProps: {
+        paymentAmount: this.selectedCount * this.PRICE_PER_SLOT,
+        // timeStart: this.timeService.getStartTime(this.firstSelected + 1),
+        // timeEnd: this.timeService.getEndTime(this.lastSelected + 1),
+        // date: this.activeDate_String,
+        // capsule: this.capName
+      },
+      cssClass: 'password-changer-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        // this.paymentID = value.data;
+        //this.toast("Paypal payment successful, sending data to Server..");
+        let today = new Date()
+        let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + " " +
+          today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        this.localNotifications.schedule({
+          // id: parseInt(this.capId),
+          title: 'Paypal payment successful',
+          icon: 'https://mobappex.web.app/assets/icon/favicon.png',
+          // text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
+        });
+        // loop through bookingsQueue
+        // for (let b = 0; b < this.bookingsQueue.length; b++) {
+        //   this.apiService.bookCapsule(
+        //     parseInt(this.capId), //Casule Id
+        //     this.activeDate_String, // Date
+        //     this.bookingsQueue[b].first, // First slot
+        //     this.bookingsQueue[b].last, // Last slot
+        //     'PayPal', // Vendor
+        //     this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT, // Amount
+        //     true, // Verified
+        //     this.paymentID // Paypal Payment id
+        //   ).subscribe(data => {
+
+        //     if (b == this.bookingsQueue.length - 1) {
+        //       this.apiService.getUser()
+        //         .pipe(first())
+        //         .subscribe(
+        //           user => {
+        //             this.userBookingsArray = user.bookings;
+        //             console.log(user.bookings);
+        //             this.findOwnBookingsForActiveCapsule();
+        //             this.getTimeSlots(this.days[this.segment.value].dateRAW);
+        //           },
+        //           error => {
+        //             console.log(error);
+        //           });
+
+
+        //       this.toast("booked: " + this.capName);
+        //       console.log(data);
+        //     }
+
+        //   }, err => {
+        //     console.log(err)
+        //     this.toast(err);
+        //   });
+        // }
+
+        // this.apiService.bookCapsule(
+        //   parseInt(this.capId),
+        //   this.activeDate_String,
+        //   this.firstSelected + 1,
+        //   this.lastSelected + 1,
+        //   'PayPal',
+        //   this.selectedCount,
+        //   true,
+        //   this.paymentID
+        // ).subscribe(data => {
+        //   // TODO: this.getUserBookings();
+        //   this.getTimeSlots(this.activeDate);
+        //   this.toast("booked: " + this.capName);
+        //   console.log(data);
+        // }, err => {
+        //   console.log(err)
+        //   this.toast(err);
+        // });
+      }
+    });
+
+    return await modal.present();
   }
 }

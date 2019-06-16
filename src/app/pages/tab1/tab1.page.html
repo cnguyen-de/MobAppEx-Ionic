@@ -174,9 +174,30 @@
             <ion-icon slot="end" name="volume-high"></ion-icon>
           </ion-range>
         </ion-item>
-        <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="extendBooking()">
-            Extend Session
-        </ion-button>
+
+        <mat-accordion>
+            <mat-expansion-panel  (opened)="checkFreeSlots()">
+              <mat-expansion-panel-header >
+                  <mat-panel-title>
+                    Extend your time
+                  </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <ion-item>
+                  <ion-label>Extend Slots</ion-label>
+                  <ion-select mode="ios" interface="popover" placeholder="Select One" [(ngModel)]="extendSlots">
+                    <div *ngFor="let slots of freeSlots; let i = index">
+                      <ion-select-option value="{{i}}">Extend until {{slots}}</ion-select-option>
+                    </div>
+                  </ion-select>
+                </ion-item>
+      
+              <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="extendBooking()">
+                  Extend Session
+              </ion-button>
+
+            </mat-expansion-panel>
+          </mat-accordion>
     </ion-card-content>
   </ion-card>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
