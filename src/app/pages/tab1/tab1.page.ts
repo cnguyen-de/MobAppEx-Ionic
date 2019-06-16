@@ -6,7 +6,10 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {User} from '../../_services/auth/user';
 
 
 @Component({
@@ -42,15 +45,22 @@ export class Tab1Page {
   farFuture: boolean = false;
   viewActive:boolean = false;
   currentState = 'initial';
+  user: any;
+  username: string;
+  email: string;
+  volumeSlider: number = 0;
+  lightSlider: number = 0;
 
-  constructor(private apiService: ApiService, private storage: Storage,
-              private timeService: TimeService, private localNotifications: LocalNotifications){
+  constructor(private apiService: ApiService, private storage: Storage, private nativePageTransitions: NativePageTransitions,
+              private router: Router, private timeService: TimeService, private localNotifications: LocalNotifications){
   }
 
   ngOnInit() {
+  this.getUserInfo();
   }
 
   ionViewWillEnter() {
+    this.getUserInfo();
     if (this.futureBookings.length == 0) {
       this.loading = true;
     }
@@ -71,6 +81,22 @@ export class Tab1Page {
       }
     });
   }
+
+    //Navigate to capsule control
+    capsuleControl(){
+      this.transitionTo('/capsule-control', 'left');
+    }
+
+    transitionTo(path, direction) {
+      let options: NativeTransitionOptions = {
+        direction: direction,
+        duration: 200,
+        slowdownfactor: 1,
+        androiddelay: 200,
+      };
+      this.nativePageTransitions.slide(options);
+      this.router.navigateByUrl(path);
+    }
 
   hideCard() {
     this.hide = true;
@@ -283,6 +309,71 @@ export class Tab1Page {
     setTimeout(() => {
       $event.target.complete();
     }, 700);
+  }
+
+  sliderChange(){
+    this.apiService.setVolumeAndLightPreference(this.volumeSlider, this.lightSlider)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.clear();
+        console.log("Volume: " + this.volumeSlider + " | Light: " + this.lightSlider);
+        console.log(data);
+        // console.log(this.user.capsulePreference);
+        this.user.capsulePreference = data;
+        console.log(this.user);
+        this.saveToStorage('user', this.user).then(() => {
+        });
+      },
+      error => {
+        console.log(error);
+    });
+  }
+
+  extendBooking(){
+    this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data =>{
+      if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + "")]){
+        console.log("YEP");
+      }else{
+        console.log("NOPE")
+      }
+    })
+  }
+
+  // User Info
+  getUserInfo() {
+    console.log("------------------------------------");
+    this.storage.get('user').then(user => {
+      if (user != null || typeof user != 'undefined') {
+        console.log("Setting user data from memory");
+        console.log(user);
+        this.user = user;
+        this.username = user.username;
+        this.email = user.email;
+        if (user.capsulePreference != null) {
+          this.lightSlider = user.capsulePreference.LightLevel;
+          this.volumeSlider = user.capsulePreference.VolumenLevel;
+        }
+      } else {
+        console.log("Retrieving user data from server");
+        this.apiService.getUser()
+            .pipe(first())
+            .subscribe(
+                user => {
+                  console.log(user);
+                  this.user = user;
+                  this.username = user.username;
+                  this.email = user.email;
+                  if (user.capsulePreference != null) {
+                    this.lightSlider = user.capsulePreference.LightLevel;
+                    this.volumeSlider = user.capsulePreference.VolumenLevel;
+                  }
+                },
+                error => {
+                  console.log(error);
+                });
+      }
+    })
   }
 
   async saveToStorage(key, val) {

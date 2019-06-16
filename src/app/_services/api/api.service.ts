@@ -163,6 +163,26 @@ export class ApiService {
     )
   }
 
+  setVolumeAndLightPreference(volume: number, light: number) {
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.patch(`${this.server}/CapsulePreferences`, {"VolumenLevel": volume, "LightLevel": light}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
+  extendBooking(id: number, LastTimeFrame: number, Vendor: string, Amount: number, Payment_id: string){
+    this.getToken();
+    let params = this.setParamToken(this.token);
+    return this.httpClient.patch(`${this.server}/CapsulePreferences`, {"id": id, "LastTimeFrame": LastTimeFrame, "Vendor": Vendor, "Amount": Amount, "Payment_id": Payment_id}, {params: params}).pipe(
+        map((res) => {
+          return res;
+        })
+    )
+  }
+
   //HELPER METHODS
   logOutLocally() {
     this.storage.remove('user');
