@@ -1013,7 +1013,7 @@ export class Tab2Page implements OnInit {
       //   this.timeslots[this.firstSelected - c_booked_up].state = true;
       // }
 
-      if (this.firstSelected > 1 &&
+      if (this.firstSelected > 1 && this.firstSelected - (c_booked_up + 1) > 0 &&
         this.timeslots[this.firstSelected - c_booked_up].state == 'blocked' &&
         this.timeslots[this.firstSelected - (c_booked_up + 1)].state == 'booked') {
 
@@ -1438,7 +1438,7 @@ export class Tab2Page implements OnInit {
 
     let impossibles = [];
     for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
-      
+
       while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
         console.log('hello: ', this.userBookingsSlotsArray[s]);
 
