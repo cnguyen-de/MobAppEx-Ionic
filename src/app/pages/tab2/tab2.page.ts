@@ -242,6 +242,14 @@ export class Tab2Page implements OnInit {
 
           if(this.capsules.length == 0) {
             this.capsules = savedCaps;
+
+            for (let cap in savedCaps) {
+              //console.log(data[cap]);
+              this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, savedCaps[cap].Latitude, savedCaps[cap].Longitude);
+  
+              //this.capsules.push(data[cap]);
+            }
+            this.capsules.sort(this.compare_Distance);
           }
         } else {
           console.log('caps from server');
