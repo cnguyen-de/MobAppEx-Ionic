@@ -61,7 +61,7 @@ export class Tab2Page implements OnInit {
   constructor(private locationService: LocationService,
     private apiService: ApiService,
     private platform: Platform,
-    private timeService: TimeService,
+    public timeService: TimeService,
     private modalController: ModalController,
     private toastController: ToastController,
     private storage: Storage,
@@ -231,6 +231,8 @@ export class Tab2Page implements OnInit {
     this.apiService.getCapsules().subscribe(data => {
       this.capsules = data;
 
+      console.log(this.capsules);
+
       //Open marker-popup for first marker
       this.capsules[0].isOpen = true;
 
@@ -269,7 +271,7 @@ export class Tab2Page implements OnInit {
   }
 
   onBoundsChanged(event?) {
-    console.log(event);
+    //console.log(event);
   }
 
   cardClicked(i) {
