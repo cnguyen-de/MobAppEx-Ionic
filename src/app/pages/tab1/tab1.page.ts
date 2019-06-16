@@ -10,6 +10,8 @@ import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/nati
 import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {User} from '../../_services/auth/user';
+import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
+import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
 
 
 @Component({
@@ -50,9 +52,16 @@ export class Tab1Page {
   email: string;
   volumeSlider: number = 0;
   lightSlider: number = 0;
+  isNextSlotAvailable: boolean = false;
 
-  constructor(private apiService: ApiService, private storage: Storage, private nativePageTransitions: NativePageTransitions,
-              private router: Router, private timeService: TimeService, private localNotifications: LocalNotifications){
+  constructor(private apiService: ApiService,
+    private storage: Storage,
+    private nativePageTransitions: NativePageTransitions,
+    private modalController: ModalController,
+    private router: Router, 
+    private timeService: TimeService, 
+    private toastController: ToastController,
+    private localNotifications: LocalNotifications){
   }
 
   ngOnInit() {
@@ -333,16 +342,15 @@ export class Tab1Page {
   extendBooking(){
     this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data =>{
       if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + "")]){
-        console.log("YEP");
+        this.toast("passt");
       }else{
-        console.log("NOPE")
+        this.toast("Next slot already taken");
       }
     })
   }
 
   // User Info
   getUserInfo() {
-    console.log("------------------------------------");
     this.storage.get('user').then(user => {
       if (user != null || typeof user != 'undefined') {
         console.log("Setting user data from memory");
@@ -375,6 +383,18 @@ export class Tab1Page {
       }
     })
   }
+
+    //Toast Handler
+    async toast(message: any) {
+      const toast = await this.toastController.create({
+        message: message,
+        duration: 3000,
+        position: 'top',
+        cssClass: 'toast-container',
+        keyboardClose: true,
+      });
+      toast.present();
+    }
 
   async saveToStorage(key, val) {
     await this.storage.set(key, val);

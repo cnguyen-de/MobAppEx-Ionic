@@ -19,7 +19,7 @@ import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
     MatDatepickerModule,
     MatNativeDateModule,
     RouterModule.forChild([{ path: '', component: Tab2Page }]),
-    AgmCoreModule.forRoot({ apiKey: 'AIzaSyAKHOw3h06vjiAXLaXCqklkOsO7xDw02Ks' }),
+    AgmCoreModule.forRoot({ apiKey: 'AIzaSyCpckjti0hdTk60mKWuq9R_uHsbQtw88IU' }),
     CheckoutModalPageModule,
     TranslateModule.forChild({
       loader: {
