@@ -93,7 +93,7 @@
           <ion-item lines="none" class="item-pin">
             <ion-icon name="ios-log-in" class="pin"></ion-icon>
             <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
-            <ion-icon (click)="capsuleControl()" name="md-open" slot="end" class="pin"></ion-icon>
+            <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
           </ion-item>
       </ion-card>
 
@@ -138,7 +138,8 @@
       <ion-icon name="arrow-back" class="info-icon" slot="start" size="large"></ion-icon>
 
       <!-- change countDownTime to time of lastTimeFrame-->
-      countdowntolasttimeframe
+      <!-- countdowntolasttimeframes -->
+      <!-- <ion-text>Capsule Control</ion-text> -->
       <span class="countdown" simpleCountdown slot="end"
             [reactive]="false"
             [dateTo]=countDownTime
@@ -148,7 +149,25 @@
               </span>
     </div>
     <ion-card-content>
-      CAPSULE CONTROL
+      <ion-text>Light</ion-text>
+      <ion-item lines="none">
+        <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500"  [(ngModel)]="lightSlider">
+          <ion-icon size="small" slot="start" name="sunny"></ion-icon>
+          <ion-icon slot="end" name="sunny"></ion-icon>
+        </ion-range>
+      </ion-item>
+    
+      <ion-text>Volume</ion-text>
+      <ion-item lines="none">
+        <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500" [(ngModel)]="volumeSlider">
+          <ion-icon size="small" slot="start" name="volume-off" *ngIf="volumeSlider==0"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-mute" *ngIf="volumeSlider!=0 && volumeSlider<30"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-low" *ngIf="volumeSlider>=30 && volumeSlider<60"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-high" *ngIf="volumeSlider>=60"></ion-icon>
+          <ion-icon slot="end" name="volume-high"></ion-icon>
+        </ion-range>
+      </ion-item>
+      <ion-button (click)="extendBooking()">Extend Booking</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
