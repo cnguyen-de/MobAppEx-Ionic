@@ -15,6 +15,7 @@ import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import isEqual from 'lodash.isequal';
+import {MatDatepicker} from '@angular/material/datepicker';
 
 @Component({
   selector: "app-tab2",
@@ -56,6 +57,7 @@ export class Tab2Page implements OnInit {
   @ViewChild('content') content: IonContent;
   @ViewChild('tscontent') tscontent: IonContent;
   @ViewChild('slides') slides: IonSlides;
+  @ViewChild('picker') picker;
 
 
   constructor(private locationService: LocationService,
@@ -116,6 +118,7 @@ export class Tab2Page implements OnInit {
   timeslots = [];
   segmentWidth: number = 100;
 
+  MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
   PRICE_PER_SLOT = 2;
   bookedArray_Up = [];
@@ -209,7 +212,10 @@ export class Tab2Page implements OnInit {
 
 
     this.platform.backButton.subscribe(() => {
-      if (this.cardTSS_state == 'top') {
+      if(this.picker.opened == true) {
+        this.picker.close();
+      }
+      else if (this.cardTSS_state == 'top') {
         this.animateTSS_Click();
       }
     });
@@ -230,7 +236,7 @@ export class Tab2Page implements OnInit {
 
     this.apiService.getCapsules().subscribe(data => {
       this.storage.get('capsules').then(savedCaps => {
-        console.log('saved', savedCaps);
+        //console.log('saved', savedCaps);
         if (isEqual(data, savedCaps)) {
           console.log('caps from cache');
 
