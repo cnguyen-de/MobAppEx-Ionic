@@ -97,10 +97,26 @@ ion-list-header {
   margin-top: 1px;
   margin-right: 16px;
 }
-.capsule-control {
-}
+
 .capsule-control-card {
-  margin-top: 24px !important;
-  width: calc(100vw - 24px);
-  height: calc(95vh - 148px)
+  border-radius: 0 !important;
+  margin: 0 !important;
+  width: calc(100vw);
+  height: calc(100vh - 57px)
+}
+.capsule-control-back {
+  color: var(--ion-text-color);
+  float: left;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  padding-left: 8px;
+  padding-top: 4px;
+}
+.capsule-control-main {
+  background: var(--ion-background-color);
+  height: calc(100vh - 114px);
+}
+.back-icon {
+  color: white;
 }

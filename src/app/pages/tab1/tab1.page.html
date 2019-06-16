@@ -1,5 +1,5 @@
 
-<ion-header no-border>
+<ion-header no-border [hidden]="viewActive">
   <ion-toolbar>
     <!--
     <ion-item lines="none">
@@ -15,7 +15,7 @@
 </ion-header>
 
 
-<ion-content *ngIf="!viewActive">
+<ion-content [hidden]="viewActive">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
             pullingIcon="arrow-down"
@@ -131,23 +131,30 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="viewActive" class="capsule-control">
+<ion-content [hidden]="!viewActive" class="capsule-control">
   <ion-card class="capsule-control-card" mode="ios" [@changeDivSize]=currentState>
-    <div class="active-capsule-bar" (click)="viewActiveCapsule()" >
-      <ion-icon name="arrow-back" class="info-icon" slot="start" size="large"></ion-icon>
+    <ion-header (click)="viewActiveCapsule()" >
+      <ion-toolbar>
+        <ion-icon name="arrow-back" class="capsule-control-back"></ion-icon>
+        <ion-title style="margin-left: 20px;">Capsule Control</ion-title>
 
-      <!-- change countDownTime to time of lastTimeFrame-->
-      countdowntolasttimeframe
-      <span class="countdown" simpleCountdown slot="end"
-            [reactive]="false"
-            [dateTo]=countDownTime
-            [endMessage]="'Capsule Active'"
-            [styles]="'font-size: 14px; color: white;' +
-                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+        <!-- change countDownTime to time of lastTimeFrame-->
+        <span class="countdown" simpleCountdown slot="end"
+              [reactive]="false"
+              [dateTo]=countDownTime
+              [endMessage]="'Session Over'"
+              [styles]="'font-size: 14px; color: var(--ion-text-color);' +
+                           'background-color: var(--ion-item-background-color); padding: 10px 3px; font-weight: bold;'">
               </span>
-    </div>
-    <ion-card-content>
+      </ion-toolbar>
+    </ion-header>
+    <ion-card-content class="capsule-control-main">
       CAPSULE CONTROL
     </ion-card-content>
   </ion-card>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="viewActiveCapsule()">
+      <ion-icon name="ios-undo" class="back-icon"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

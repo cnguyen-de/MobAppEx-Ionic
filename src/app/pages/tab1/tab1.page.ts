@@ -22,11 +22,11 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
       })),
       state('final', style({
         //backgroundColor: 'red',
-        width: 'calc(100vw - 24px)',
-        height: 'calc(95vh - 148px)'
+        width: 'calc(100vw)',
+        height: 'calc(100vh - 57px)'
       })),
-      transition('initial=>final', animate('300ms')),
-      transition('final=>initial', animate('300ms'))
+      transition('initial=>final', animate('300ms ease-in')),
+      transition('final=>initial', animate('200ms ease-in'))
     ])
   ]
 })
@@ -275,7 +275,7 @@ export class Tab1Page {
 
   viewActiveCapsule() {
     this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
-    setTimeout(() => this.viewActive = !this.viewActive,300)
+    setTimeout(() => this.viewActive = !this.viewActive,200)
   }
 
   doRefresh($event) {
