@@ -108,6 +108,7 @@ export class Tab2Page implements OnInit {
   capsules = [];
 
   //Day Segments
+  excludeSundays = false;
   days = [];
   daysRange: number = 30;
 
@@ -145,6 +146,7 @@ export class Tab2Page implements OnInit {
 
   minDate = new Date();
   maxDate = new Date();
+  datePickerFilter: any;
 
   ngOnInit() {
 
@@ -181,6 +183,22 @@ export class Tab2Page implements OnInit {
       }
       this.days.push(day);
     }
+
+    
+    if(this.excludeSundays == true) {
+      for (let i = 0; i < this.days.length; i++) {
+        if(this.days[i].dateRAW.getDay() == 0) {
+          this.days.splice(i, 1);
+        }
+      }
+
+      this.datePickerFilter = (d: Date): boolean => {
+        const day = d.getDay();
+        // Prevent Saturday and Sunday from being selected.
+        return day !== 0;
+      }
+    }
+
 
     // set first segment of days-segment as checked
     this.segment.value = '0';
@@ -596,13 +614,14 @@ export class Tab2Page implements OnInit {
           if (date != null) {
             this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
           }
+
+
           //formattedDateString = '2019-6-7';
 
           //this.findBookings();
 
           // get data from server
           this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
-
             // data from server not formatted properly; using workaround:
             // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
             for (var propertyName in data) {
@@ -1287,13 +1306,15 @@ export class Tab2Page implements OnInit {
 
   onSegmentClick(day) {
 
+
     this.tscontent.scrollToTop();
 
     let date = new Date();
     date.setDate(date.getDate() + parseInt(day.value));
 
+
     this.activeDate = date;
-    this.getTimeSlots(date);
+    this.getTimeSlots(day.dateRAW);
   }
 
   proceedToCheckoutClick() {
@@ -1410,7 +1431,9 @@ export class Tab2Page implements OnInit {
 
   // finds own bookings to mark time slots as YOURS
   findOwnBookingsForActiveCapsule() {
-    let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    //let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    let datestring = this.days[this.segment.value].dateRAW.getFullYear().toString() + (this.days[this.segment.value].dateRAW.getMonth() + 1).toString() + this.days[this.segment.value].dateRAW.getDate().toString();
+
     //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
     for (let a = 0; a < this.userBookingsArray.length; a++) {
 
@@ -1686,10 +1709,10 @@ export class Tab2Page implements OnInit {
 
     let date = this.days[this.segment.value].dateRAW;
 
-
     for (let b in this.userBookingsArray) {
       let date2 = new Date(this.userBookingsArray[b].Date);
-      if (date.getDate() == date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+
+      if (date.getFullYear() + '-' + (date.getMonth() + 1)+ '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1)+ '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
         //console.log(this.userBookingsArray[b]);
         //console.log(this.userBookingsArray[b].capsule.Name);
 
@@ -1714,7 +1737,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log(this.crossCapsuleBookingsArray);
+    console.log('crossCapsuleBookingsArray',this.crossCapsuleBookingsArray);
 
   }
 
