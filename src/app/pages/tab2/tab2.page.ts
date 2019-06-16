@@ -468,6 +468,7 @@ export class Tab2Page implements OnInit {
     if (item) {
       this.capName = item.Name;
       this.capId = item.id;
+      this.PRICE_PER_SLOT = parseFloat(item.Price);
     }
 
     let elemo = await document.getElementById("root");
