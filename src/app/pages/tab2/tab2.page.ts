@@ -1438,19 +1438,29 @@ export class Tab2Page implements OnInit {
 
     let impossibles = [];
     for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
-
-      while ((((this.userBookingsSlotsArray[s]) + 1) == (this.userBookingsSlotsArray[s + 1])) ||
-        (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
+      
+      while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
         console.log('hello: ', this.userBookingsSlotsArray[s]);
-        impossibles.push(this.userBookingsSlotsArray[s]);
+
+        let index = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s])
+        if (index === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s]);
+        }
+        
+        let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
+        if (index2 === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s + 1]);
+        }
+
         s++;
       }
-    }
 
-    if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-      this.timeslots[impossibles[0] - 2].state = 'impossible';
-      this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+      if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+        this.timeslots[impossibles[0] - 2].state = 'impossible';
+        this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+      }
 
+      impossibles = [];
     }
   }
 
@@ -1669,7 +1679,6 @@ export class Tab2Page implements OnInit {
   }
 
   crossCapsuleBookingsArray = [];
-
   setTimeSlotsCrossCapsuleBooking() {
     this.crossCapsuleBookingsArray = [];
 
