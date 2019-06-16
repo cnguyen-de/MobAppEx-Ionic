@@ -65,7 +65,7 @@ export class Tab1Page {
   }
 
   ngOnInit() {
-  this.getUserInfo();
+  //this.getUserInfo();
   }
 
   ionViewWillEnter() {

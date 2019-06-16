@@ -15,6 +15,7 @@ import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import isEqual from 'lodash.isequal';
+import {MatDatepicker} from '@angular/material/datepicker';
 
 @Component({
   selector: "app-tab2",
@@ -56,6 +57,7 @@ export class Tab2Page implements OnInit {
   @ViewChild('content') content: IonContent;
   @ViewChild('tscontent') tscontent: IonContent;
   @ViewChild('slides') slides: IonSlides;
+  @ViewChild('picker') picker;
 
 
   constructor(private locationService: LocationService,
@@ -116,6 +118,7 @@ export class Tab2Page implements OnInit {
   timeslots = [];
   segmentWidth: number = 100;
 
+  MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
   PRICE_PER_SLOT = 2;
   bookedArray_Up = [];
@@ -209,7 +212,10 @@ export class Tab2Page implements OnInit {
 
 
     this.platform.backButton.subscribe(() => {
-      if (this.cardTSS_state == 'top') {
+      if(this.picker.opened == true) {
+        this.picker.close();
+      }
+      else if (this.cardTSS_state == 'top') {
         this.animateTSS_Click();
       }
     });
@@ -230,12 +236,20 @@ export class Tab2Page implements OnInit {
 
     this.apiService.getCapsules().subscribe(data => {
       this.storage.get('capsules').then(savedCaps => {
-        console.log('saved', savedCaps);
+        //console.log('saved', savedCaps);
         if (isEqual(data, savedCaps)) {
           console.log('caps from cache');
 
           if(this.capsules.length == 0) {
             this.capsules = savedCaps;
+
+            for (let cap in savedCaps) {
+              //console.log(data[cap]);
+              this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, savedCaps[cap].Latitude, savedCaps[cap].Longitude);
+  
+              //this.capsules.push(data[cap]);
+            }
+            this.capsules.sort(this.compare_Distance);
           }
         } else {
           console.log('caps from server');
@@ -409,7 +423,7 @@ export class Tab2Page implements OnInit {
 
     this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 
-    this.timeitems = ((h - 9) * 60) + m;
+    this.timeitems = ((h - 15) * 60) + m;
 
     let percent = 100 / 540 * this.timeitems;
     console.log(this.timeitems);
@@ -454,6 +468,7 @@ export class Tab2Page implements OnInit {
     if (item) {
       this.capName = item.Name;
       this.capId = item.id;
+      this.PRICE_PER_SLOT = parseFloat(item.Price);
     }
 
     let elemo = await document.getElementById("root");
@@ -848,6 +863,7 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
+    console.log(this.userBookingsSlotsArray);
     //console.clear();
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
@@ -998,7 +1014,7 @@ export class Tab2Page implements OnInit {
       //   this.timeslots[this.firstSelected - c_booked_up].state = true;
       // }
 
-      if (this.firstSelected > 1 &&
+      if (this.firstSelected > 1 && this.firstSelected - (c_booked_up + 1) > 0 &&
         this.timeslots[this.firstSelected - c_booked_up].state == 'blocked' &&
         this.timeslots[this.firstSelected - (c_booked_up + 1)].state == 'booked') {
 
@@ -1077,7 +1093,8 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if ((this.selectedCount +
+    if (this.firstSelected - c_booked_up >= 0 && 
+      (this.selectedCount +
       this.bookedArray_Up.length +
       this.bookedArray_Down.length +
       this.bookedArray_AfterNext_Up.length +
@@ -1099,7 +1116,8 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if ((this.selectedCount +
+    if (this.lastSelected + c_booked_down < this.timeslots.length && 
+      (this.selectedCount +
       this.bookedArray_Up.length +
       this.bookedArray_Down.length +
       this.bookedArray_AfterNext_Down.length +
@@ -1177,6 +1195,16 @@ export class Tab2Page implements OnInit {
     //   this.bookedArray_Up.length +
     //   this.bookedArray_Down.length +
     //   this.bookedArray_Between.length);
+
+
+    // blocke all slots when day limit reached
+    if(this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY - 1) {
+      for (let a = 0; a < this.timeslots.length; a++) {
+        if (this.timeslots[a].state == true) {
+          this.timeslots[a].state = 'blocked';
+        }
+      }
+    }
 
 
 
@@ -1412,18 +1440,28 @@ export class Tab2Page implements OnInit {
     let impossibles = [];
     for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
 
-      while ((((this.userBookingsSlotsArray[s]) + 1) == (this.userBookingsSlotsArray[s + 1])) ||
-        (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
+      while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
         console.log('hello: ', this.userBookingsSlotsArray[s]);
-        impossibles.push(this.userBookingsSlotsArray[s]);
+
+        let index = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s])
+        if (index === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s]);
+        }
+        
+        let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
+        if (index2 === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s + 1]);
+        }
+
         s++;
       }
-    }
 
-    if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-      this.timeslots[impossibles[0] - 2].state = 'impossible';
-      this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+      if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+        this.timeslots[impossibles[0] - 2].state = 'impossible';
+        this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+      }
 
+      impossibles = [];
     }
   }
 
@@ -1584,7 +1622,6 @@ export class Tab2Page implements OnInit {
 
   findFutureBookingsForAllCapsules() {
 
-
     this.futureBookings = [];
     for (let b = 0; b < this.userBookingsArray.length; b++) {
 
@@ -1643,7 +1680,6 @@ export class Tab2Page implements OnInit {
   }
 
   crossCapsuleBookingsArray = [];
-
   setTimeSlotsCrossCapsuleBooking() {
     this.crossCapsuleBookingsArray = [];
 
