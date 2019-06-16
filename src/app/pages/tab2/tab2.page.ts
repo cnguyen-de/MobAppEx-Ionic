@@ -14,7 +14,7 @@ import { Storage } from '@ionic/storage';
 import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-
+import isEqual from 'lodash.isequal';
 
 @Component({
   selector: "app-tab2",
@@ -229,27 +229,37 @@ export class Tab2Page implements OnInit {
 
 
     this.apiService.getCapsules().subscribe(data => {
+      this.storage.get('capsules').then(savedCaps => {
+        console.log('saved', savedCaps);
+        if (isEqual(data, savedCaps)) {
+          console.log('caps from cache');
 
-      for(let cap in data) {
-        //console.log(data[cap]);
-        data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
+          if(this.capsules.length == 0) {
+            this.capsules = savedCaps;
+          }
+        } else {
+          console.log('caps from server');
 
-        this.capsules.push(data[cap]);
-
-      }
-      this.capsules.sort(this.compare_Distance);
-        //console.log(this.capsules);
-
-
-
-      //Open marker-popup for first marker
-      this.capsules[0].isOpen = true;
-
-      
+          this.storage.set('capsules', data).then(data => {
+            this.capsules = [];
+            for (let cap in data) {
+              //console.log(data[cap]);
+              data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
+  
+              this.capsules.push(data[cap]);
+            }
+            this.capsules.sort(this.compare_Distance);
+  
+            //Open marker-popup for first marker
+            this.capsules[0].isOpen = true;
+          });
+          
+        }
+      });
 
     });
 
-    
+
 
 
     // get User.Bookings from server
@@ -267,7 +277,7 @@ export class Tab2Page implements OnInit {
         this.latMapCenter = data.coords.latitude;
         this.lngMapCenter = data.coords.longitude;
 
-        for(let cap in this.capsules) {
+        for (let cap in this.capsules) {
           this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
         }
         this.capsules.sort(this.compare_Distance);
@@ -277,10 +287,10 @@ export class Tab2Page implements OnInit {
 
 
 
-     TODO: this.setDatePickerFormat();
+    TODO: this.setDatePickerFormat();
   }
 
-  
+
 
 
 
@@ -510,7 +520,7 @@ export class Tab2Page implements OnInit {
       this.lngMapCenter = data.coords.longitude;
       this.spinBtnPositionPressed = false;
 
-      for(let cap in this.capsules) {
+      for (let cap in this.capsules) {
         this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
       }
       this.capsules.sort(this.compare_Distance);
@@ -633,7 +643,7 @@ export class Tab2Page implements OnInit {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
-            } 
+            }
 
 
             if (this.segment.value == '0') {
@@ -1388,10 +1398,10 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('userBookingsSlotsArray',this.userBookingsSlotsArray);
+    console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
   }
 
-  
+
 
   // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
   findImpossibles() {
@@ -1572,11 +1582,11 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  findFutureBookingsForAllCapsules(){
+  findFutureBookingsForAllCapsules() {
 
-    
+
     this.futureBookings = [];
-    for(let b = 0; b < this.userBookingsArray.length; b++) {
+    for (let b = 0; b < this.userBookingsArray.length; b++) {
 
       let date = new Date(this.userBookingsArray[b].Date);
       let dateToday = new Date();
@@ -1585,7 +1595,7 @@ export class Tab2Page implements OnInit {
         date: new Date(this.userBookingsArray[b].Date).toISOString(),
         startingTime: this.timeService.getEndTime(this.userBookingsArray[b].FirstTimeFrame),
         endingTime: this.timeService.getEndTime(this.userBookingsArray[b].LastTimeFrame),
-        capsuleId:  this.userBookingsArray[b].Capsule_id
+        capsuleId: this.userBookingsArray[b].Capsule_id
       }
 
       // let bookingStartDate = new Date(this.userBookingsArray[b].Date);
@@ -1620,7 +1630,7 @@ export class Tab2Page implements OnInit {
   setBookedLabel() {
     if (this.capsules.length > 0 && this.futureBookings.length > 0) {
 
-      
+
       // Find capsule id in futire bookings and apply booked label to capsule
       for (let book in this.futureBookings) {
         var result = this.capsules.find(obj => {
@@ -1633,17 +1643,17 @@ export class Tab2Page implements OnInit {
   }
 
   crossCapsuleBookingsArray = [];
-  
+
   setTimeSlotsCrossCapsuleBooking() {
     this.crossCapsuleBookingsArray = [];
-    
+
 
     let date = this.days[this.segment.value].dateRAW;
 
-    
-    for(let b in this.userBookingsArray) {
+
+    for (let b in this.userBookingsArray) {
       let date2 = new Date(this.userBookingsArray[b].Date);
-      if(date.getDate() == date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+      if (date.getDate() == date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
         //console.log(this.userBookingsArray[b]);
         //console.log(this.userBookingsArray[b].capsule.Name);
 
@@ -1669,7 +1679,7 @@ export class Tab2Page implements OnInit {
       }
     }
     console.log(this.crossCapsuleBookingsArray);
-    
+
   }
 
   addBookedCapsuleSlot(item) {
