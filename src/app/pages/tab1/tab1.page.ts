@@ -12,6 +12,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {User} from '../../_services/auth/user';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
 import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import { BookingHistoryPage } from '../booking-history/booking-history.page';
 
 
 @Component({
@@ -57,6 +58,10 @@ export class Tab1Page {
   PRICE_PER_SLOT: number = 2;
   extendSlots: number = 1;
   freeSlots: string[] = [];
+  days = [];
+  segmentWidth: number = 100;
+  todayBookings: any = [];
+  todayActiveBookings: any = [];
 
   constructor(private apiService: ApiService,
     private storage: Storage,
@@ -350,18 +355,39 @@ export class Tab1Page {
         var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ""));
         var i = 0;
         this.freeSlots = [];
-        while(data[lastFrame] && i < 5){
+        while(data[lastFrame] && i < 5 && this.maxTimeBooked(this.user.bookings) <= 15){
 
           this.freeSlots.push(this.timeService.getEndTime(lastFrame));
 
           lastFrame ++;
           i++;
         }
-        // console.log(this.freeSlots);
+        console.log(this.freeSlots);
       }else{
         this.toast("Next slot already taken");
       }
     })
+  }
+
+  maxTimeBooked(bookings: booking[]){
+    this.todayBookings = [];
+    this.todayActiveBookings = [];
+    for(var i = 0; i<bookings.length; i++){
+      if(bookings[i].Date.slice(0,10) == this.today.toISOString().slice(0,10)){
+        this.todayBookings.push(bookings[i]);
+      }
+    }
+    for(var i = 0; i<this.todayBookings.length; i++){
+      if(this.todayBookings[i].Capsule_id == this.todayBookings[0].Capsule_id){
+        this.todayActiveBookings.push(this.todayBookings[i]);
+      }
+    }
+    var sumSlots = 0;
+    for(var i = 0; i < this.todayActiveBookings.length; i++){
+      console.log(this.todayActiveBookings[i].LastTimeFrame - this.todayActiveBookings[i].FirstTimeFrame);
+      sumSlots += (this.todayActiveBookings[i].LastTimeFrame - this.todayActiveBookings[i].FirstTimeFrame + 1);
+    }
+    return sumSlots;
   }
 
   // User Info
