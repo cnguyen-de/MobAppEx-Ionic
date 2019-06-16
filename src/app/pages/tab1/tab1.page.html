@@ -184,10 +184,10 @@
               </mat-expansion-panel-header>
 
               <ion-item>
-                  <ion-label>Extend Slots</ion-label>
+                  <ion-label>Extend slots until</ion-label>
                   <ion-select mode="ios" interface="popover" placeholder="Select One" [(ngModel)]="extendSlots">
                     <div *ngFor="let slots of freeSlots; let i = index">
-                      <ion-select-option value="{{i}}">Extend until {{slots}}</ion-select-option>
+                      <ion-select-option value="{{i}}">{{slots}}</ion-select-option>
                     </div>
                   </ion-select>
                 </ion-item>
