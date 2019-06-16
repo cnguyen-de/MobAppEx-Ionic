@@ -43,7 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       MatExpansionModule,
       // MatFormField,
       IonicModule.forRoot({
-        //mode: 'ios'
+        mode: 'md',
         navAnimation: noAnimation,
       }),
       AppRoutingModule,

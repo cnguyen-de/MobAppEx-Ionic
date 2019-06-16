@@ -6,6 +6,7 @@
       </ion-list-header>
 
       <ion-item lines="none">
+        <!--
           <ion-row class="labels">
             <ion-col>Off</ion-col>
             <ion-col>10</ion-col>
@@ -15,7 +16,10 @@
             <ion-col>50</ion-col>
             <ion-col>60</ion-col>
           </ion-row>
-          <ion-range min="0" max="60" step="10" snaps="true" ticks="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
+        -->
+        <span slot="start" class="labels">Off</span>
+        <span slot="end" class="labels" style="right: 64px;">60</span>
+          <ion-range min="0" max="60" step="10" snaps="true" ticks="true" pin="true" mode="ios" (ionChange)="onChange()" [(ngModel)]="sliderValue">
             <ion-icon name="timer" size="small" slot="start"></ion-icon>
             <ion-icon name="timer" slot="end"></ion-icon>
           </ion-range>
