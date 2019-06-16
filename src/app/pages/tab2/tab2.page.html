@@ -86,7 +86,7 @@
           </ion-card-subtitle>
           <ion-card-subtitle>
             <h6>
-              next slot bla
+              {{ item.FirstFreeDate }}, {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
           </ion-card-subtitle>
           <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one

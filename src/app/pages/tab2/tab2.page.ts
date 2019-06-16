@@ -61,7 +61,7 @@ export class Tab2Page implements OnInit {
   constructor(private locationService: LocationService,
     private apiService: ApiService,
     private platform: Platform,
-    private timeService: TimeService,
+    public timeService: TimeService,
     private modalController: ModalController,
     private toastController: ToastController,
     private storage: Storage,
@@ -103,7 +103,7 @@ export class Tab2Page implements OnInit {
   capId = '1';
 
   //Capsules
-  capsules: any;
+  capsules = [];
 
   //Day Segments
   days = [];
@@ -217,7 +217,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     // this.storage.get('futureBookings').then(bookings => {
     //   try {
     //     this.futureBookings = bookings;
@@ -229,7 +229,18 @@ export class Tab2Page implements OnInit {
 
 
     this.apiService.getCapsules().subscribe(data => {
-      this.capsules = data;
+
+      for(let cap in data) {
+        //console.log(data[cap]);
+        data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
+
+        this.capsules.push(data[cap]);
+
+      }
+      this.capsules.sort(this.compare_Distance);
+        //console.log(this.capsules);
+
+
 
       //Open marker-popup for first marker
       this.capsules[0].isOpen = true;
@@ -237,6 +248,8 @@ export class Tab2Page implements OnInit {
       
 
     });
+
+    
 
 
     // get User.Bookings from server
@@ -253,12 +266,21 @@ export class Tab2Page implements OnInit {
         console.log('Result getting location in Component', data);
         this.latMapCenter = data.coords.latitude;
         this.lngMapCenter = data.coords.longitude;
+
+        for(let cap in this.capsules) {
+          this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+        }
+        this.capsules.sort(this.compare_Distance);
       });
     }
 
 
+
+
      TODO: this.setDatePickerFormat();
   }
+
+  
 
 
 
@@ -269,7 +291,7 @@ export class Tab2Page implements OnInit {
   }
 
   onBoundsChanged(event?) {
-    console.log(event);
+    //console.log(event);
   }
 
   cardClicked(i) {
@@ -487,6 +509,11 @@ export class Tab2Page implements OnInit {
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
       this.spinBtnPositionPressed = false;
+
+      for(let cap in this.capsules) {
+        this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+      }
+      this.capsules.sort(this.compare_Distance);
     });
   }
 
@@ -1396,6 +1423,16 @@ export class Tab2Page implements OnInit {
     if (value1 < value2) {
       return -1; // Der erste Wert ist kleiner als der zweite Wert.
     } else if (value1 > value2) {
+      return 1; // Der erste Wert ist größer als der zweite Wert.
+    } else {
+      return 0; // Beide Werte sind gleich groß.
+    }
+  }
+
+  compare_Distance(value1, value2) {
+    if (value1.calculatedDistance < value2.calculatedDistance) {
+      return -1; // Der erste Wert ist kleiner als der zweite Wert.
+    } else if (value1.calculatedDistance > value2.calculatedDistance) {
       return 1; // Der erste Wert ist größer als der zweite Wert.
     } else {
       return 0; // Beide Werte sind gleich groß.
