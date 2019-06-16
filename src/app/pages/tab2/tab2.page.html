@@ -75,19 +75,24 @@
       <ion-card id="slideCard" class="slideCards" mode="ios" *ngIf="item" (click)="cardClicked(i)">
           <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
-            <h4>
+              <h4>
               {{ item.Name }}
             </h4>
           </ion-card-title>
           <ion-card-subtitle>
-            <h6>
+              <span class="cap-attribute-title">Distance</span>
+              <h6 class="cap-attribute">
               {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} meters
             </h6>
           </ion-card-subtitle>
-          <ion-card-subtitle>
-            <h6>
-              {{ item.FirstFreeDate }}, {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
+          <ion-card-subtitle >
+            <span class="cap-attribute-title">Next Free</span>
+            <h6 class="cap-attribute">
+             {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
+            <h6 class="cap-attribute">
+               , {{ item.FirstFreeDate }}
+               </h6>
           </ion-card-subtitle>
           <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one
           </ion-button>
