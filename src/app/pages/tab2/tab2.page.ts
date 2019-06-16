@@ -423,7 +423,7 @@ export class Tab2Page implements OnInit {
 
     this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 
-    this.timeitems = ((h - 9) * 60) + m;
+    this.timeitems = ((h - 15) * 60) + m;
 
     let percent = 100 / 540 * this.timeitems;
     console.log(this.timeitems);
@@ -862,6 +862,7 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
+    console.log(this.userBookingsSlotsArray);
     //console.clear();
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
@@ -1091,7 +1092,8 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if ((this.selectedCount +
+    if (this.firstSelected - c_booked_up >= 0 && 
+      (this.selectedCount +
       this.bookedArray_Up.length +
       this.bookedArray_Down.length +
       this.bookedArray_AfterNext_Up.length +
@@ -1113,7 +1115,8 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if ((this.selectedCount +
+    if (this.lastSelected + c_booked_down < this.timeslots.length && 
+      (this.selectedCount +
       this.bookedArray_Up.length +
       this.bookedArray_Down.length +
       this.bookedArray_AfterNext_Down.length +
@@ -1191,6 +1194,16 @@ export class Tab2Page implements OnInit {
     //   this.bookedArray_Up.length +
     //   this.bookedArray_Down.length +
     //   this.bookedArray_Between.length);
+
+
+    // blocke all slots when day limit reached
+    if(this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY - 1) {
+      for (let a = 0; a < this.timeslots.length; a++) {
+        if (this.timeslots[a].state == true) {
+          this.timeslots[a].state = 'blocked';
+        }
+      }
+    }
 
 
 
@@ -1597,7 +1610,6 @@ export class Tab2Page implements OnInit {
   }
 
   findFutureBookingsForAllCapsules() {
-
 
     this.futureBookings = [];
     for (let b = 0; b < this.userBookingsArray.length; b++) {
