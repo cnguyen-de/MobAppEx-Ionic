@@ -149,6 +149,12 @@
       </ion-toolbar>
     </ion-header>
     <ion-card-content class="capsule-control-main">
+
+        <ion-text>PIN</ion-text>
+        <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none" class="item-pin">
+          <ion-icon name="ios-log-in" class="pin"></ion-icon>
+          <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+        </ion-item>
       
         <ion-text>Light</ion-text>
         <ion-item lines="none">
@@ -168,7 +174,9 @@
             <ion-icon slot="end" name="volume-high"></ion-icon>
           </ion-range>
         </ion-item>
-        <ion-button (click)="extendBooking()">Extend Booking</ion-button>
+        <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="extendBooking()">
+            Extend Session
+        </ion-button>
     </ion-card-content>
   </ion-card>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
