@@ -341,8 +341,6 @@ export class Tab1Page {
   extendBooking(){
     this.extendSlots ++;
     this.presentCheckOutModal();
-
-    console.log(this.extendSlots);
   }
 
   checkFreeSlots(){
@@ -359,7 +357,7 @@ export class Tab1Page {
           lastFrame ++;
           i++;
         }
-        console.log(this.freeSlots);
+        // console.log(this.freeSlots);
       }else{
         this.toast("Next slot already taken");
       }

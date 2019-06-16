@@ -185,7 +185,7 @@
 
               <ion-item>
                   <ion-label>Extend Slots</ion-label>
-                  <ion-select mode="ios" placeholder="Select One" [(ngModel)]="extendSlots">
+                  <ion-select mode="ios" interface="popover" placeholder="Select One" [(ngModel)]="extendSlots">
                     <div *ngFor="let slots of freeSlots; let i = index">
                       <ion-select-option value="{{i}}">Extend until {{slots}}</ion-select-option>
                     </div>
