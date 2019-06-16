@@ -200,3 +200,14 @@ mat-datepicker {
   position: absolute !important;
   right: 0 !important;
 }
+
+
+.cap-attribute-title {
+  color: var(--ion-color-primary);
+}
+
+.cap-attribute {
+  display: inline;
+  color: var(--ion-text-color);
+  opacity: .7;
+}
