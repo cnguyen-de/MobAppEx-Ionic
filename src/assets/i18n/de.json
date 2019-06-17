@@ -28,6 +28,7 @@
   "CAPSULE_VOLUME":"Lautstärke",
   "CAPSULE_EXTEND":"Sitzung verlängern",
   "CAPSULE_EXTEND_TAKEN":"Nächster Slot ist bereits besetzt",
+  "CAPSULE_EXTEND_UNTIL":"BUCHUNG VERLÄNGERN BIS",
   "CAPSULE_NOT_YET_ACTIVE":"Deine Kapsel ist noch nicht aktiv",
   "CAPSULE_NOT_ACTIVE_HEADER":"Kapsel nicht activ",
   "CAPSULE_NOT_ACTIVE_TEXT":"Kapselkontrolle für Entwicklerzwecke anzeigen?",

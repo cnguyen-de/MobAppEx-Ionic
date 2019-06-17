@@ -28,6 +28,7 @@
   "CAPSULE_VOLUME":"Volume",
   "CAPSULE_EXTEND":"Extend Session",
   "CAPSULE_EXTEND_TAKEN":"Next slot already taken",
+  "CAPSULE_EXTEND_UNTIL":"EXTEND BOOKING UNTIL",
   "CAPSULE_NOT_YET_ACTIVE":"Your Capsule is not yet active",
   "CAPSULE_NOT_ACTIVE_HEADER":"Capsule not active",
   "CAPSULE_NOT_ACTIVE_TEXT":"View Capsule Control for Dev purpose?",
