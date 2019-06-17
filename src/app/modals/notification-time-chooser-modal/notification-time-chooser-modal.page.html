@@ -24,7 +24,7 @@
           </ion-range>
       </ion-item>
       <div class="container">
-        <ion-button (click)="confirm()" class="confirm-button" shape="round">
+        <ion-button (click)="confirm()" class="confirm-button" shape="round" mode="ios">
           <ion-text *ngIf="!buttonPressed">Confirm</ion-text>
           <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
         </ion-button>

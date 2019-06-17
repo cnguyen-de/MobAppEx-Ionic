@@ -48,7 +48,7 @@
                      (keyup.enter)="onSubmit()" placeholder="Repeat Password"></ion-input>
         </ion-item>
 
-        <ion-button strong expand="block" color="primary" shape="round"
+        <ion-button strong expand="block" color="primary" shape="round" mode="ios"
                     class="sign-up-button ion-padding-horizontal" (click)="onSubmit()"
                     [disabled]="registrationForm.invalid">
           <ion-text *ngIf="!buttonPressed">Register</ion-text>

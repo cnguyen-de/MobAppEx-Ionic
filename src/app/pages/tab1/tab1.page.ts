@@ -62,6 +62,7 @@ export class Tab1Page {
   segmentWidth: number = 100;
   todayBookings: any = [];
   todayActiveBookings: any = [];
+  endCountDownTime: number;
 
   constructor(private apiService: ApiService,
     private storage: Storage,
@@ -283,8 +284,15 @@ export class Tab1Page {
       let timeArray = sortedBookings[0].FirstTimeFrame.split(':');
       let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
       this.countDownTime = date.getTime() / 1000;
+      console.log(date, this.countDownTime)
       let nowTimeStamp = this.today.getTime() / 1000;
       this.farFuture = this.countDownTime - nowTimeStamp > 86400;
+
+      let endTimeArray = sortedBookings[0].LastTimeFrame.split(':');
+      let endDateTime = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], endTimeArray[0], endTimeArray[1]);
+      this.endCountDownTime = endDateTime.getTime() / 1000;
+      console.log(endDateTime, this.endCountDownTime)
+
     }
 
     return sortedBookings
