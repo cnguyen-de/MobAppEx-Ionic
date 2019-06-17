@@ -63,7 +63,7 @@
   "AMOUNT":"Höhe der Zahlung",
   "PAYED_DATE":"Tag der Zahlung",
   "TIME":"Zeit",
-  "SEARCH_BY_DATE":"Nach Datum suchen",
+  "FILTER_BY_DATE":"Nach Datum filtern",
   "LOG_OUT": "Ausloggen",
   "LOG_OUT_PAGE_HEADER":"Bist du dir sicher?",
   "LOG_OUT_PAGE_TEXT":"Deine Einstellungen werden gespeichert, du musst dich erneut anmelden, um die App zu verwenden",

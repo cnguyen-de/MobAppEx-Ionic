@@ -63,7 +63,7 @@
   "AMOUNT":"Amount of pay",
   "PAYED_DATE":"Day of pay",
   "TIME":"Time",
-  "SEARCH_BY_DATE":"search by date",
+  "FILTER_BY_DATE":"filter by date",
   "LOG_OUT": "Log Out",
   "LOG_OUT_PAGE_HEADER":"Are you sure?",
   "LOG_OUT_PAGE_TEXT":"Your preferences are saved, you will need to log in again to use the app",

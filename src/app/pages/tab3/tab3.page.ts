@@ -155,7 +155,10 @@ export class Tab3Page {
       if (typeof value.data == 'string') {
         this.translateService.use(value.data);
         this.saveToStorage('language', value.data);
-        this.toast(this.translateService.instant('LANGUAGE_SET'));
+        switch (value.data) {
+          case 'en': this.toast("Language set to English!"); break;
+          case 'de': this.toast("Sprache als Deutsch gesetzt!"); break;
+        }
       }
     });
 
