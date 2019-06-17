@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {User} from '../../_services/auth/user';
 import {CheckoutModalPage} from '../../modals/checkout-modal/checkout-modal.page';
-import {IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController} from '@ionic/angular';
+import {IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController, AlertController} from '@ionic/angular';
 import {BookingHistoryPage} from '../booking-history/booking-history.page';
 import {LightModalPage} from '../../modals/light-modal/light-modal.page';
 import {ExtendCapsuleModalPage} from '../../modals/extend-capsule-modal/extend-capsule-modal.page';
@@ -78,7 +78,8 @@ export class Tab1Page {
               private router: Router,
               private timeService: TimeService,
               private toastController: ToastController,
-              private localNotifications: LocalNotifications) {
+              private localNotifications: LocalNotifications,
+              private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -340,8 +341,41 @@ export class Tab1Page {
     let isActive = nowTimeStamp - this.countDownTime >= 0;
     console.log(isActive);
 
+    if (this.currentState === 'initial') {
+      if (!isActive) {
+        // comment this for live capsule control
+        this.presentAlertConfirm();
+        this.toast("Your Capsule is not yet active");
+        return;
+      }
+    }
+
     this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
     setTimeout(() => this.viewActive = !this.viewActive, 100);
+  }
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      mode: 'md',
+      cssClass: 'alert-dialog',
+      header: 'Capsule not active!',
+      message: 'View Capsule Control for Dev purpose?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+          }
+        }, {
+          text: 'Go',
+          handler: () => {
+            this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+            setTimeout(() => this.viewActive = !this.viewActive, 100);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   doRefresh($event) {
