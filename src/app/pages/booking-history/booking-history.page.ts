@@ -7,6 +7,7 @@ import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/nati
 import isEqual from 'lodash.isequal'
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { Platform } from '@ionic/angular';
+import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 
 @Component({

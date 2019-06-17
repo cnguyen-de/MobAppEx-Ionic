@@ -8,6 +8,7 @@ import isEqual from 'lodash.isequal';
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {User} from '../../_services/auth/user';
 import {CheckoutModalPage} from '../../modals/checkout-modal/checkout-modal.page';
@@ -79,7 +80,8 @@ export class Tab1Page {
               private timeService: TimeService,
               private toastController: ToastController,
               private localNotifications: LocalNotifications,
-              private alertController: AlertController) {
+              private alertController: AlertController,
+              private translateService: TranslateService) {
   }
 
   ngOnInit() {
@@ -345,7 +347,7 @@ export class Tab1Page {
       if (!isActive) {
         // comment this for live capsule control
         this.presentAlertConfirm();
-        this.toast("Your Capsule is not yet active");
+        this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
         return;
       }
     }
@@ -357,17 +359,17 @@ export class Tab1Page {
     const alert = await this.alertController.create({
       mode: 'md',
       cssClass: 'alert-dialog',
-      header: 'Capsule not active!',
-      message: 'View Capsule Control for Dev purpose?',
+      header: this.translateService.instant('CAPSULE_NOT_ACTIVE_HEADER'),
+      message: this.translateService.instant('CAPSULE_NOT_ACTIVE_TEXT'),
       buttons: [
         {
-          text: 'Cancel',
+          text: this.translateService.instant('CANCEL'),
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
           }
         }, {
-          text: 'Go',
+          text: this.translateService.instant('CONFIRM'),
           handler: () => {
             this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
             setTimeout(() => this.viewActive = !this.viewActive, 100);
@@ -416,7 +418,7 @@ export class Tab1Page {
         console.log(this.freeSlots);
         this.presentExtendCapsuleModal();
       } else {
-        this.toast('Next slot already taken');
+        this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
       }
     });
   }
@@ -529,14 +531,14 @@ export class Tab1Page {
     modal.onDidDismiss().then(value => {
       if (typeof value.data == 'string') {
         this.paymentID = value.data;
-        this.toast('Paypal payment successful, sending data to Server..');
+        this.toast(this.translateService.instant('CAPSULE_PAYPAL_SEND'));
         let today = new Date();
         let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' +
             today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
 
         this.localNotifications.schedule({
           id: this.futureBookings[0].capsule.id,
-          title: 'Paypal payment successful',
+          title: this.translateService.instant('NOTIFICATION_PAYPAL_SUCCESS'),
           icon: 'https://mobappex.web.app/assets/icon/favicon.png',
           text: 'At ' + dateTime + ' you booked Capsule ' + this.futureBookings[0].capsule.Name +
               ' for ' + this.chosenSlot.count * this.PRICE_PER_SLOT + '€'

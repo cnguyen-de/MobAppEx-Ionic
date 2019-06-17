@@ -10,6 +10,7 @@ import { LightModalPage } from '../../modals/light-modal/light-modal.page';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
+import {TranslateService} from '@ngx-translate/core';
 
 import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
@@ -67,6 +68,7 @@ export class Tab2Page implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     private storage: Storage,
+    private translateService: TranslateService,
     private localNotifications: LocalNotifications,
     private _adapter: DateAdapter<any>) { }
 
@@ -172,9 +174,9 @@ export class Tab2Page implements OnInit {
       }).format(date);
 
       if (i == 0) {
-        formattedDate = 'Today';
+        formattedDate = this.translateService.instant('TODAY');
       } else if (i == 1) {
-        formattedDate = 'Tomorrow';
+        formattedDate = this.translateService.instant('TOMORROW');
       }
       let day = {
         dateRAW: date,
@@ -1376,9 +1378,10 @@ export class Tab2Page implements OnInit {
           today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         this.localNotifications.schedule({
           id: parseInt(this.capId),
-          title: 'Paypal payment successful',
+          title: this.translateService.instant('NOTIFICATION_PAYPAL_SUCCESS'),
           icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-          text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
+          // tslint:disable-next-line:max-line-length
+          text: this.translateService.instant('NOTIFICATION_PAYPAL_AT') + dateTime + this.translateService.instant('NOTIFICATION_PAYPAL_BOOKED') + this.capName + this.translateService.instant('NOTIFICATION_PAYPAL_FOR') + this.selectedCount * this.PRICE_PER_SLOT + '€'
         });
         // loop through bookingsQueue
         for (let b = 0; b < this.bookingsQueue.length; b++) {
@@ -1408,7 +1411,7 @@ export class Tab2Page implements OnInit {
                   });
 
 
-              this.toast("booked: " + this.capName);
+              this.toast(this.translateService.instant('BOOKED') + this.capName);
               console.log(data);
             }
 
