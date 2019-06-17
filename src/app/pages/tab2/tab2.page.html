@@ -95,7 +95,7 @@
                , {{ item.FirstFreeDate }}
                </h6>
           </ion-card-subtitle>
-          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book
+          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">Select
           </ion-button>
       </ion-card>
     </ion-slide>
@@ -103,7 +103,7 @@
 </ion-content>
 
 
-<ion-card id="cardTSS_top" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
+<ion-card id="cardTSS_top" mode="ios" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
   <ion-card-header>
       <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:0; right:0; z-index:100;" (click)="animateTSS_Click()">
           <ion-icon id="ico_calendar" name="close" ></ion-icon>
@@ -114,7 +114,8 @@
       </h4>
     </ion-card-title>
     <ion-card-subtitle *ngFor="let booking of futureBookings">
-      {{booking.startingTime}} {{booking.endingTime}}
+      <!-- {{booking.startingTime}} {{booking.endingTime}} -->
+      Select up to 6 time slots to create a booking for this capsule. Price: {{ PRICE_PER_SLOT }} € / 20min
     </ion-card-subtitle>
   </ion-card-header>
   <ion-card-content>
@@ -126,15 +127,15 @@
 
 <ion-content id="root" style="visibility: hidden">
 
-  <ion-card id="headr" mode="md" style="visibility:collapse">
+  <ion-card id="headr" mode="ios" style="visibility:collapse">
     <ion-card-header>
       <h4></h4>
     </ion-card-header>
   </ion-card>
 
-  <ion-card id="listr">
+  <ion-card id="listr" mode="ios">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
-      <ion-segment id="segmt" #segment mode="md" >
+      <ion-segment id="segmt" #segment mode="ios" >
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           {{day.date}}
         </ion-segment-button>
@@ -269,7 +270,7 @@
     </ion-content>
   </ion-card>
 
-  <ion-card id="footr">
+  <ion-card id="footr" mode="ios">
     <ion-item id="summary" lines="none">
       <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
       <div slot="end">{{selectedCount * PRICE_PER_SLOT}}.00 €</div>

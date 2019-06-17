@@ -122,7 +122,7 @@ export class Tab2Page implements OnInit {
 
   MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
-  PRICE_PER_SLOT = 2;
+  PRICE_PER_SLOT = 3;
   bookedArray_Up = [];
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
