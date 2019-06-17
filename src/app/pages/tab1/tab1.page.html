@@ -1,5 +1,4 @@
-
-<ion-header no-border>
+<ion-header no-border [hidden]="viewActive">
   <ion-toolbar>
     <!--
     <ion-item lines="none">
@@ -15,11 +14,11 @@
 </ion-header>
 
 
-<ion-content *ngIf="!viewActive">
+<ion-content [hidden]="viewActive">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
-            pullingIcon="arrow-down"
-            refreshingSpinner="crescent"></ion-refresher-content>
+        pullingIcon="arrow-down"
+        refreshingSpinner="crescent"></ion-refresher-content>
   </ion-refresher>
   <div class="loading-icon" *ngIf="loading">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
@@ -48,26 +47,26 @@
     <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
       <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->
-      <ion-card button="true" *ngIf="i == 0" class="active-capsule" mode="ios"
-                (click)="viewActiveCapsule()"  [@changeDivSize]=currentState>
+      <ion-card button="true" *ngIf="i == 0" class="active-capsule animated slideInLeft" mode="ios"
+                (click)="viewActiveCapsule()" [@changeDivSize]=currentState>
         <div class="active-capsule-bar">
-              <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
-              </ion-icon>
-              <span *ngIf="!farFuture" class="countdown" simpleCountdown slot="end"
-                           [reactive]="true"
-                           [dateTo]=countDownTime
-                           [endMessage]="'Capsule Active'"
-                           [styles]="'font-size: 14px; color: white;' +
+          <ion-icon name="pricetag" class="info-icon" slot="start" size="large">
+          </ion-icon>
+          <span *ngIf="!farFuture && !viewActive" class="countdown" simpleCountdown slot="end"
+                [reactive]="true"
+                [dateTo]=countDownTime
+                [endMessage]="'Capsule Active'"
+                [styles]="'font-size: 14px; color: white;' +
                            'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
               </span>
-              <span *ngIf="farFuture" class="countdown" simpleCountdown slot="end"
-                           [reactive]="false"
-                           [dateTo]=countDownTime
-                           [endMessage]="'Capsule Active'"
-                           [styles]="'font-size: 14px; color: white;' +
+          <span *ngIf="farFuture && !viewActive" class="countdown" simpleCountdown slot="end"
+                [reactive]="false"
+                [dateTo]=countDownTime
+                [endMessage]="'Capsule Active'"
+                [styles]="'font-size: 14px; color: white;' +
                            'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
               </span>
-          </div>
+        </div>
 
         <ion-card-header class="active-capsule-header">
           <ion-card-title>
@@ -89,16 +88,15 @@
 
           </ion-card-subtitle>
         </ion-card-header>
-
-          <ion-item lines="none" class="item-pin">
-            <ion-icon name="ios-log-in" class="pin"></ion-icon>
-            <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
-            <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
-          </ion-item>
+        <ion-item lines="none" class="item-pin">
+          <ion-icon name="ios-log-in" class="pin"></ion-icon>
+          <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+          <ion-icon name="md-open" slot="end" class="pin"></ion-icon>
+        </ion-item>
       </ion-card>
 
       <!-- LIST VIEW: FUTURE CAPSULES-->
-      <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="capsule-info-list">
+      <ion-card mode="ios" class="capsule-list" *ngIf="i != 0" class="animated slideInLeft capsule-info-list">
         <ion-list (click)="matExpansionPanel.toggle()">
           <ion-list-header mode="ios">
             <span><ion-icon name="pin"></ion-icon>
@@ -111,7 +109,8 @@
 
         <mat-accordion>
           <mat-expansion-panel #matExpansionPanel class="pin-panel">
-            <mat-expansion-panel-header collapsedHeight="20px" expandedHeight="32px"></mat-expansion-panel-header>
+            <mat-expansion-panel-header collapsedHeight="20px"
+                                        expandedHeight="32px"></mat-expansion-panel-header>
             <ion-chip>
               <ion-icon name="calendar"></ion-icon>
               <ion-label>{{booking.Date | date : "dd.MM.y"}}</ion-label>
@@ -132,23 +131,64 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="viewActive" class="capsule-control">
+<ion-content [hidden]="!viewActive" class="capsule-control">
   <ion-card class="capsule-control-card" mode="ios" [@changeDivSize]=currentState>
-    <div class="active-capsule-bar" (click)="viewActiveCapsule()" >
-      <ion-icon name="arrow-back" class="info-icon" slot="start" size="large"></ion-icon>
+    <ion-header (click)="viewActiveCapsule()" no-border style="border-bottom: 1px solid var(--ion-border-color)">
+      <ion-toolbar>
+        <ion-icon name="arrow-back" class="capsule-control-back"></ion-icon>
+        <ion-title style="margin-left: 24px;">Capsule Control</ion-title>
 
-      <!-- change countDownTime to time of lastTimeFrame-->
-      countdowntolasttimeframe
-      <span class="countdown" simpleCountdown slot="end"
-            [reactive]="false"
-            [dateTo]=countDownTime
-            [endMessage]="'Capsule Active'"
-            [styles]="'font-size: 14px; color: white;' +
-                           'background-color: var(--ion-color-primary); padding: 10px 3px; font-weight: bold;'">
+        <!-- change countDownTime to time of lastTimeFrame-->
+        <span *ngIf="viewActive" class="countdown" simpleCountdown slot="end"
+              [reactive]="true"
+              [dateTo]=endCountDownTime
+              [endMessage]="'Session Over'"
+              [styles]="'font-size: 14px; color: var(--ion-text-color);' +
+                           'background-color: var(--ion-item-background-color); padding: 10px 3px; font-weight: bold;'">
               </span>
-    </div>
-    <ion-card-content>
-      {{ 'CAPSULE_CONTROL' | translate }}
+      </ion-toolbar>
+    </ion-header>
+    <ion-card-content class="capsule-control-main">
+
+      <ion-text>PIN</ion-text>
+      <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none" class="item-pin" class="controller">
+        <ion-icon name="ios-log-in" class="pin"></ion-icon>
+        <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+      </ion-item>
+
+      <ion-text>Light</ion-text>
+      <ion-item lines="none" class="controller">
+        <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500"
+                   [(ngModel)]="lightSlider">
+          <ion-icon size="small" slot="start" name="sunny"></ion-icon>
+          <ion-icon slot="end" name="sunny"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <ion-text>Volume</ion-text>
+      <ion-item lines="none" class="controller">
+        <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500"
+                   [(ngModel)]="volumeSlider">
+          <ion-icon size="small" slot="start" name="volume-off" *ngIf="volumeSlider==0"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-mute"
+                    *ngIf="volumeSlider!=0 && volumeSlider<30"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-low"
+                    *ngIf="volumeSlider>=30 && volumeSlider<60"></ion-icon>
+          <ion-icon size="small" slot="start" name="volume-high" *ngIf="volumeSlider>=60"></ion-icon>
+          <ion-icon slot="end" name="volume-high"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <ion-button class="ion-padding-vertical" expand="block" shape="round" padding (click)="pickSlots()" style="padding-top: 10vh;" mode="ios">
+        Extend Session
+      </ion-button>
+
+
     </ion-card-content>
   </ion-card>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="viewActiveCapsule()">
+      <ion-icon name="ios-undo" class="back-icon"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

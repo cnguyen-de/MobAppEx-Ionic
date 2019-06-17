@@ -9,6 +9,8 @@ import {HttpLoaderFactory} from '../../app.module';
 import {HttpClient} from '@angular/common/http';
 import {MatExpansionModule} from '@angular/material';
 import {NgxSimpleCountdownModule} from 'ngx-simple-countdown';
+import {CheckoutModalPageModule} from '../../modals/checkout-modal/checkout-modal.module';
+import {ExtendCapsuleModalPageModule} from '../../modals/extend-capsule-modal/extend-capsule-modal.module';
 
 @NgModule({
   imports: [
@@ -17,6 +19,8 @@ import {NgxSimpleCountdownModule} from 'ngx-simple-countdown';
     FormsModule,
     MatExpansionModule,
     NgxSimpleCountdownModule,
+    CheckoutModalPageModule,
+    ExtendCapsuleModalPageModule,
     RouterModule.forChild([{ path: '', component: Tab1Page }]),
     TranslateModule.forChild({
       loader: {

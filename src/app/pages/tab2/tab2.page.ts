@@ -15,7 +15,8 @@ import { Storage } from '@ionic/storage';
 import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-
+import isEqual from 'lodash.isequal';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
   selector: "app-tab2",
@@ -57,12 +58,13 @@ export class Tab2Page implements OnInit {
   @ViewChild('content') content: IonContent;
   @ViewChild('tscontent') tscontent: IonContent;
   @ViewChild('slides') slides: IonSlides;
+  @ViewChild('picker') picker;
 
 
   constructor(private locationService: LocationService,
     private apiService: ApiService,
     private platform: Platform,
-    private timeService: TimeService,
+    public timeService: TimeService,
     private modalController: ModalController,
     private toastController: ToastController,
     private translateService: TranslateService,
@@ -82,6 +84,7 @@ export class Tab2Page implements OnInit {
   personIcon: string = '../../../assets/images/icons/LocationPerson.svg';
   capsuleIcon: string = '../../../assets/images/icons/SnoozeMarker.svg';
   spinBtnPositionPressed = false;
+  mapStyle = [];
 
 
   //Slider Configs
@@ -105,9 +108,10 @@ export class Tab2Page implements OnInit {
   capId = '1';
 
   //Capsules
-  capsules: any;
+  capsules = [];
 
   //Day Segments
+  excludeSundays = false;
   days = [];
   daysRange: number = 30;
 
@@ -118,8 +122,9 @@ export class Tab2Page implements OnInit {
   timeslots = [];
   segmentWidth: number = 100;
 
+  MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
-  PRICE_PER_SLOT = 2;
+  PRICE_PER_SLOT = 3;
   bookedArray_Up = [];
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
@@ -144,9 +149,9 @@ export class Tab2Page implements OnInit {
 
   minDate = new Date();
   maxDate = new Date();
+  datePickerFilter: any;
 
   ngOnInit() {
-
 
     // Set current date
     let currentDate = new Date();
@@ -178,8 +183,30 @@ export class Tab2Page implements OnInit {
         date: formattedDate,
         value: i.toString()
       }
-      this.days.push(day);
+      if (this.excludeSundays == true) {
+        if (day.dateRAW.getDay() != 0) {
+          this.days.push(day);
+        }
+      } else {
+        this.days.push(day);
+      }
     }
+
+
+    if (this.excludeSundays == true) {
+      // for (let i = 0; i < this.days.length; i++) {
+      //   if(this.days[i].dateRAW.getDay() == 0) {
+      //     this.days.splice(i, 1);
+      //   }
+      // }
+
+      this.datePickerFilter = (d: Date): boolean => {
+        const day = d.getDay();
+        // Prevent Saturday and Sunday from being selected.
+        return day !== 0;
+      }
+    }
+
 
     // set first segment of days-segment as checked
     this.segment.value = '0';
@@ -208,10 +235,16 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
+    // get User.Bookings from server
+    this.getUserBookings();
+
 
 
     this.platform.backButton.subscribe(() => {
-      if (this.cardTSS_state == 'top') {
+      if (this.picker.opened == true) {
+        this.picker.close();
+      }
+      else if (this.cardTSS_state == 'top') {
         this.animateTSS_Click();
       }
     });
@@ -219,7 +252,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     // this.storage.get('futureBookings').then(bookings => {
     //   try {
     //     this.futureBookings = bookings;
@@ -229,20 +262,63 @@ export class Tab2Page implements OnInit {
 
     // });
 
+    this.storage.get('dark').then(dark => {
+      if (typeof dark == 'boolean') {
+        if (dark) {
+          this.mapStyle = this.mapDarkStyle;
+        } else {
+          this.mapStyle = [];
+        }
+      }
+    });
+
 
     this.apiService.getCapsules().subscribe(data => {
-      this.capsules = data;
+      this.storage.get('capsules').then(savedCaps => {
+        //console.log('saved', savedCaps);
+        if (isEqual(data, savedCaps)) {
+          console.log('caps from cache');
 
-      //Open marker-popup for first marker
-      this.capsules[0].isOpen = true;
+          if (this.capsules.length == 0) {
+            this.capsules = savedCaps;
 
-      
+            for (let cap in savedCaps) {
+              //console.log(data[cap]);
+              this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, savedCaps[cap].Latitude, savedCaps[cap].Longitude);
+
+              //this.capsules.push(data[cap]);
+            }
+            this.capsules.sort(this.compare_Distance);
+    this.getUserBookings();
+
+          }
+        } else {
+          console.log('caps from server');
+
+          this.storage.set('capsules', data).then(data => {
+            this.capsules = [];
+            for (let cap in data) {
+              //console.log(data[cap]);
+              data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
+
+              this.capsules.push(data[cap]);
+            }
+            this.capsules.sort(this.compare_Distance);
+            this.getUserBookings();
+
+            //Open marker-popup for first marker
+            this.capsules[0].isOpen = true;
+          });
+
+        }
+      });
 
     });
 
 
+
+
     // get User.Bookings from server
-    this.getUserBookings();
 
 
 
@@ -255,12 +331,21 @@ export class Tab2Page implements OnInit {
         console.log('Result getting location in Component', data);
         this.latMapCenter = data.coords.latitude;
         this.lngMapCenter = data.coords.longitude;
+
+        for (let cap in this.capsules) {
+          this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+        }
+        this.capsules.sort(this.compare_Distance);
       });
     }
 
 
-     TODO: this.setDatePickerFormat();
+
+    // set date picker format depending on language
+    this.setDatePickerFormat();
   }
+
+
 
 
 
@@ -271,7 +356,7 @@ export class Tab2Page implements OnInit {
   }
 
   onBoundsChanged(event?) {
-    console.log(event);
+    //console.log(event);
   }
 
   cardClicked(i) {
@@ -318,7 +403,7 @@ export class Tab2Page implements OnInit {
         elem2.setAttribute("style", "visibility: visible");
 
         let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.days.length).toString() + "px");
 
 
         try {
@@ -424,6 +509,7 @@ export class Tab2Page implements OnInit {
     if (item) {
       this.capName = item.Name;
       this.capId = item.id;
+      this.PRICE_PER_SLOT = parseFloat(item.Price);
     }
 
     let elemo = await document.getElementById("root");
@@ -489,6 +575,11 @@ export class Tab2Page implements OnInit {
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
       this.spinBtnPositionPressed = false;
+
+      for (let cap in this.capsules) {
+        this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+      }
+      this.capsules.sort(this.compare_Distance);
     });
   }
 
@@ -546,13 +637,14 @@ export class Tab2Page implements OnInit {
           if (date != null) {
             this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
           }
+
+
           //formattedDateString = '2019-6-7';
 
           //this.findBookings();
 
           // get data from server
           this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
-
             // data from server not formatted properly; using workaround:
             // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
             for (var propertyName in data) {
@@ -608,9 +700,19 @@ export class Tab2Page implements OnInit {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
-            } 
+            }
 
 
+            // blocke all slots when day limit reached
+            if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
+              for (let a = 0; a < this.timeslots.length; a++) {
+                if (this.timeslots[a].state == true) {
+                  this.timeslots[a].state = 'blocked';
+                }
+              }
+            }
+
+            // TODO: only if segment.value 0 is equals date: today; 
             if (this.segment.value == '0') {
               let blckr = document.getElementsByClassName("blocker");
               blckr[0].classList.remove("collapsed");
@@ -703,7 +805,7 @@ export class Tab2Page implements OnInit {
 
       let index = await +this.segment.value;
       if (index === 0) {
-        index = this.daysRange;
+        index = this.days.length;
       }
       this.segment.value = (index - 1).toString();
       this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
@@ -729,7 +831,7 @@ export class Tab2Page implements OnInit {
     if (this.slidingCount > 1) {
 
       let index = await +this.segment.value;
-      if (index === this.daysRange - 1) {
+      if (index === this.days.length - 1) {
         index = -1;
       }
       this.segment.value = (index + 1).toString();
@@ -813,6 +915,7 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
+    console.log(this.userBookingsSlotsArray);
     //console.clear();
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
@@ -963,7 +1066,7 @@ export class Tab2Page implements OnInit {
       //   this.timeslots[this.firstSelected - c_booked_up].state = true;
       // }
 
-      if (this.firstSelected > 1 &&
+      if (this.firstSelected > 1 && this.firstSelected - (c_booked_up + 1) > 0 &&
         this.timeslots[this.firstSelected - c_booked_up].state == 'blocked' &&
         this.timeslots[this.firstSelected - (c_booked_up + 1)].state == 'booked') {
 
@@ -1042,11 +1145,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if ((this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Up.length +
-      this.bookedArray_Between.length) > 5) {
+    if (this.firstSelected - c_booked_up >= 0 &&
+      (this.selectedCount +
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Up.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
         this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
       }
@@ -1064,11 +1168,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if ((this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Down.length +
-      this.bookedArray_Between.length) > 5) {
+    if (this.lastSelected + c_booked_down < this.timeslots.length &&
+      (this.selectedCount +
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Down.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
         this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
       }
@@ -1142,6 +1247,16 @@ export class Tab2Page implements OnInit {
     //   this.bookedArray_Up.length +
     //   this.bookedArray_Down.length +
     //   this.bookedArray_Between.length);
+
+
+    // blocke all slots when day limit reached
+    if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
+      for (let a = 0; a < this.timeslots.length; a++) {
+        if (this.timeslots[a].state == true) {
+          this.timeslots[a].state = 'blocked';
+        }
+      }
+    }
 
 
 
@@ -1224,13 +1339,15 @@ export class Tab2Page implements OnInit {
 
   onSegmentClick(day) {
 
+
     this.tscontent.scrollToTop();
 
     let date = new Date();
     date.setDate(date.getDate() + parseInt(day.value));
 
+
     this.activeDate = date;
-    this.getTimeSlots(date);
+    this.getTimeSlots(day.dateRAW);
   }
 
   proceedToCheckoutClick() {
@@ -1347,7 +1464,9 @@ export class Tab2Page implements OnInit {
 
   // finds own bookings to mark time slots as YOURS
   findOwnBookingsForActiveCapsule() {
-    let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    //let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    let datestring = this.days[this.segment.value].dateRAW.getFullYear().toString() + (this.days[this.segment.value].dateRAW.getMonth() + 1).toString() + this.days[this.segment.value].dateRAW.getDate().toString();
+
     //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
     for (let a = 0; a < this.userBookingsArray.length; a++) {
 
@@ -1363,10 +1482,10 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('userBookingsSlotsArray',this.userBookingsSlotsArray);
+    console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
   }
 
-  
+
 
   // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
   findImpossibles() {
@@ -1377,18 +1496,37 @@ export class Tab2Page implements OnInit {
     let impossibles = [];
     for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
 
-      while ((((this.userBookingsSlotsArray[s]) + 1) == (this.userBookingsSlotsArray[s + 1])) ||
-        (((this.userBookingsSlotsArray[s]) - 1) == (this.userBookingsSlotsArray[s - 1]))) {
+      while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
         console.log('hello: ', this.userBookingsSlotsArray[s]);
-        impossibles.push(this.userBookingsSlotsArray[s]);
+
+        let index = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s])
+        if (index === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s]);
+        }
+
+        let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
+        if (index2 === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s + 1]);
+        }
+
         s++;
       }
-    }
 
-    if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-      this.timeslots[impossibles[0] - 2].state = 'impossible';
-      this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+      if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+        
+        try {
+          this.timeslots[impossibles[0] - 2].state = 'impossible';
+        } catch {
 
+        }
+        try {
+          this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        } catch {
+
+        }
+      }
+
+      impossibles = [];
     }
   }
 
@@ -1398,6 +1536,16 @@ export class Tab2Page implements OnInit {
     if (value1 < value2) {
       return -1; // Der erste Wert ist kleiner als der zweite Wert.
     } else if (value1 > value2) {
+      return 1; // Der erste Wert ist größer als der zweite Wert.
+    } else {
+      return 0; // Beide Werte sind gleich groß.
+    }
+  }
+
+  compare_Distance(value1, value2) {
+    if (value1.calculatedDistance < value2.calculatedDistance) {
+      return -1; // Der erste Wert ist kleiner als der zweite Wert.
+    } else if (value1.calculatedDistance > value2.calculatedDistance) {
       return 1; // Der erste Wert ist größer als der zweite Wert.
     } else {
       return 0; // Beide Werte sind gleich groß.
@@ -1537,11 +1685,10 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  findFutureBookingsForAllCapsules(){
+  findFutureBookingsForAllCapsules() {
 
-    
     this.futureBookings = [];
-    for(let b = 0; b < this.userBookingsArray.length; b++) {
+    for (let b = 0; b < this.userBookingsArray.length; b++) {
 
       let date = new Date(this.userBookingsArray[b].Date);
       let dateToday = new Date();
@@ -1550,7 +1697,7 @@ export class Tab2Page implements OnInit {
         date: new Date(this.userBookingsArray[b].Date).toISOString(),
         startingTime: this.timeService.getEndTime(this.userBookingsArray[b].FirstTimeFrame),
         endingTime: this.timeService.getEndTime(this.userBookingsArray[b].LastTimeFrame),
-        capsuleId:  this.userBookingsArray[b].Capsule_id
+        capsuleId: this.userBookingsArray[b].Capsule_id
       }
 
       // let bookingStartDate = new Date(this.userBookingsArray[b].Date);
@@ -1585,7 +1732,7 @@ export class Tab2Page implements OnInit {
   setBookedLabel() {
     if (this.capsules.length > 0 && this.futureBookings.length > 0) {
 
-      
+
       // Find capsule id in futire bookings and apply booked label to capsule
       for (let book in this.futureBookings) {
         var result = this.capsules.find(obj => {
@@ -1598,17 +1745,16 @@ export class Tab2Page implements OnInit {
   }
 
   crossCapsuleBookingsArray = [];
-  
   setTimeSlotsCrossCapsuleBooking() {
     this.crossCapsuleBookingsArray = [];
-    
+
 
     let date = this.days[this.segment.value].dateRAW;
 
-    
-    for(let b in this.userBookingsArray) {
+    for (let b in this.userBookingsArray) {
       let date2 = new Date(this.userBookingsArray[b].Date);
-      if(date.getDate() == date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+
+      if (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
         //console.log(this.userBookingsArray[b]);
         //console.log(this.userBookingsArray[b].capsule.Name);
 
@@ -1633,8 +1779,8 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log(this.crossCapsuleBookingsArray);
-    
+    console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
+
   }
 
   addBookedCapsuleSlot(item) {
@@ -1643,6 +1789,239 @@ export class Tab2Page implements OnInit {
       this.crossCapsuleBookingsArray.push(item);
     }
   }
+  mapDarkStyle = [
+    {
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#8ec3b9"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1a3646"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.country",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#4b6878"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#64779e"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.province",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#4b6878"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.man_made",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#334e87"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape.natural",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#283d6a"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#6f9ba5"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#3C7680"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#304a7d"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#98a5be"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#2c6675"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": "#255763"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#b0d5ce"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#023e58"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#98a5be"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#1d2c4d"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "geometry.fill",
+      "stylers": [
+        {
+          "color": "#283d6a"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.station",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#3a4762"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#0e1626"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#4e6d70"
+        }
+      ]
+    }
+  ]
 
 
 

@@ -19,7 +19,7 @@ export class TabsPage {
     if (dir != 'none') {
       let options: NativeTransitionOptions = {
         direction: dir,
-        duration: 200,
+        duration: 150,
         slowdownfactor: 1,
         androiddelay: 0,
         fixedPixelsBottom: 56

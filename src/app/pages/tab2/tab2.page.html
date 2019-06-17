@@ -48,7 +48,7 @@
 <ion-content>
   <div id="mapdiv" [@animatemapup]="cardTSS_state">
     <agm-map [latitude]="latMapCenter + 0.0003" [longitude]="lngMapCenter" [zoom]="mapZoomLevel" [zoomControl]="false"
-      [streetViewControl]="false" [fitBounds]="false" (boundsChange)="onBoundsChanged($event)">
+      [streetViewControl]="false" [fitBounds]="false" [styles]="mapStyle" (boundsChange)="onBoundsChanged($event)">
       <agm-marker *ngFor="let item of capsules; let i = index" [latitude]="item.Latitude" [longitude]="item.Longitude"
         [label]="" [iconUrl]="capsuleIcon" (markerClick)="clickedMarker(item.Name, i)">
         <agm-info-window [isOpen]="item.isOpen">
@@ -73,33 +73,37 @@
   <ion-slides #slider id="slider" [options]="slidesConfig" (ionSlideDidChange)="onSlideChanged()">
     <ion-slide *ngFor="let item of capsules; let i = index">
       <ion-card id="slideCard" class="slideCards" mode="ios" *ngIf="item" (click)="cardClicked(i)">
-          <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
+          <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel_new.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
-            <h4>
+              <h4>
               {{ item.Name }}
             </h4>
           </ion-card-title>
           <ion-card-subtitle>
-            <h6>
-              {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} {{ 'METER' | translate }}
+              <span class="cap-attribute-title">Distance</span>
+              <h6 class="cap-attribute">
+              <!-- {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} {{ 'METER' | translate }}
+              {{ item.calculatedDistance }} {{ 'METER' | translate }}
 
             </h6>
           </ion-card-subtitle>
-          <ion-card-subtitle>
-            <h6>
-              {{ 'CAPSULE_TEXT' | translate }}
+          <ion-card-subtitle >
+            <span class="cap-attribute-title">{{ 'CAPSULE_TEXT' | translate }}</span>
+            <h6 class="cap-attribute">
+             {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
+            <h6 class="cap-attribute">
+               , {{ item.FirstFreeDate }}
+               </h6>
           </ion-card-subtitle>
-          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'BOOK_THIS' | translate }}
-
-          </ion-button>
+          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'BOOK_THIS' | translate }}</ion-button>
       </ion-card>
     </ion-slide>
   </ion-slides>
 </ion-content>
 
 
-<ion-card id="cardTSS_top" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
+<ion-card id="cardTSS_top" mode="ios" [@animatecardtotop]="cardTSS_state" (@animatecardtotop.done)="animatecardtotopDone($event)">
   <ion-card-header>
       <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:0; right:0; z-index:100;" (click)="animateTSS_Click()">
           <ion-icon id="ico_calendar" name="close" ></ion-icon>
@@ -109,8 +113,10 @@
           {{capName}}
       </h4>
     </ion-card-title>
-    <ion-card-subtitle *ngFor="let booking of futureBookings">
-      {{booking.startingTime}} {{booking.endingTime}}
+    <ion-card-subtitle>
+      <!-- <ion-card-subtitle *ngFor="let booking of futureBookings">
+        {{booking.startingTime}} {{booking.endingTime}} -->
+      Select up to 6 time slots to create a booking for this capsule. Price: {{ PRICE_PER_SLOT }} € / 20min
     </ion-card-subtitle>
   </ion-card-header>
   <ion-card-content>
@@ -122,21 +128,21 @@
 
 <ion-content id="root" style="visibility: hidden">
 
-  <ion-card id="headr" mode="md" style="visibility:collapse">
+  <ion-card id="headr" mode="ios" style="visibility:collapse">
     <ion-card-header>
       <h4></h4>
     </ion-card-header>
   </ion-card>
 
-  <ion-card id="listr">
+  <ion-card id="listr" mode="ios">
     <ion-content id="testre" #content scrollX="true" scrollY="false">
-      <ion-segment id="segmt" #segment mode="md" >
+      <ion-segment id="segmt" #segment mode="ios" >
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           {{day.date}}
         </ion-segment-button>
       </ion-segment>
     </ion-content>
-    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
+    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" [matDatepickerFilter]="datePickerFilter" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
       <mat-datepicker #picker></mat-datepicker>
     <ion-button id="btn-calendar" fill="clear" (click)="picker.open()">
       <ion-icon id="ico_calendar" name="calendar"></ion-icon>
@@ -181,12 +187,12 @@
                   <div slot="end">{{ 'SELECTED' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'booked'"
-                  style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
+                  style="--background: rgba(56, 199, 239, 0.2); color: rgb(56, 199, 239);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">{{ 'YOURS' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'crossbooked'"
-                  style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
+                  style="--background: rgba(56, 199, 239, 0.2); color: rgb(56, 199, 239);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">{{ item.capName }}</div>
                 </ion-item>
@@ -265,7 +271,7 @@
     </ion-content>
   </ion-card>
 
-  <ion-card id="footr">
+  <ion-card id="footr" mode="ios">
     <ion-item id="summary" lines="none">
       <div slot="start">{{selectedCount}} {{ 'SLOTS' | translate }}({{selectedCount*20}}min)</div>
       <div slot="end">{{selectedCount * PRICE_PER_SLOT}}.00 €</div>
