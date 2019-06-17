@@ -505,7 +505,7 @@ export class Tab1Page {
       component: CheckoutModalPage,
       componentProps: {
         paymentAmount: this.chosenSlot.count * this.PRICE_PER_SLOT,
-        timeStart: this.timeService.getStartTime(this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)) + 1),
+        timeStart: this.futureBookings[0].LastTimeFrame,
         //timeStart: this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)), // First slot
         timeEnd: this.chosenSlot.slot,
         //timeEnd: this.timeService.getIntSlot(this.chosenSlot.slot),
@@ -526,18 +526,30 @@ export class Tab1Page {
           id: this.futureBookings[0].capsule.id,
           title: 'Paypal payment successful',
           icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-          text: 'At ' + dateTime + ' you booked Capsule ' + this.futureBookings[0].capsule.Name + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
+          text: 'At ' + dateTime + ' you booked Capsule ' + this.futureBookings[0].capsule.Name + ' for ' + this.chosenSlot.count * this.PRICE_PER_SLOT + '€'
         });
         this.apiService.bookCapsule(
             this.futureBookings[0].capsule.id, //Casule Id
             this.futureBookings[0].Date, // Date
-            this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)) + 1, // First slot
+            this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)), // First slot
             this.timeService.getIntSlot(this.chosenSlot.slot) - 1, // Last slot
             'PayPal', // Vendor
             this.chosenSlot.count * this.PRICE_PER_SLOT, // Amount
             true, // Verified
             this.paymentID // Paypal Payment id
         ).subscribe(data => {
+          this.apiService.getUser()
+                  .pipe(first())
+                  .subscribe(
+                    user => {
+                      console.log(user.bookings);
+                      this.user = user;
+                      this.saveToStorage('user', user);
+                      this.getFutureBookings();
+                    },
+                    error => {
+                      console.log(error);
+                    });
           console.log(data)
         })
       }
