@@ -293,14 +293,14 @@ export class Tab1Page {
       let timeArray = sortedBookings[0].FirstTimeFrame.split(':');
       let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
       this.countDownTime = date.getTime() / 1000;
-      console.log(date, this.countDownTime);
+      //console.log(date, this.countDownTime);
       let nowTimeStamp = this.today.getTime() / 1000;
       this.farFuture = this.countDownTime - nowTimeStamp > 86400;
 
       let endTimeArray = sortedBookings[0].LastTimeFrame.split(':');
       let endDateTime = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], endTimeArray[0], endTimeArray[1]);
       this.endCountDownTime = endDateTime.getTime() / 1000;
-      console.log(endDateTime, this.endCountDownTime);
+      //console.log(endDateTime, this.endCountDownTime);
 
     }
 
@@ -402,32 +402,6 @@ export class Tab1Page {
     return await modal.present();
   }
 
-  extendBooking() {
-    this.extendSlots++;
-    //this.presentCheckOutModal();
-  }
-
-  checkFreeSlots() {
-    this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data => {
-      if (data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')]) {
-
-        var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
-        var i = 0;
-        this.freeSlots = [];
-        while (data[lastFrame] && i < 5 && this.maxTimeBooked(this.user.bookings) <= 15) {
-
-          this.freeSlots.push(this.timeService.getEndTime(lastFrame));
-
-          lastFrame++;
-          i++;
-        }
-        console.log(this.freeSlots);
-      } else {
-        this.toast('Next slot already taken');
-      }
-    });
-  }
-
   maxTimeBooked(bookings: booking[]) {
     this.todayBookings = [];
     this.todayActiveBookings = [];
@@ -506,9 +480,7 @@ export class Tab1Page {
       componentProps: {
         paymentAmount: this.chosenSlot.count * this.PRICE_PER_SLOT,
         timeStart: this.futureBookings[0].LastTimeFrame,
-        //timeStart: this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)), // First slot
         timeEnd: this.chosenSlot.slot,
-        //timeEnd: this.timeService.getIntSlot(this.chosenSlot.slot),
         date: this.futureBookings[0].Date,
         capsule: this.futureBookings[0].capsule.Name
       },
@@ -522,14 +494,17 @@ export class Tab1Page {
         let today = new Date();
         let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' +
             today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+
         this.localNotifications.schedule({
           id: this.futureBookings[0].capsule.id,
           title: 'Paypal payment successful',
           icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-          text: 'At ' + dateTime + ' you booked Capsule ' + this.futureBookings[0].capsule.Name + ' for ' + this.chosenSlot.count * this.PRICE_PER_SLOT + '€'
+          text: 'At ' + dateTime + ' you booked Capsule ' + this.futureBookings[0].capsule.Name +
+              ' for ' + this.chosenSlot.count * this.PRICE_PER_SLOT + '€'
         });
+
         this.apiService.bookCapsule(
-            this.futureBookings[0].capsule.id, //Casule Id
+            this.futureBookings[0].capsule.id, //Capsule Id
             this.futureBookings[0].Date, // Date
             this.timeService.getIntSlot(String(this.futureBookings[0].LastTimeFrame)), // First slot
             this.timeService.getIntSlot(this.chosenSlot.slot) - 1, // Last slot
@@ -538,14 +513,16 @@ export class Tab1Page {
             true, // Verified
             this.paymentID // Paypal Payment id
         ).subscribe(data => {
+
           this.apiService.getUser()
                   .pipe(first())
                   .subscribe(
                     user => {
-                      console.log(user.bookings);
+                      //console.log(user.bookings);
                       this.user = user;
                       this.saveToStorage('user', user);
                       this.getFutureBookings();
+                      this.viewActiveCapsule();
                     },
                     error => {
                       console.log(error);
