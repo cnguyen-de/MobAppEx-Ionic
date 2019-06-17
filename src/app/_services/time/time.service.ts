@@ -49,7 +49,7 @@ export class TimeService {
     return this.slots[int + 1];
   }
 
-  getIntSlot(time: string) {
-    return Object.keys(this.slots).find(key => this.slots[key] === time);
+  getIntSlot(time: string): number {
+    return parseInt(Object.keys(this.slots).find(key => this.slots[key] === time));
   }
 }
