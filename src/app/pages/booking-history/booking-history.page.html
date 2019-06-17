@@ -8,18 +8,17 @@
 </ion-header>
 
   <input style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;" 
-    matInput [matDatepicker]="picker" placeholder="Input & change events" (dateChange)="addEvent('change', $event)">
+    matInput [matDatepicker]="picker" placeholder="Input & change events" (dateChange)="addEvent($event)">
   <mat-datepicker touchUi #picker></mat-datepicker>
 
   <div class="button" *ngIf="!isFiltered; else clearButton">
-    <ion-button size="small" expand="block" shape="round" style="margin: 10px 10px 5px 10px" (click)="picker.open()">{{ 'SEARCH_BY_DATE' | translate }}</ion-button>
+    <ion-button size="default" expand="block" shape="round" style="margin: 10px 10px 5px 10px" (click)="picker.open()">filter by date</ion-button>
   </div>
   <ng-template #clearButton>
     <div class="button">
-      <ion-button size="small" expand="block" shape="round" style="margin: 10px 60px 5px 10px" (click)="picker.open()">{{ 'SEARCH_BY_DATE' | translate }}</ion-button>
-      <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:58px; right:10px; z-index:100;" (click)="clearFilter()">
-        <ion-icon id="ico_calendar" name="trash" ></ion-icon>
-      </ion-button>
+      <ion-button size="default" expand="block" shape="round" style="margin: 10px 60px 5px 10px" (click)="picker.open()">filter by date</ion-button>
+      <ion-icon id="ico_calendar" name="close" size="large"
+                  style="position: absolute; top:70px; right:10px; z-index:100;" (click)="clearFilter()"></ion-icon>
     </div>
   </ng-template>
 
