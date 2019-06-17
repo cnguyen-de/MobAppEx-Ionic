@@ -181,16 +181,22 @@ export class Tab2Page implements OnInit {
         date: formattedDate,
         value: i.toString()
       }
-      this.days.push(day);
+      if(this.excludeSundays == true) {
+        if(day.dateRAW.getDay() != 0) {
+        this.days.push(day);          
+        }
+      } else {
+        this.days.push(day);
+      }
     }
 
     
     if(this.excludeSundays == true) {
-      for (let i = 0; i < this.days.length; i++) {
-        if(this.days[i].dateRAW.getDay() == 0) {
-          this.days.splice(i, 1);
-        }
-      }
+      // for (let i = 0; i < this.days.length; i++) {
+      //   if(this.days[i].dateRAW.getDay() == 0) {
+      //     this.days.splice(i, 1);
+      //   }
+      // }
 
       this.datePickerFilter = (d: Date): boolean => {
         const day = d.getDay();
@@ -328,8 +334,8 @@ export class Tab2Page implements OnInit {
 
 
 
-
-    TODO: this.setDatePickerFormat();
+    // set date picker format depending on language
+    this.setDatePickerFormat();
   }
 
 
@@ -390,7 +396,7 @@ export class Tab2Page implements OnInit {
         elem2.setAttribute("style", "visibility: visible");
 
         let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.days.length).toString() + "px");
 
 
         try {
@@ -451,7 +457,7 @@ export class Tab2Page implements OnInit {
 
     this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 
-    this.timeitems = ((h - 15) * 60) + m;
+    this.timeitems = ((h - 9) * 60) + m;
 
     let percent = 100 / 540 * this.timeitems;
     console.log(this.timeitems);
@@ -689,7 +695,7 @@ export class Tab2Page implements OnInit {
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
             }
 
-
+            // TODO: only if segment.value 0 is equals date: today; 
             if (this.segment.value == '0') {
               let blckr = document.getElementsByClassName("blocker");
               blckr[0].classList.remove("collapsed");
@@ -782,7 +788,7 @@ export class Tab2Page implements OnInit {
 
       let index = await +this.segment.value;
       if (index === 0) {
-        index = this.daysRange;
+        index = this.days.length;
       }
       this.segment.value = (index - 1).toString();
       this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
@@ -808,7 +814,7 @@ export class Tab2Page implements OnInit {
     if (this.slidingCount > 1) {
 
       let index = await +this.segment.value;
-      if (index === this.daysRange - 1) {
+      if (index === this.days.length - 1) {
         index = -1;
       }
       this.segment.value = (index + 1).toString();
