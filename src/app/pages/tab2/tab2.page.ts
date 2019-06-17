@@ -8,7 +8,6 @@ import { TimeService } from '../../_services/time/time.service';
 import { AgmMap, AgmCoreModule } from '@agm/core';
 import { LightModalPage } from '../../modals/light-modal/light-modal.page';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
-import {TranslateService} from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 
@@ -67,7 +66,6 @@ export class Tab2Page implements OnInit {
     public timeService: TimeService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private translateService: TranslateService,
     private storage: Storage,
     private localNotifications: LocalNotifications,
     private _adapter: DateAdapter<any>) { }
@@ -174,9 +172,9 @@ export class Tab2Page implements OnInit {
       }).format(date);
 
       if (i == 0) {
-        formattedDate = this.translateService.instant('TODAY');
+        formattedDate = 'Today';
       } else if (i == 1) {
-        formattedDate = this.translateService.instant('TOMORROW');
+        formattedDate = 'Tomorrow';
       }
       let day = {
         dateRAW: date,
@@ -1410,7 +1408,7 @@ export class Tab2Page implements OnInit {
                   });
 
 
-              this.toast(this.translateService.instant('BOOKED') + this.capName);
+              this.toast("booked: " + this.capName);
               console.log(data);
             }
 
@@ -1791,6 +1789,10 @@ export class Tab2Page implements OnInit {
       this.crossCapsuleBookingsArray.push(item);
     }
   }
+
+
+
+
   mapDarkStyle = [
     {
       "elementType": "geometry",
