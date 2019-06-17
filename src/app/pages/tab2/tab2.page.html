@@ -81,15 +81,17 @@
           </ion-card-title>
           <ion-card-subtitle>
             <h6>
-              {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} meters
+              {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} {{ 'METER' | translate }}
+
             </h6>
           </ion-card-subtitle>
           <ion-card-subtitle>
             <h6>
-              next slot bla
+              {{ 'CAPSULE_TEXT' | translate }}
             </h6>
           </ion-card-subtitle>
-          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one
+          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'BOOK_THIS' | translate }}
+
           </ion-button>
       </ion-card>
     </ion-slide>
@@ -166,22 +168,22 @@
               <div *ngFor="let item of timeslots; let i = index" >
                 <ion-item class="tsitem" button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">FREE</div>
+                  <div slot="end">{{ 'FREE' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == false"
                   style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">TAKEN</div>
+                  <div slot="end">{{ 'TAKEN' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'selected'"
                   style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">SELECTED</div>
+                  <div slot="end">{{ 'SELECTED' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'booked'"
                   style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">YOURS</div>
+                  <div slot="end">{{ 'YOURS' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'crossbooked'"
                   style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
@@ -191,12 +193,12 @@
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'blocked'"
                   style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180); opacity: .5;">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">FREE</div>
+                  <div slot="end">{{ 'FREE' | translate }}</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'impossible'"
                 style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180); opacity: .5;">
                 <div slot="start">{{ item.content }}</div>
-                <div slot="end">FREE</div>
+                <div slot="end">{{ 'FREE' | translate }}</div>
               </ion-item>
                 <!-- <ion-item class="tsitem" button="true" *ngIf="item.state == 'blocked'"
                   style="opacity: .25;">
@@ -206,7 +208,7 @@
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'inprogress'"
                   style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
                   <div slot="start">{{ item.content }}</div>
-                  <div slot="end">IN SELECTION...</div>
+                  <div slot="end">{{ 'IN_SELECTION' | translate }}</div>
                 </ion-item>
               </div>
             </ion-list>
@@ -228,32 +230,32 @@
                 <div *ngFor="let item of timeslots; let i = index">
                   <ion-item button="true" *ngIf="item.state == true" (click)="onTimeSlotClick(i)">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">FREE</div>
+                    <div slot="end">{{ 'FREE' | translate }}</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == false"
                     style="--background: rgba(255, 0, 0, 0.2); color: rgb(224, 0, 0);">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">TAKEN</div>
+                    <div slot="end">{{ 'TAKEN' | translate }}</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'selected'"
                     style="--background: rgba(0, 206, 0, 0.2); color: rgb(0, 170, 0);"  (click)="onTimeSlotClick(i)">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">SELECTED</div>
+                    <div slot="end">{{ 'SELECTED' | translate }}</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'booked'"
                     style="--background: rgba(0, 217, 255, 0.2); color: rgb(0, 161, 201);">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">YOURS</div>
+                    <div slot="end">{{ 'YOURS' | translate }}</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'blocked'"
                     style="--background: rgba(190, 190, 190, 0.2); color: rgb(180, 180, 180);">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">FREE</div>
+                    <div slot="end">{{ 'FREE' | translate }}</div>
                   </ion-item>
                   <ion-item button="true" *ngIf="item.state == 'inprogress'"
                     style="--background: rgba(255, 123, 0, 0.2); color: rgb(255, 123, 0);">
                     <div slot="start">{{ item.content }}</div>
-                    <div slot="end">IN SELECTION...</div>
+                    <div slot="end">{{ 'IN_SELECTION' | translate }}</div>
                   </ion-item>
                 </div>
               </ion-list>
@@ -265,11 +267,11 @@
 
   <ion-card id="footr">
     <ion-item id="summary" lines="none">
-      <div slot="start">{{selectedCount}} slots ({{selectedCount*20}}min)</div>
+      <div slot="start">{{selectedCount}} {{ 'SLOTS' | translate }}({{selectedCount*20}}min)</div>
       <div slot="end">{{selectedCount * PRICE_PER_SLOT}}.00 €</div>
     </ion-item>
     <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding (click)="proceedToCheckoutClick()" [disabled]="!canProceedCheckout()">
-      Proceed To Checkout
+      {{ 'CHECKOUT' | translate }}
     </ion-button>
   </ion-card>
 </ion-content>

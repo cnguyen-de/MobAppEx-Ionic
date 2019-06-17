@@ -115,10 +115,12 @@ export class LoginPage implements OnInit {
       if (this.language == languages[i]) {
         if (i < this.language.length - 1) {
           this.language = languages[i + 1];
+          this.translateService.use(this.language);
           this.saveToStorage('language', this.language);
           break;
         } else if (i == this.language.length - 1) {
           this.language = languages[0];
+          this.translateService.use(this.language);
           this.saveToStorage('language', this.language);
           break;
         }

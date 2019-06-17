@@ -2,7 +2,7 @@
   <div>
     <ion-list>
       <ion-list-header mode="ios">
-        <ion-label>Notification Preference</ion-label>
+        <ion-label>{{ 'NOTIFICATION_PREF' | translate }}</ion-label>
       </ion-list-header>
 
       <ion-item lines="none">
@@ -22,7 +22,7 @@
       </ion-item>
       <div class="container">
         <ion-button (click)="confirm()" class="confirm-button" shape="round">
-          <ion-text *ngIf="!buttonPressed">Confirm</ion-text>
+          <ion-text *ngIf="!buttonPressed">{{ 'CONFIRM' | translate }}</ion-text>
           <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
         </ion-button>
       </div>
