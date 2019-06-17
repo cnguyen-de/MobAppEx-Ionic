@@ -335,8 +335,13 @@ export class Tab1Page {
   }
 
   viewActiveCapsule() {
+    //console.log(date, this.countDownTime);
+    let nowTimeStamp = this.today.getTime() / 1000;
+    let isActive = nowTimeStamp - this.countDownTime >= 0;
+    console.log(isActive);
+
     this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
-    setTimeout(() => this.viewActive = !this.viewActive, 200);
+    setTimeout(() => this.viewActive = !this.viewActive, 100);
   }
 
   doRefresh($event) {
