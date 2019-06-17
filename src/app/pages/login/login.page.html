@@ -24,19 +24,19 @@
           <ion-list>
             <ion-item lines="none">
               <ion-icon name="contact" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="text" formControlName="username"></ion-input>
+              <ion-input class="login-input" type="text" formControlName="username"placeholder="{{ 'USERNAME' | translate }}"></ion-input>
             </ion-item>
 
             <ion-item lines="none">
               <ion-icon name="md-key" class="login-icon"></ion-icon>
               <ion-input class="login-input" type="password" clearOnEdit="false"
-                         formControlName="password" (keyup.enter)="onSubmit()"></ion-input>
+                         formControlName="password"placeholder="{{ 'PASSWORD' | translate }}" (keyup.enter)="onSubmit()"></ion-input>
             </ion-item>
           </ion-list>
 
           <ion-button strong expand="block" color="primary" shape="round" mode="ios"
                       class="login-button ion-padding-horizontal" (click)="onSubmit()" [disabled]="!loginForm.valid">
-            <ion-text *ngIf="!loginPressed">Log in</ion-text>
+            <ion-text *ngIf="!loginPressed">{{ 'LOG_IN' | translate }}</ion-text>
             <ion-spinner name="crescent" *ngIf="loginPressed"></ion-spinner>
           </ion-button>
         </form>
@@ -48,13 +48,13 @@
         <ion-row>
           <ion-col>
             <ion-text color="primary" (click)="transitionTo('/recovery')">
-              Forgot password?
+              <ion-label>{{ 'FORGOT_PASSWORD' | translate }}</ion-label>
             </ion-text>
           </ion-col>
           .
           <ion-col>
             <ion-text color="primary" (click)="transitionTo('/registration')">
-              Sign up for Snooze
+              <ion-label>{{ 'REGISTER' | translate }}</ion-label>
             </ion-text>
           </ion-col>
         </ion-row>

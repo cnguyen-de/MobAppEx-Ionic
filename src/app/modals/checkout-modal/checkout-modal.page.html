@@ -1,7 +1,7 @@
 <ion-content>
     <ion-list-header>
         <h5>
-            BOOKING INFORMATION
+            {{ 'CHECKOUT_PAGE_HEADER' | translate }}
         </h5>
     </ion-list-header>
 
@@ -9,7 +9,7 @@
         <ion-label class="label" slot="start">
             {{capsule}}
             <p>{{date}}</p>
-            <p>{{timeStart}} to {{timeEnd}}</p>
+            <p>{{timeStart}} {{ 'CHECKOUT_TO' | translate }}{{timeEnd}}</p>
         </ion-label>
         <ion-label slot="end">
             {{paymentAmount}} {{currencyIcon}}
