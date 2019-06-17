@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ 'BOOKING_HISTORY' | translate }}</ion-title>
+    <ion-title>Booking History</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,11 +12,11 @@
   <mat-datepicker touchUi #picker></mat-datepicker>
 
   <div class="button" *ngIf="!isFiltered; else clearButton">
-    <ion-button size="small" expand="block" shape="round" style="margin: 10px 10px 5px 10px" (click)="picker.open()">{{ 'SEARCH_BY_DATE' | translate }}</ion-button>
+    <ion-button size="small" expand="block" shape="round" style="margin: 10px 10px 5px 10px" (click)="picker.open()">search by date</ion-button>
   </div>
   <ng-template #clearButton>
     <div class="button">
-      <ion-button size="small" expand="block" shape="round" style="margin: 10px 60px 5px 10px" (click)="picker.open()">{{ 'SEARCH_BY_DATE' | translate }}</ion-button>
+      <ion-button size="small" expand="block" shape="round" style="margin: 10px 60px 5px 10px" (click)="picker.open()">search by date</ion-button>
       <ion-button id="btn-calendar" fill="clear" style="position: absolute; top:58px; right:10px; z-index:100;" (click)="clearFilter()">
         <ion-icon id="ico_calendar" name="trash" ></ion-icon>
       </ion-button>
@@ -30,7 +30,7 @@
       <mat-expansion-panel  *ngFor="let booking of bookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{ 'DATE' | translate }}: {{booking.Date | date : "dd.MM.y"}} 
+            Date: {{booking.Date | date : "dd.MM.y"}} 
           </mat-panel-title>
           <mat-panel-description>
               {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}
@@ -38,10 +38,10 @@
           <mat-panel-description>
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <p>{{ 'CAPSULE_NAME' | translate }}: {{booking.capsule.Name}}</p>
-        <p>{{ 'AMOUNT' | translate }}: {{booking.Amount}} €</p>
-        <p>{{ 'PAYED_DATE' | translate }}: {{booking.PayedDate | date : "dd.MM.y"}}</p>
-        <p>{{ 'TIME' | translate }}: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
+        <p>Capsule Name: {{booking.capsule.Name}}</p>
+        <p>Amount: {{booking.Amount}} €</p>
+        <p>PayedDate: {{booking.PayedDate | date : "dd.MM.y"}}</p>
+        <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
       </mat-expansion-panel>
     </div>
   </mat-accordion>
@@ -51,7 +51,7 @@
         <mat-expansion-panel style="margin: 10px 10px 10px 10px; "  *ngFor="let booking of filteredBookings" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                {{ 'DATE' | translate }}: {{booking.Date | date : "dd.MM.y"}} 
+                Date: {{booking.Date | date : "dd.MM.y"}} 
               </mat-panel-title>
               <mat-panel-description>
                   {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}
@@ -59,10 +59,10 @@
               <mat-panel-description>
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <p>{{ 'CAPSULE_NAME' | translate }}: {{booking.capsule.Name}}</p>
-            <p>{{ 'AMOUNT' | translate }}: {{booking.Amount}} €</p>
-            <p>{{ 'PAYED_DATE' | translate }}: {{booking.PayedDate | date : "dd.MM.y"}}</p>
-            <p>{{ 'TIME' | translate }}: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
+            <p>Capsule Name: {{booking.capsule.Name}}</p>
+            <p>Amount: {{booking.Amount}} €</p>
+            <p>PayedDate: {{booking.PayedDate | date : "dd.MM.y"}}</p>
+            <p>Time: {{booking.FirstTimeFrame}} - {{booking.LastTimeFrame}}</p>
           </mat-expansion-panel>
     </ng-template>
 

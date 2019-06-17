@@ -108,18 +108,18 @@ export class Tab3Page {
     const alert = await this.alertController.create({
       mode: 'md',
       cssClass: 'alert-dialog',
-      header: this.translateService.instant('LOG_OUT_PAGE_HEADER'),
-      message: this.translateService.instant('LOG_OUT_PAGE_TEXT'),
+      header: 'Are you sure?',
+      message: 'Your preferences are saved, you will need to log in again to use the app',
       buttons: [
         {
-          text: this.translateService.instant('CANCEL'),
+          text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
 
           }
         }, {
-          text: this.translateService.instant('LOG_OUT'),
+          text: 'Log out',
           handler: () => {
             this.apiService.logOut()
                 .pipe(first())
@@ -155,7 +155,10 @@ export class Tab3Page {
       if (typeof value.data == 'string') {
         this.translateService.use(value.data);
         this.saveToStorage('language', value.data);
-        this.toast(this.translateService.instant('LANGUAGE_SET'));
+        switch (value.data) {
+          case 'en': this.toast("Language set to English!"); break;
+          case 'de': this.toast("Sprache als Deutsch gesetzt!"); break;
+        }
       }
     });
 
@@ -186,7 +189,7 @@ export class Tab3Page {
       if (typeof value.data != 'undefined') {
         this.notificationTime = value.data;
         this.saveToStorage('notificationPref', this.notificationTime).then(() => {
-          this.toast(this.translateService.instant('NOTIFICATION_PREF_SAVED'));
+          this.toast("Notification preference saved");
         });
       }
     });
@@ -212,7 +215,7 @@ export class Tab3Page {
         this.volumePref = value.data.VolumenLevel;
         this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
-          this.toast(this.translateService.instant('VOLUME_PREF_SAVED') + this.volumePref);
+          this.toast("Volume preference set to: " + this.volumePref)
         });
       }
     });
@@ -238,7 +241,7 @@ export class Tab3Page {
         this.lightPref = value.data.LightLevel;
         this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
-          this.toast(this.translateService.instant('LIGHT_PREF_SAVED') + this.lightPref);
+          this.toast("Light preference set to: " + this.lightPref)
         })
       }
     });
@@ -247,7 +250,7 @@ export class Tab3Page {
   }
 
   showContact() {
-    this.toast(this.translateService.instant('ASK_CONTACT'));
+    this.toast("Ask Snooze Team 😊")
   }
 
   transitionTo(path, direction) {
