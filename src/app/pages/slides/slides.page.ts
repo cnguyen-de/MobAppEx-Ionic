@@ -26,7 +26,7 @@ export class SlidesPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.statusBar.backgroundColorByHexString("#09ABF5");
+    this.statusBar.backgroundColorByHexString("#38c7ef");
   }
 
   ionViewWillLeave() {
