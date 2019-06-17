@@ -73,7 +73,7 @@
   <ion-slides #slider id="slider" [options]="slidesConfig" (ionSlideDidChange)="onSlideChanged()">
     <ion-slide *ngFor="let item of capsules; let i = index">
       <ion-card id="slideCard" class="slideCards" mode="ios" *ngIf="item" (click)="cardClicked(i)">
-          <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
+          <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel_new.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
               <h4>
               {{ item.Name }}
@@ -187,12 +187,12 @@
                   <div slot="end">SELECTED</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'booked'"
-                  style="--background: rgba(9, 171, 245, 0.2); color: rgb(9, 171, 245);">
+                  style="--background: rgba(56, 199, 239, 0.2); color: rgb(56, 199, 239);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">YOURS</div>
                 </ion-item>
                 <ion-item class="tsitem" button="true" *ngIf="item.state == 'crossbooked'"
-                  style="--background: rgba(9, 171, 245, 0.2); color: rgb(9, 171, 245);">
+                  style="--background: rgba(56, 199, 239, 0.2); color: rgb(56, 199, 239);">
                   <div slot="start">{{ item.content }}</div>
                   <div slot="end">{{ item.capName }}</div>
                 </ion-item>
