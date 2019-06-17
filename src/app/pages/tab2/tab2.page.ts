@@ -572,12 +572,14 @@ export class Tab2Page implements OnInit {
       console.log('Result getting location in Component', data);
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
-      this.spinBtnPositionPressed = false;
 
       for (let cap in this.capsules) {
         this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
       }
       this.capsules.sort(this.compare_Distance);
+    }).catch((error) => {
+      console.log('Error getting location', error);
+      this.spinBtnPositionPressed = false;
     });
   }
 
