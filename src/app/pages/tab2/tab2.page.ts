@@ -233,6 +233,9 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
+    // get User.Bookings from server
+    this.getUserBookings();
+
 
 
     this.platform.backButton.subscribe(() => {
@@ -284,6 +287,8 @@ export class Tab2Page implements OnInit {
               //this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
+    this.getUserBookings();
+
           }
         } else {
           console.log('caps from server');
@@ -297,6 +302,7 @@ export class Tab2Page implements OnInit {
               this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
+            this.getUserBookings();
 
             //Open marker-popup for first marker
             this.capsules[0].isOpen = true;
@@ -311,7 +317,6 @@ export class Tab2Page implements OnInit {
 
 
     // get User.Bookings from server
-    this.getUserBookings();
 
 
 
