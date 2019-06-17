@@ -78,6 +78,10 @@
     min-height: 23% !important;
     top: 80% !important;
   }
+  .extend-capsule-modal .modal-wrapper {
+    min-height: 40% !important;
+    top: 60% !important;;
+  }
 }
 
 //Big phones
@@ -95,6 +99,10 @@
   .language-chooser-modal .modal-wrapper {
     min-height: 23% !important;
     top: 78% !important;
+  }
+  .extend-capsule-modal .modal-wrapper {
+    min-height: 40% !important;
+    top: 58% !important;;
   }
 }
 
@@ -126,7 +134,7 @@
 }
 .extend-capsule-modal .modal-wrapper {
   min-height: 50%;
-  top: 50%;
+  top: 45%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;

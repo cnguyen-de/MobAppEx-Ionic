@@ -151,9 +151,10 @@
     <ion-card-content class="capsule-control-main">
 
       <ion-text>PIN</ion-text>
-      <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none" class="item-pin" class="controller">
+      <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none"
+                class="item-pin" class="controller ion-padding-start">
         <ion-icon name="ios-log-in" class="pin"></ion-icon>
-        <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
+        <ion-label color="primary" style="margin-bottom: 3px;"><h1> {{booking.Pin}}</h1></ion-label>
       </ion-item>
 
       <ion-text>Light</ion-text>
@@ -179,36 +180,10 @@
         </ion-range>
       </ion-item>
 
-      <ion-button class="ion-padding-vertical" expand="block" shape="round" padding (click)="pickSlots()" style="padding-top: 10vh;" mode="ios">
+      <ion-button class="extend-button ion-padding-vertical" expand="block" shape="round"
+                  (click)="pickSlots()" mode="ios">
         Extend Session
       </ion-button>
-<!--
-
-      <mat-accordion>
-        <mat-expansion-panel (opened)="checkFreeSlots()">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Extend your time
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <ion-item>
-            <ion-label>Extend slots until</ion-label>
-            <ion-select mode="ios" interface="popover" placeholder="Select One" [(ngModel)]="extendSlots">
-              <div *ngFor="let slots of freeSlots; let i = index">
-                <ion-select-option value="{{i}}">{{slots}}</ion-select-option>
-              </div>
-            </ion-select>
-          </ion-item>
-
-          <ion-button id="btn_checkout" size="small" expand="block" shape="round" padding
-                      (click)="extendBooking()">
-            Extend Session
-          </ion-button>
-
-        </mat-expansion-panel>
-      </mat-accordion>
--->
 
     </ion-card-content>
   </ion-card>
