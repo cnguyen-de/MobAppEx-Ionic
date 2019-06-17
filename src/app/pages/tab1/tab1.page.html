@@ -151,13 +151,13 @@
     <ion-card-content class="capsule-control-main">
 
       <ion-text>PIN</ion-text>
-      <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none" class="item-pin">
+      <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none" class="item-pin" class="controller">
         <ion-icon name="ios-log-in" class="pin"></ion-icon>
         <ion-label color="primary"><h1> {{booking.Pin}}</h1></ion-label>
       </ion-item>
 
       <ion-text>Light</ion-text>
-      <ion-item lines="none">
+      <ion-item lines="none" class="controller">
         <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500"
                    [(ngModel)]="lightSlider">
           <ion-icon size="small" slot="start" name="sunny"></ion-icon>
@@ -166,7 +166,7 @@
       </ion-item>
 
       <ion-text>Volume</ion-text>
-      <ion-item lines="none">
+      <ion-item lines="none" class="controller">
         <ion-range min="0" max="100" pin="true" mode="ios" (ionChange)="sliderChange()" debounce="500"
                    [(ngModel)]="volumeSlider">
           <ion-icon size="small" slot="start" name="volume-off" *ngIf="volumeSlider==0"></ion-icon>
