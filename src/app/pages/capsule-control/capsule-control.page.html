@@ -1,0 +1,33 @@
+<ion-header translucent="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>Capsule Control</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+
+  <ion-text>Light</ion-text>
+  <ion-item lines="none">
+    <ion-range disabled="{{isLightInactive}}" min="0" max="100" pin="true" mode="ios" (ionChange)="onChangeLight()" debounce="500"  [(ngModel)]="lightSlider">
+      <ion-icon size="small" slot="start" name="sunny"></ion-icon>
+      <ion-icon slot="end" name="sunny"></ion-icon>
+    </ion-range>
+  </ion-item>
+
+  <ion-text>Volume</ion-text>
+  <ion-item lines="none">
+    <ion-range disabled="{{isVolumeInactive}}" min="0" max="100" pin="true" mode="ios" (ionChange)="onChangeVolume()" debounce="500"  [(ngModel)]="volumeSlider">
+      <ion-icon size="small" slot="start" name="volume-off" *ngIf="volumeSlider==0"></ion-icon>
+      <ion-icon size="small" slot="start" name="volume-mute" *ngIf="volumeSlider!=0 && volumeSlider<30"></ion-icon>
+      <ion-icon size="small" slot="start" name="volume-low" *ngIf="volumeSlider>=30 && volumeSlider<60"></ion-icon>
+      <ion-icon size="small" slot="start" name="volume-high" *ngIf="volumeSlider>=60"></ion-icon>
+      <ion-icon slot="end" name="volume-high"></ion-icon>
+    </ion-range>
+  </ion-item>
+
+  <!-- <ion-button (click)="setPreferences()">Test</ion-button> -->
+
+</ion-content>

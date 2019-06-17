@@ -48,7 +48,7 @@
 <ion-content>
   <div id="mapdiv" [@animatemapup]="cardTSS_state">
     <agm-map [latitude]="latMapCenter + 0.0003" [longitude]="lngMapCenter" [zoom]="mapZoomLevel" [zoomControl]="false"
-      [streetViewControl]="false" [fitBounds]="false" (boundsChange)="onBoundsChanged($event)">
+      [streetViewControl]="false" [fitBounds]="false" [styles]="mapStyle" (boundsChange)="onBoundsChanged($event)">
       <agm-marker *ngFor="let item of capsules; let i = index" [latitude]="item.Latitude" [longitude]="item.Longitude"
         [label]="" [iconUrl]="capsuleIcon" (markerClick)="clickedMarker(item.Name, i)">
         <agm-info-window [isOpen]="item.isOpen">
@@ -75,21 +75,27 @@
       <ion-card id="slideCard" class="slideCards" mode="ios" *ngIf="item" (click)="cardClicked(i)">
           <img *ngIf="item.isBooked" src="../../../assets/images/BookedLabel.png" style="height: 60px; width: 60px; z-index: 100; position: absolute; left: 0; top:0;"/>
           <ion-card-title>
-            <h4>
+              <h4>
               {{ item.Name }}
             </h4>
           </ion-card-title>
           <ion-card-subtitle>
-            <h6>
-              {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} meters
+              <span class="cap-attribute-title">Distance</span>
+              <h6 class="cap-attribute">
+              <!-- {{ getDistance(latMapCenter, lngMapCenter, item.Latitude, item.Longitude) }} meters -->
+              {{ item.calculatedDistance }} meters
             </h6>
           </ion-card-subtitle>
-          <ion-card-subtitle>
-            <h6>
-              next slot bla
+          <ion-card-subtitle >
+            <span class="cap-attribute-title">Next Free</span>
+            <h6 class="cap-attribute">
+             {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
+            <h6 class="cap-attribute">
+               , {{ item.FirstFreeDate }}
+               </h6>
           </ion-card-subtitle>
-          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book this one
+          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">book
           </ion-button>
       </ion-card>
     </ion-slide>
@@ -134,7 +140,7 @@
         </ion-segment-button>
       </ion-segment>
     </ion-content>
-    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
+    <input #matInput [matDatepicker]="picker" [value]="activeDate" [min]="minDate" [max]="maxDate" [matDatepickerFilter]="datePickerFilter" (dateChange)="onDatePickerChanged(matInput.value)" style="visibility: collapse; right:0; position: absolute; z-index: -100; top: 0;">
       <mat-datepicker #picker></mat-datepicker>
     <ion-button id="btn-calendar" fill="clear" (click)="picker.open()">
       <ion-icon id="ico_calendar" name="calendar"></ion-icon>

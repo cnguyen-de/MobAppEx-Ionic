@@ -45,7 +45,7 @@ export class BookingHistoryPage implements OnInit {
     this.picker.close(); 
   }
 
-  addEvent(type: Date, event: MatDatepickerInputEvent<Date>) {
+  addEvent(type: any, event: MatDatepickerInputEvent<Date>) {
     this.isFiltered = true;
     this.filteredBookings = [];
 

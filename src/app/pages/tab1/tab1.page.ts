@@ -6,7 +6,13 @@ import {first} from 'rxjs/operators';
 import {booking} from '../../_services/booking';
 import isEqual from 'lodash.isequal'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
+import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {User} from '../../_services/auth/user';
+import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
+import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import { BookingHistoryPage } from '../booking-history/booking-history.page';
 
 
 @Component({
@@ -22,11 +28,11 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
       })),
       state('final', style({
         //backgroundColor: 'red',
-        width: 'calc(100vw - 24px)',
-        height: 'calc(95vh - 148px)'
+        width: 'calc(100vw)',
+        height: 'calc(100vh - 57px)'
       })),
-      transition('initial=>final', animate('300ms')),
-      transition('final=>initial', animate('300ms'))
+      transition('initial=>final', animate('300ms ease-in')),
+      transition('final=>initial', animate('200ms ease-in'))
     ])
   ]
 })
@@ -42,15 +48,37 @@ export class Tab1Page {
   farFuture: boolean = false;
   viewActive:boolean = false;
   currentState = 'initial';
+  user: any;
+  username: string;
+  email: string;
+  volumeSlider: number = 0;
+  lightSlider: number = 0;
+  isNextSlotAvailable: boolean = false;
+  selectedCount: number;
+  PRICE_PER_SLOT: number = 2;
+  extendSlots: number = 1;
+  freeSlots: string[] = [];
+  days = [];
+  segmentWidth: number = 100;
+  todayBookings: any = [];
+  todayActiveBookings: any = [];
 
-  constructor(private apiService: ApiService, private storage: Storage,
-              private timeService: TimeService, private localNotifications: LocalNotifications){
+  constructor(private apiService: ApiService,
+    private storage: Storage,
+    private nativePageTransitions: NativePageTransitions,
+    private modalController: ModalController,
+    private router: Router, 
+    private timeService: TimeService, 
+    private toastController: ToastController,
+    private localNotifications: LocalNotifications){
   }
 
   ngOnInit() {
+  //this.getUserInfo();
   }
 
   ionViewWillEnter() {
+    this.getUserInfo();
     if (this.futureBookings.length == 0) {
       this.loading = true;
     }
@@ -71,6 +99,22 @@ export class Tab1Page {
       }
     });
   }
+
+    //Navigate to capsule control
+    capsuleControl(){
+      this.transitionTo('/capsule-control', 'left');
+    }
+
+    transitionTo(path, direction) {
+      let options: NativeTransitionOptions = {
+        direction: direction,
+        duration: 200,
+        slowdownfactor: 1,
+        androiddelay: 200,
+      };
+      this.nativePageTransitions.slide(options);
+      this.router.navigateByUrl(path);
+    }
 
   hideCard() {
     this.hide = true;
@@ -275,7 +319,7 @@ export class Tab1Page {
 
   viewActiveCapsule() {
     this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
-    setTimeout(() => this.viewActive = !this.viewActive,300)
+    setTimeout(() => this.viewActive = !this.viewActive,200)
   }
 
   doRefresh($event) {
@@ -285,7 +329,203 @@ export class Tab1Page {
     }, 700);
   }
 
+  sliderChange(){
+    this.apiService.setVolumeAndLightPreference(this.volumeSlider, this.lightSlider)
+    .pipe(first())
+    .subscribe(
+      data => {
+        this.user.capsulePreference = data;
+        this.saveToStorage('user', this.user).then(() => {
+        });
+      },
+      error => {
+        console.log(error);
+    });
+  }
+
+  extendBooking(){
+    this.extendSlots ++;
+    this.presentCheckOutModal();
+  }
+
+  checkFreeSlots(){
+    this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data =>{
+      if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + "")]){
+
+        var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ""));
+        var i = 0;
+        this.freeSlots = [];
+        while(data[lastFrame] && i < 5 && this.maxTimeBooked(this.user.bookings) <= 15){
+
+          this.freeSlots.push(this.timeService.getEndTime(lastFrame));
+
+          lastFrame ++;
+          i++;
+        }
+        console.log(this.freeSlots);
+      }else{
+        this.toast("Next slot already taken");
+      }
+    })
+  }
+
+  maxTimeBooked(bookings: booking[]){
+    this.todayBookings = [];
+    this.todayActiveBookings = [];
+    for(var i = 0; i<bookings.length; i++){
+      if(bookings[i].Date.slice(0,10) == this.today.toISOString().slice(0,10)){
+        this.todayBookings.push(bookings[i]);
+      }
+    }
+    for(var i = 0; i<this.todayBookings.length; i++){
+      if(this.todayBookings[i].Capsule_id == this.todayBookings[0].Capsule_id){
+        this.todayActiveBookings.push(this.todayBookings[i]);
+      }
+    }
+    var sumSlots = 0;
+    for(var i = 0; i < this.todayActiveBookings.length; i++){
+      console.log(this.todayActiveBookings[i].LastTimeFrame - this.todayActiveBookings[i].FirstTimeFrame);
+      sumSlots += (this.todayActiveBookings[i].LastTimeFrame - this.todayActiveBookings[i].FirstTimeFrame + 1);
+    }
+    return sumSlots;
+  }
+
+  // User Info
+  getUserInfo() {
+    this.storage.get('user').then(user => {
+      if (user != null || typeof user != 'undefined') {
+        console.log("Setting user data from memory");
+        // console.log(user);
+        this.user = user;
+        this.username = user.username;
+        this.email = user.email;
+        if (user.capsulePreference != null) {
+          this.lightSlider = user.capsulePreference.LightLevel;
+          this.volumeSlider = user.capsulePreference.VolumenLevel;
+        }
+      } else {
+        console.log("Retrieving user data from server");
+        this.apiService.getUser()
+            .pipe(first())
+            .subscribe(
+                user => {
+                  // console.log(user);
+                  this.user = user;
+                  this.username = user.username;
+                  this.email = user.email;
+                  if (user.capsulePreference != null) {
+                    this.lightSlider = user.capsulePreference.LightLevel;
+                    this.volumeSlider = user.capsulePreference.VolumenLevel;
+                  }
+                },
+                error => {
+                  console.log(error);
+                });
+      }
+    })
+  }
+
+    //Toast Handler
+    async toast(message: any) {
+      const toast = await this.toastController.create({
+        message: message,
+        duration: 3000,
+        position: 'top',
+        cssClass: 'toast-container',
+        keyboardClose: true,
+      });
+      toast.present();
+    }
+
   async saveToStorage(key, val) {
     await this.storage.set(key, val);
+  }
+
+  async presentCheckOutModal() {
+    const modal = await this.modalController.create({
+      component: CheckoutModalPage,
+      componentProps: {
+        paymentAmount: this.selectedCount * this.PRICE_PER_SLOT,
+        // timeStart: this.timeService.getStartTime(this.firstSelected + 1),
+        // timeEnd: this.timeService.getEndTime(this.lastSelected + 1),
+        // date: this.activeDate_String,
+        // capsule: this.capName
+      },
+      cssClass: 'password-changer-modal'
+    });
+
+    modal.onDidDismiss().then(value => {
+      if (typeof value.data == 'string') {
+        // this.paymentID = value.data;
+        //this.toast("Paypal payment successful, sending data to Server..");
+        let today = new Date()
+        let dateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + " " +
+          today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        this.localNotifications.schedule({
+          // id: parseInt(this.capId),
+          title: 'Paypal payment successful',
+          icon: 'https://mobappex.web.app/assets/icon/favicon.png',
+          // text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
+        });
+        // loop through bookingsQueue
+        // for (let b = 0; b < this.bookingsQueue.length; b++) {
+        //   this.apiService.bookCapsule(
+        //     parseInt(this.capId), //Casule Id
+        //     this.activeDate_String, // Date
+        //     this.bookingsQueue[b].first, // First slot
+        //     this.bookingsQueue[b].last, // Last slot
+        //     'PayPal', // Vendor
+        //     this.bookingsQueue[b].slotsCount * this.PRICE_PER_SLOT, // Amount
+        //     true, // Verified
+        //     this.paymentID // Paypal Payment id
+        //   ).subscribe(data => {
+
+        //     if (b == this.bookingsQueue.length - 1) {
+        //       this.apiService.getUser()
+        //         .pipe(first())
+        //         .subscribe(
+        //           user => {
+        //             this.userBookingsArray = user.bookings;
+        //             console.log(user.bookings);
+        //             this.findOwnBookingsForActiveCapsule();
+        //             this.getTimeSlots(this.days[this.segment.value].dateRAW);
+        //           },
+        //           error => {
+        //             console.log(error);
+        //           });
+
+
+        //       this.toast("booked: " + this.capName);
+        //       console.log(data);
+        //     }
+
+        //   }, err => {
+        //     console.log(err)
+        //     this.toast(err);
+        //   });
+        // }
+
+        // this.apiService.bookCapsule(
+        //   parseInt(this.capId),
+        //   this.activeDate_String,
+        //   this.firstSelected + 1,
+        //   this.lastSelected + 1,
+        //   'PayPal',
+        //   this.selectedCount,
+        //   true,
+        //   this.paymentID
+        // ).subscribe(data => {
+        //   // TODO: this.getUserBookings();
+        //   this.getTimeSlots(this.activeDate);
+        //   this.toast("booked: " + this.capName);
+        //   console.log(data);
+        // }, err => {
+        //   console.log(err)
+        //   this.toast(err);
+        // });
+      }
+    });
+
+    return await modal.present();
   }
 }
