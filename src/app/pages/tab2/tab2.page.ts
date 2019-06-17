@@ -15,7 +15,7 @@ import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import isEqual from 'lodash.isequal';
-import {MatDatepicker} from '@angular/material/datepicker';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
   selector: "app-tab2",
@@ -181,17 +181,17 @@ export class Tab2Page implements OnInit {
         date: formattedDate,
         value: i.toString()
       }
-      if(this.excludeSundays == true) {
-        if(day.dateRAW.getDay() != 0) {
-        this.days.push(day);          
+      if (this.excludeSundays == true) {
+        if (day.dateRAW.getDay() != 0) {
+          this.days.push(day);
         }
       } else {
         this.days.push(day);
       }
     }
 
-    
-    if(this.excludeSundays == true) {
+
+    if (this.excludeSundays == true) {
       // for (let i = 0; i < this.days.length; i++) {
       //   if(this.days[i].dateRAW.getDay() == 0) {
       //     this.days.splice(i, 1);
@@ -236,7 +236,7 @@ export class Tab2Page implements OnInit {
 
 
     this.platform.backButton.subscribe(() => {
-      if(this.picker.opened == true) {
+      if (this.picker.opened == true) {
         this.picker.close();
       }
       else if (this.cardTSS_state == 'top') {
@@ -274,13 +274,13 @@ export class Tab2Page implements OnInit {
         if (isEqual(data, savedCaps)) {
           console.log('caps from cache');
 
-          if(this.capsules.length == 0) {
+          if (this.capsules.length == 0) {
             this.capsules = savedCaps;
 
             for (let cap in savedCaps) {
               //console.log(data[cap]);
               this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, savedCaps[cap].Latitude, savedCaps[cap].Longitude);
-  
+
               //this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
@@ -293,15 +293,15 @@ export class Tab2Page implements OnInit {
             for (let cap in data) {
               //console.log(data[cap]);
               data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
-  
+
               this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
-  
+
             //Open marker-popup for first marker
             this.capsules[0].isOpen = true;
           });
-          
+
         }
       });
 
@@ -693,6 +693,16 @@ export class Tab2Page implements OnInit {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
+            }
+
+
+            // blocke all slots when day limit reached
+            if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
+              for (let a = 0; a < this.timeslots.length; a++) {
+                if (this.timeslots[a].state == true) {
+                  this.timeslots[a].state = 'blocked';
+                }
+              }
             }
 
             // TODO: only if segment.value 0 is equals date: today; 
@@ -1128,12 +1138,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if (this.firstSelected - c_booked_up >= 0 && 
+    if (this.firstSelected - c_booked_up >= 0 &&
       (this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Up.length +
-      this.bookedArray_Between.length) > 5) {
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Up.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
         this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
       }
@@ -1151,12 +1161,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if (this.lastSelected + c_booked_down < this.timeslots.length && 
+    if (this.lastSelected + c_booked_down < this.timeslots.length &&
       (this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Down.length +
-      this.bookedArray_Between.length) > 5) {
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Down.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
         this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
       }
@@ -1233,7 +1243,7 @@ export class Tab2Page implements OnInit {
 
 
     // blocke all slots when day limit reached
-    if(this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY - 1) {
+    if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
       for (let a = 0; a < this.timeslots.length; a++) {
         if (this.timeslots[a].state == true) {
           this.timeslots[a].state = 'blocked';
@@ -1486,7 +1496,7 @@ export class Tab2Page implements OnInit {
         if (index === -1) {
           impossibles.push(this.userBookingsSlotsArray[s]);
         }
-        
+
         let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
         if (index2 === -1) {
           impossibles.push(this.userBookingsSlotsArray[s + 1]);
@@ -1496,8 +1506,17 @@ export class Tab2Page implements OnInit {
       }
 
       if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-        this.timeslots[impossibles[0] - 2].state = 'impossible';
-        this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        
+        try {
+          this.timeslots[impossibles[0] - 2].state = 'impossible';
+        } catch {
+
+        }
+        try {
+          this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        } catch {
+
+        }
       }
 
       impossibles = [];
@@ -1728,7 +1747,7 @@ export class Tab2Page implements OnInit {
     for (let b in this.userBookingsArray) {
       let date2 = new Date(this.userBookingsArray[b].Date);
 
-      if (date.getFullYear() + '-' + (date.getMonth() + 1)+ '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1)+ '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+      if (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
         //console.log(this.userBookingsArray[b]);
         //console.log(this.userBookingsArray[b].capsule.Name);
 
@@ -1753,7 +1772,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('crossCapsuleBookingsArray',this.crossCapsuleBookingsArray);
+    console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
 
   }
 
