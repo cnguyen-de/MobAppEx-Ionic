@@ -408,7 +408,7 @@ export class Tab1Page {
         var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
         var i = 0;
         this.freeSlots = [];
-        while (data[lastFrame] && i < 5 && this.maxTimeBooked(this.user.bookings) <= 15) {
+        while (data[lastFrame] && i < 6 && this.maxTimeBooked(this.user.bookings) <= 15) {
 
           this.freeSlots.push(this.timeService.getEndTime(lastFrame));
 
