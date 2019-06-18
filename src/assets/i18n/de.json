@@ -106,6 +106,14 @@
   "LEGAL": "Legal",
   "LICENSES": "Lizenzen",
 
-  "LANGUAGE_CODE": "de-DE"
+  "LANGUAGE_CODE": "de-DE",
+
+  "SLIDES_WELCOME": "Willkommen",
+  "SLIDES_TEXT1": "Die Snooze App ermöglicht das Finden, Buchen und Steuern von Snooze Schlafkapseln",
+  "SLIDES_TEXT2": "Ausgelaugt zu sein, wenn man volle Konzentration benötigt kann sehr frustrierend sein...",
+  "SLIDES_TEXT3": "Nutze eine Snooze Schlafkapsel direkt auf dem Campus um dich durch einen Power-Nap wieder fit zu machen",
+  "SLIDES_TEXT4": "Du wirst danach wieder glücklich und erholt sein und kannst deine Aufgaben besser erledigen",
+  "SLIDES_SKIP": "Überspringen",
+  "SLIDES_LEARN": "Erfahre mehr"
 
 }
