@@ -59,6 +59,8 @@
   "NOTIFICATION_PAYPAL_AT":"Am ",
   "NOTIFICATION_PAYPAL_BOOKED":" Du hast die Kapsel ",
   "NOTIFICATION_PAYPAL_FOR":" gebucht für ",
+  "WARNING": "Warnung",
+  "WARNING_SLOTACTIVE": "Dieses Zeitfenster ist schon aktiv. Du musst trotzdem den vollen Preis zahlen!",
 
   "TAB_3": "Information",
   "ACCOUNT": "Konto",
