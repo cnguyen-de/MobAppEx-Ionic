@@ -1324,13 +1324,22 @@ export class Tab2Page implements OnInit {
 
       if(this.allowOnlyOneBooking == true  && this.userBookingsSlotsArray.length > 0) {
           for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
-            if (this.timeslots[a].state == true) {
-              this.timeslots[a].state = 'blocked';
+            try {
+              if (this.timeslots[a].state == true) {
+                this.timeslots[a].state = 'blocked';
+              }
+            } catch {
+              console.error('catched by us, out of bounds as intended');
             }
+            
           }
           for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] + 1; a < this.timeslots.length; a++) {
-            if (this.timeslots[a].state == true) {
-              this.timeslots[a].state = 'blocked';
+            try {
+              if (this.timeslots[a].state == true) {
+                this.timeslots[a].state = 'blocked';
+              }
+            } catch {
+              console.error('catched by us, out of bounds as intended');
             }
           }
         }
