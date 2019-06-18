@@ -384,10 +384,16 @@ export class Tab1Page {
   doRefresh($event) {
     this.getUserInfo();
     this.futureBookings = [];
+    if (this.futureBookings.length == 0) {
+      this.loading = true;
+    }
     this.getFutureBookings();
+    if (this.futureBookings.length == 0) {
+      setTimeout(() => this.loading = false, 100);
+    }
     setTimeout(() => {
       $event.target.complete();
-    }, 700);
+    }, 500);
   }
 
   sliderChange() {
