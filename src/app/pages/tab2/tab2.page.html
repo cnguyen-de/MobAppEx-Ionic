@@ -92,7 +92,7 @@
              {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
             <h6 class="cap-attribute">
-               , {{ item.FirstFreeDate }}
+               , {{ item.FirstFreeDate | date : "MMM dd"}}
                </h6>
           </ion-card-subtitle>
           <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'CAPSULE_SELECT' | translate }}
