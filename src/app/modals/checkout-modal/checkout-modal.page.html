@@ -8,7 +8,7 @@
     <ion-item class="payment-info" lines="full">
         <ion-label class="label" slot="start">
             {{capsule}}
-            <p>{{date}}</p>
+            <p>{{date | date : "mediumDate"}}</p>
             <p>{{timeStart}} {{ 'CHECKOUT_TO' | translate }}{{timeEnd}}</p>
         </ion-label>
         <ion-label slot="end">

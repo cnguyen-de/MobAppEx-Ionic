@@ -4,6 +4,8 @@ import {Router} from '@angular/router';
 import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/native-page-transitions/ngx';
 import { IonSlides } from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {TranslateService} from '@ngx-translate/core';
+import {ThemeService} from '../../_services/theme/theme.service';
 
 
 @Component({
@@ -18,8 +20,12 @@ export class SlidesPage implements OnInit {
     speed: 400
   };
 
+  darkMode: boolean;
+  language: string;
+
   constructor(private storage: Storage, private router: Router, private nativePageTransitions: NativePageTransitions,
-              private statusBar: StatusBar) {
+              private statusBar: StatusBar, private translateService: TranslateService,
+              private themeService: ThemeService) {
   }
 
   ngOnInit() {
@@ -27,6 +33,8 @@ export class SlidesPage implements OnInit {
 
   ionViewWillEnter() {
     this.statusBar.backgroundColorByHexString("#38c7ef");
+    this.getDarkValue();
+    this.getLanguage();
   }
 
   ionViewWillLeave() {
@@ -47,6 +55,45 @@ export class SlidesPage implements OnInit {
 
   next() {
     this.slides.slideTo(1, 400);
+  }
+
+  //Switch Light-Dark Theme
+  switchTheme() {
+    this.darkMode = !this.darkMode;
+    this.themeService.enableDarkMode(this.darkMode);
+    this.saveToStorage('dark', this.darkMode);
+  }
+
+  //Change Language
+  changeLanguage() {
+    //this.presentLanguageChooserModal();
+    let languages = ['en', 'de'];
+    for (let i = 0; i < languages.length; i++) {
+      if (this.language == languages[i]) {
+        if (i < this.language.length - 1) {
+          this.language = languages[i + 1];
+          this.translateService.use(this.language);
+          this.saveToStorage('language', this.language);
+          break;
+        } else if (i == this.language.length - 1) {
+          this.language = languages[0];
+          this.translateService.use(this.language);
+          this.saveToStorage('language', this.language);
+          break;
+        }
+      }
+    }
+  }
+
+  async getDarkValue() {
+    this.darkMode = await this.storage.get('dark')
+  }
+  async getLanguage() {
+    this.language = await this.storage.get('language')
+  }
+
+  async saveToStorage(key: string, value: any) {
+    await this.storage.set(key, value);
   }
 
 

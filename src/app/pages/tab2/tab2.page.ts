@@ -1,6 +1,6 @@
 import { map } from 'rxjs/operators';
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController, AlertController } from '@ionic/angular';
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
@@ -70,7 +70,8 @@ export class Tab2Page implements OnInit {
     private storage: Storage,
     private translateService: TranslateService,
     private localNotifications: LocalNotifications,
-    private _adapter: DateAdapter<any>) { }
+    private _adapter: DateAdapter<any>,
+    private alertController: AlertController) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -167,20 +168,27 @@ export class Tab2Page implements OnInit {
       var date = new Date();
       date.setDate(date.getDate() + i);
 
-      let formattedDate = new Intl.DateTimeFormat('en-US', {
+      let formattedDate = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
         // weekday: 'short',
         month: 'short',
         day: '2-digit'
       }).format(date);
 
+      let formattedDay = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
+        weekday: 'long'
+      }).format(date);
+
       if (i == 0) {
         formattedDate = this.translateService.instant('TODAY');
+        formattedDay = '';
       } else if (i == 1) {
         formattedDate = this.translateService.instant('TOMORROW');
+        formattedDay = '';
       }
       let day = {
         dateRAW: date,
         date: formattedDate,
+        day: formattedDay,
         value: i.toString()
       }
       if (this.excludeSundays == true) {
@@ -575,6 +583,8 @@ export class Tab2Page implements OnInit {
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
 
+      this.spinBtnPositionPressed = false;
+
       for (let cap in this.capsules) {
         this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
       }
@@ -917,7 +927,7 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
-    console.log(this.userBookingsSlotsArray);
+    //console.log(this.userBookingsSlotsArray);
     //console.clear();
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
@@ -1258,6 +1268,18 @@ export class Tab2Page implements OnInit {
           this.timeslots[a].state = 'blocked';
         }
       }
+    }
+
+    // Display minutes with leading zero
+    // Soure: https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
+
+    let date = new Date();
+    let currentTime = date.getHours()+ '' + (date.getMinutes()<10?'0':'')  + date.getMinutes();
+    //log('TIME CURRENT: ',currentTime);
+    //console.log('TIME SELECTED: ',this.timeService.getStartTime(i + 1).replace(':', ''));
+
+    if((this.firstSelected == i) && parseInt(currentTime) >= parseInt(this.timeService.getStartTime(i + 1).replace(':', ''))) {
+      this.presentAlertConfirm();
     }
 
 
@@ -1791,6 +1813,27 @@ export class Tab2Page implements OnInit {
     if (index === -1) {
       this.crossCapsuleBookingsArray.push(item);
     }
+  }
+
+  
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      mode: 'md',
+      cssClass: 'alert-dialog',
+      header: this.translateService.instant('WARNING'),
+      message: this.translateService.instant('WARNING_SLOTACTIVE'),
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
 

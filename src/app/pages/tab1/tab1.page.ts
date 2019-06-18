@@ -41,7 +41,6 @@ import {ExtendCapsuleModalPage} from '../../modals/extend-capsule-modal/extend-c
 })
 export class Tab1Page {
   MINUTES_BEFORE_START = 10;
-  hide: boolean = false;
   bookings: booking[] = [];
   today = new Date();
   futureBookings: booking[] = [];
@@ -71,6 +70,7 @@ export class Tab1Page {
     count: 0,
     slot: ''
   };
+  language: string;
 
   constructor(private apiService: ApiService,
               private storage: Storage,
@@ -89,6 +89,11 @@ export class Tab1Page {
   }
 
   ionViewWillEnter() {
+    this.storage.get('language').then(lang => {
+      if (lang != null) {
+        this.language = lang;
+      }
+    })
     this.getUserInfo();
     if (this.futureBookings.length == 0) {
       this.loading = true;
@@ -125,10 +130,6 @@ export class Tab1Page {
     };
     this.nativePageTransitions.slide(options);
     this.router.navigateByUrl(path);
-  }
-
-  hideCard() {
-    this.hide = true;
   }
 
   getFutureBookings() {
@@ -347,7 +348,7 @@ export class Tab1Page {
       if (!isActive) {
         // comment this for live capsule control
         this.presentAlertConfirm();
-        this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
+        //this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
         return;
       }
     }

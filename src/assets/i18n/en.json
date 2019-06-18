@@ -22,13 +22,18 @@
   "NO_RESERVATION":"No reservation found!",
   "NO_RESERVATION_TEXT":"Your booked capsules will show up here",
   "FIND_CAPSULE":"Find a capsule now",
-  "CAPSULE_CONTROL":"CAPSULE CONTROL",
+  "POWERNAP_TITLE": "Did you know napping helps recovering from fatigue?",
+  "POWERNAP_SUBTITLE": "Napping 30 minutes to 2 hours can help revitalizing the human body during stressful events",
+  "POWERNAP_TEXT": "Learn more about napping",
+  "CAPSULE_ACTIVE": "Capsule Active",
+  "CAPSULE_CONTROL":"Capsule Control",
   "CAPSULE_PIN":"PIN",
   "CAPSULE_LIGHT":"Light",
   "CAPSULE_VOLUME":"Volume",
   "CAPSULE_EXTEND":"Extend Session",
   "CAPSULE_EXTEND_TAKEN":"Next slot already taken",
-  "CAPSULE_EXTEND_UNTIL":"EXTEND BOOKING UNTIL",
+  "CAPSULE_EXTEND_UNTIL":"EXTEND BOOKING",
+  "CAPSULE_EXTEND_SLOTS": "slots, until",
   "CAPSULE_NOT_YET_ACTIVE":"Your Capsule is not yet active",
   "CAPSULE_NOT_ACTIVE_HEADER":"Capsule not active",
   "CAPSULE_NOT_ACTIVE_TEXT":"View Capsule Control for Dev purpose?",
@@ -56,6 +61,8 @@
   "NOTIFICATION_PAYPAL_AT":"At ",
   "NOTIFICATION_PAYPAL_BOOKED":" you booked Capsule ",
   "NOTIFICATION_PAYPAL_FOR":" for ",
+  "WARNING": "Warning",
+  "WARNING_SLOTACTIVE": "This time slots time is already active. You'll be charged for a full time slots!",
 
   "TAB_3": "Information",
   "ACCOUNT": "Account",
@@ -93,12 +100,26 @@
   "LIGHT_PREF_SAVED":"Light preference set to: ",
   "ABOUT": "About",
   "REPORT_A_BUG": "Report a Bug",
-  "THIS_APP": "Acknowledgement",
+  "THIS_APP": "Credits & Developers",
   "THIS_APP_MAE":"Mobile Application Exercise - Group 9",
   "THIS_APP_SNOOZE":"A Snooze Project",
   "THIS_APP_TEXT":"This application was part of the project for Snooze Team in the course Mobile Application Exercise under the supervision of Prof. Dr. Jens Liebehenschel. Thanks to Server Team for providing the backend services.",
   "THIS_APP_GROUP":"Group 9",
   "CONTACT": "Contact",
   "ASK_CONTACT":"Ask Snooze Team 😊",
-  "LEGAL": "Legal"
+  "LEGAL": "Legal",
+  "LICENSES": "Licenses",
+
+  "LANGUAGE_CODE": "en-US",
+
+  "SLIDES_WELCOME": "Welcome",
+  "SLIDES_TEXT1": "The Snooze app lets you find, book and control Snooze sleeping capsules",
+  "SLIDES_TEXT2": "Being tired at moments when full concentration is needed can be very frustrating...",
+  "SLIDES_TEXT3": "Use a Snooze capsule to recharge yourself by taking a power nap right at the campus",
+  "SLIDES_TEXT4": "You'll be happy and powerd up again to get your work done",
+  "SLIDES_SKIP": "Skip",
+  "SLIDES_LEARN": "Learn More"
+
+
+
 }

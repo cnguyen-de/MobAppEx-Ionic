@@ -92,7 +92,7 @@
              {{ timeService.getStartTime(item.FirstFreeTimeFrame) }}
             </h6>
             <h6 class="cap-attribute">
-               , {{ item.FirstFreeDate }}
+               , {{ item.FirstFreeDate | date : "MMM dd"}}
                </h6>
           </ion-card-subtitle>
           <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'CAPSULE_SELECT' | translate }}
@@ -138,6 +138,7 @@
     <ion-content id="testre" #content scrollX="true" scrollY="false">
       <ion-segment id="segmt" #segment mode="ios" >
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
+          <span style="font-size: 10px;">{{ day.day }}</span>
           {{day.date}}
         </ion-segment-button>
       </ion-segment>
