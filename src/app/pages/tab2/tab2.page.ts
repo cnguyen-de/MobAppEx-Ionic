@@ -575,6 +575,8 @@ export class Tab2Page implements OnInit {
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
 
+      this.spinBtnPositionPressed = false;
+
       for (let cap in this.capsules) {
         this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
       }
