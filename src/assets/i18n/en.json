@@ -111,6 +111,9 @@
   "LICENSES": "Licenses",
 
   "LANGUAGE_CODE": "en-US",
+  "LANGUAGE_DE":"German",
+  "LANGUAGE_EN":"English",
+  "LANGUAGE_CHANGE":"Language change",
 
   "SLIDES_WELCOME": "Welcome",
   "SLIDES_TEXT1": "The Snooze app lets you find, book and control Snooze sleeping capsules",

@@ -111,6 +111,9 @@
   "LICENSES": "Lizenzen",
 
   "LANGUAGE_CODE": "de-DE",
+  "LANGUAGE_DE":"Deutsch",
+  "LANGUAGE_EN":"Englisch",
+  "LANGUAGE_CHANGE":"Sprache ändern",
 
   "SLIDES_WELCOME": "Willkommen",
   "SLIDES_TEXT1": "Die Snooze App ermöglicht das Finden, Buchen und Steuern von Snooze Schlafkapseln",
