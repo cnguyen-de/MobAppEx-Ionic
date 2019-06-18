@@ -119,7 +119,9 @@ ion-list-header {
 }
 
 .controller {
-  --background: var(--ion-background-color);
+  --background: transparent;
+  margin-top:-10px; 
+  margin-bottom: 20px;
 }
 ion-range {
   --knob-background: var(--ion-color-primary);
@@ -127,12 +129,31 @@ ion-range {
   //--bar-height: 7px;
 }
 .extend-button {
-  margin-top: 13vh;
-  padding-left: 32px;
-  padding-right: 32px;
-  --padding-top: 22px;
-  --padding-bottom: 22px;
+  position: absolute;
+  width: calc(100% - 96px);
+  bottom: 110px;
+  left: 48px;
+  right: 48px;
+  height: 36px;
+
+
 }
 .back-icon {
   color: white;
+}
+
+
+
+@media (min-height: 700px) {
+  
+  
+  .controller {
+    margin-bottom: 30px;
+  }
+  .inside-pin {
+    margin-bottom: 110px;
+    
+  }
+  
+  
 }
