@@ -41,7 +41,6 @@ import {ExtendCapsuleModalPage} from '../../modals/extend-capsule-modal/extend-c
 })
 export class Tab1Page {
   MINUTES_BEFORE_START = 10;
-  hide: boolean = false;
   bookings: booking[] = [];
   today = new Date();
   futureBookings: booking[] = [];
@@ -125,10 +124,6 @@ export class Tab1Page {
     };
     this.nativePageTransitions.slide(options);
     this.router.navigateByUrl(path);
-  }
-
-  hideCard() {
-    this.hide = true;
   }
 
   getFutureBookings() {
