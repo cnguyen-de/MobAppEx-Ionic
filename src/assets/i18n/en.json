@@ -103,6 +103,16 @@
   "LEGAL": "Legal",
   "LICENSES": "Licenses",
 
-  "LANGUAGE_CODE": "en-US"
+  "LANGUAGE_CODE": "en-US",
+
+  "SLIDES_WELCOME": "Welcome",
+  "SLIDES_TEXT1": "The Snooze app lets you find, book and control Snooze sleeping capsules",
+  "SLIDES_TEXT2": "Being tired at moments when full concentration is needed can be very frustrating...",
+  "SLIDES_TEXT3": "Use a Snooze capsule to recharge yourself by taking a power nap right at the campus",
+  "SLIDES_TEXT4": "You'll be happy and powerd up again to get your work done",
+  "SLIDES_SKIP": "Skip",
+  "SLIDES_LEARN": "Learn More"
+
+
 
 }
