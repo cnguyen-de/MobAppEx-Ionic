@@ -123,6 +123,7 @@ export class Tab2Page implements OnInit {
   timeslots = [];
   segmentWidth: number = 100;
 
+  allowOnlyOneBooking = true;
   MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
   PRICE_PER_SLOT = 3;
@@ -715,6 +716,23 @@ export class Tab2Page implements OnInit {
             }
 
 
+            if(this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
+              console.log('userBookings: ', this.userBookingsSlotsArray);
+              console.log('userBookings: ', this.userBookingsSlotsArray[0] - 1);
+              console.log('userBookings: ', this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] - 1);
+                for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
+                  if (this.timeslots[a].state == true) {
+                    this.timeslots[a].state = 'blocked';
+                  }
+                }
+                for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] + 1; a < this.timeslots.length; a++) {
+                  if (this.timeslots[a].state == true) {
+                    this.timeslots[a].state = 'blocked';
+                  }
+                }
+              }
+
+
             // blocke all slots when day limit reached
             if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
               for (let a = 0; a < this.timeslots.length; a++) {
@@ -1261,6 +1279,7 @@ export class Tab2Page implements OnInit {
     //   this.bookedArray_Between.length);
 
 
+    
     // blocke all slots when day limit reached
     if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
       for (let a = 0; a < this.timeslots.length; a++) {
@@ -1274,17 +1293,20 @@ export class Tab2Page implements OnInit {
     // Soure: https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
 
     let date = new Date();
+    let date2 = this.days[this.segment.value].dateRAW;
     let currentTime = date.getHours()+ '' + (date.getMinutes()<10?'0':'')  + date.getMinutes();
     //log('TIME CURRENT: ',currentTime);
     //console.log('TIME SELECTED: ',this.timeService.getStartTime(i + 1).replace(':', ''));
 
-    if((this.firstSelected == i) && parseInt(currentTime) >= parseInt(this.timeService.getStartTime(i + 1).replace(':', ''))) {
+    if((date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate()) &&
+      (this.firstSelected == i) && parseInt(currentTime) >= parseInt(this.timeService.getStartTime(i + 1).replace(':', ''))) {
       this.presentAlertConfirm();
     }
 
 
 
-
+    
+      
     // mark all blocked as free if no slot is selected
     if (this.selectedCount == 0) {
       for (let a = 0; a < this.timeslots.length; a++) {
@@ -1300,7 +1322,21 @@ export class Tab2Page implements OnInit {
       this.bookedArray_AfterNext_Down = [];
       this.bookedArray_Between = [];
 
+      if(this.allowOnlyOneBooking == true  && this.userBookingsSlotsArray.length > 0) {
+          for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
+            if (this.timeslots[a].state == true) {
+              this.timeslots[a].state = 'blocked';
+            }
+          }
+          for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] + 1; a < this.timeslots.length; a++) {
+            if (this.timeslots[a].state == true) {
+              this.timeslots[a].state = 'blocked';
+            }
+          }
+        }
+
     }
+  
 
     setTimeout(() => {
       this.blurTimeSlots();
