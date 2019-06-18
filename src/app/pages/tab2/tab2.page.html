@@ -138,6 +138,7 @@
     <ion-content id="testre" #content scrollX="true" scrollY="false">
       <ion-segment id="segmt" #segment mode="ios" >
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
+          <span style="font-size: 10px;">{{ day.day }}</span>
           {{day.date}}
         </ion-segment-button>
       </ion-segment>

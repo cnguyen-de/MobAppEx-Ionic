@@ -101,5 +101,8 @@
   "CONTACT": "Contact",
   "ASK_CONTACT":"Ask Snooze Team 😊",
   "LEGAL": "Legal",
-  "LICENSES": "Licenses"
+  "LICENSES": "Licenses",
+
+  "LANGUAGE_CODE": "en-US"
+
 }

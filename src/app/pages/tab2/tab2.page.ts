@@ -167,20 +167,27 @@ export class Tab2Page implements OnInit {
       var date = new Date();
       date.setDate(date.getDate() + i);
 
-      let formattedDate = new Intl.DateTimeFormat('en-US', {
+      let formattedDate = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
         // weekday: 'short',
         month: 'short',
         day: '2-digit'
       }).format(date);
 
+      let formattedDay = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
+        weekday: 'long'
+      }).format(date);
+
       if (i == 0) {
         formattedDate = this.translateService.instant('TODAY');
+        formattedDay = '';
       } else if (i == 1) {
         formattedDate = this.translateService.instant('TOMORROW');
+        formattedDay = '';
       }
       let day = {
         dateRAW: date,
         date: formattedDate,
+        day: formattedDay,
         value: i.toString()
       }
       if (this.excludeSundays == true) {
