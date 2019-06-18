@@ -526,7 +526,7 @@ export class Tab1Page {
         date: this.futureBookings[0].Date,
         capsule: this.futureBookings[0].capsule.Name
       },
-      cssClass: 'password-changer-modal'
+      cssClass: 'paypal-modal'
     });
 
     modal.onDidDismiss().then(value => {
