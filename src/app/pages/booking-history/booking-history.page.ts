@@ -7,6 +7,7 @@ import {NativePageTransitions, NativeTransitionOptions} from '@ionic-native/nati
 import isEqual from 'lodash.isequal'
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { Platform } from '@ionic/angular';
+import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 
 @Component({
@@ -45,11 +46,13 @@ export class BookingHistoryPage implements OnInit {
     this.picker.close(); 
   }
 
-  addEvent(type: any, event: MatDatepickerInputEvent<Date>) {
+  addEvent(event: MatDatepickerInputEvent<Date>) {
+    console.log(event.value);
     this.isFiltered = true;
     this.filteredBookings = [];
 
-    this.datePicker = new Date(`${type}: ${event.value}`);
+    this.datePicker = new Date(`${event.value}`);
+    console.log(this.datePicker);
     this.datePicker.setDate(this.datePicker.getDate() + 1);
     this.pickerString = this.datePicker.toISOString();
 

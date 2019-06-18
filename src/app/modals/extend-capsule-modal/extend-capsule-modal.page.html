@@ -1,0 +1,10 @@
+<ion-content>
+  <ion-list-header mode="ios">
+    {{ 'CAPSULE_EXTEND_UNTIL' | translate }}
+  </ion-list-header>
+  <ion-list>
+    <ion-item *ngFor="let slot of slots; let i = index" button="true" (click)="extendSlot(i, slot)">
+      {{i + 1}} {{ 'CAPSULE_EXTEND_SLOTS' | translate }} {{slot}}
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -13,8 +13,8 @@ mat-expansion-panel {
 }
 
 .button{
-   color: var(--ion-text-color);
-   background: var(--ion-item-background-color);
+   //color: var(--ion-text-color);
+   background: var(--ion-background-color);
 }
 
 .mat-expansion-panel, .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover{

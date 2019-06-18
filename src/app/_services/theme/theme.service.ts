@@ -76,7 +76,7 @@ export class ThemeService {
       --toast-color: #000;
       --ion-inverted-color: #fff;
 
-      --ion-color-primary: #09ABF5;
+      --ion-color-primary: #38c7ef;
       --ion-text-color: #222;
       --ion-text-color-step-400: #222;
       --ion-text-color-step-600: #222;
@@ -89,6 +89,8 @@ export class ThemeService {
 
 
 
-// old primaray light: #08a0e9
-// snooze og-color: 09ABF5
+// old primary light colors: #08a0e9, 09ABF5
+// snooze logo: 40c3ea
 // splash color: 42A5FF
+// snooze logo new: 38c7ef rgb(56, 199, 239)
+// snooze font new: 343434 rgb(52, 52, 52)

@@ -1,6 +1,6 @@
 import { map } from 'rxjs/operators';
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import { IonSlides, IonSegment, IonContent, Platform, ModalController, ToastController, AlertController } from '@ionic/angular';
 import { LocationService } from '../../_services/location.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from '../../_services/api/api.service';
@@ -10,12 +10,13 @@ import { LightModalPage } from '../../modals/light-modal/light-modal.page';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
+import {TranslateService} from '@ngx-translate/core';
 
 import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import isEqual from 'lodash.isequal';
-import {MatDatepicker} from '@angular/material/datepicker';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
   selector: "app-tab2",
@@ -67,8 +68,10 @@ export class Tab2Page implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     private storage: Storage,
+    private translateService: TranslateService,
     private localNotifications: LocalNotifications,
-    private _adapter: DateAdapter<any>) { }
+    private _adapter: DateAdapter<any>,
+    private alertController: AlertController) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -122,7 +125,7 @@ export class Tab2Page implements OnInit {
 
   MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
-  PRICE_PER_SLOT = 2;
+  PRICE_PER_SLOT = 3;
   bookedArray_Up = [];
   bookedArray_Down = [];
   bookedArray_AfterNext_Up = [];
@@ -165,32 +168,45 @@ export class Tab2Page implements OnInit {
       var date = new Date();
       date.setDate(date.getDate() + i);
 
-      let formattedDate = new Intl.DateTimeFormat('en-US', {
+      let formattedDate = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
         // weekday: 'short',
         month: 'short',
         day: '2-digit'
       }).format(date);
 
+      let formattedDay = new Intl.DateTimeFormat(this.translateService.instant('LANGUAGE_CODE'), {
+        weekday: 'long'
+      }).format(date);
+
       if (i == 0) {
-        formattedDate = 'Today';
+        formattedDate = this.translateService.instant('TODAY');
+        formattedDay = '';
       } else if (i == 1) {
-        formattedDate = 'Tomorrow';
+        formattedDate = this.translateService.instant('TOMORROW');
+        formattedDay = '';
       }
       let day = {
         dateRAW: date,
         date: formattedDate,
+        day: formattedDay,
         value: i.toString()
       }
-      this.days.push(day);
+      if (this.excludeSundays == true) {
+        if (day.dateRAW.getDay() != 0) {
+          this.days.push(day);
+        }
+      } else {
+        this.days.push(day);
+      }
     }
 
-    
-    if(this.excludeSundays == true) {
-      for (let i = 0; i < this.days.length; i++) {
-        if(this.days[i].dateRAW.getDay() == 0) {
-          this.days.splice(i, 1);
-        }
-      }
+
+    if (this.excludeSundays == true) {
+      // for (let i = 0; i < this.days.length; i++) {
+      //   if(this.days[i].dateRAW.getDay() == 0) {
+      //     this.days.splice(i, 1);
+      //   }
+      // }
 
       this.datePickerFilter = (d: Date): boolean => {
         const day = d.getDay();
@@ -227,10 +243,13 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
+    // get User.Bookings from server
+    this.getUserBookings();
+
 
 
     this.platform.backButton.subscribe(() => {
-      if(this.picker.opened == true) {
+      if (this.picker.opened == true) {
         this.picker.close();
       }
       else if (this.cardTSS_state == 'top') {
@@ -268,16 +287,18 @@ export class Tab2Page implements OnInit {
         if (isEqual(data, savedCaps)) {
           console.log('caps from cache');
 
-          if(this.capsules.length == 0) {
+          if (this.capsules.length == 0) {
             this.capsules = savedCaps;
 
             for (let cap in savedCaps) {
               //console.log(data[cap]);
               this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, savedCaps[cap].Latitude, savedCaps[cap].Longitude);
-  
+
               //this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
+    this.getUserBookings();
+
           }
         } else {
           console.log('caps from server');
@@ -287,15 +308,16 @@ export class Tab2Page implements OnInit {
             for (let cap in data) {
               //console.log(data[cap]);
               data[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, data[cap].Latitude, data[cap].Longitude);
-  
+
               this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
-  
+            this.getUserBookings();
+
             //Open marker-popup for first marker
             this.capsules[0].isOpen = true;
           });
-          
+
         }
       });
 
@@ -305,7 +327,6 @@ export class Tab2Page implements OnInit {
 
 
     // get User.Bookings from server
-    this.getUserBookings();
 
 
 
@@ -328,8 +349,8 @@ export class Tab2Page implements OnInit {
 
 
 
-
-    TODO: this.setDatePickerFormat();
+    // set date picker format depending on language
+    this.setDatePickerFormat();
   }
 
 
@@ -390,7 +411,7 @@ export class Tab2Page implements OnInit {
         elem2.setAttribute("style", "visibility: visible");
 
         let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.daysRange).toString() + "px");
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.days.length).toString() + "px");
 
 
         try {
@@ -451,7 +472,7 @@ export class Tab2Page implements OnInit {
 
     this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 
-    this.timeitems = ((h - 15) * 60) + m;
+    this.timeitems = ((h - 9) * 60) + m;
 
     let percent = 100 / 540 * this.timeitems;
     console.log(this.timeitems);
@@ -561,12 +582,16 @@ export class Tab2Page implements OnInit {
       console.log('Result getting location in Component', data);
       this.latMapCenter = data.coords.latitude;
       this.lngMapCenter = data.coords.longitude;
+
       this.spinBtnPositionPressed = false;
 
       for (let cap in this.capsules) {
         this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
       }
       this.capsules.sort(this.compare_Distance);
+    }).catch((error) => {
+      console.log('Error getting location', error);
+      this.spinBtnPositionPressed = false;
     });
   }
 
@@ -690,6 +715,16 @@ export class Tab2Page implements OnInit {
             }
 
 
+            // blocke all slots when day limit reached
+            if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
+              for (let a = 0; a < this.timeslots.length; a++) {
+                if (this.timeslots[a].state == true) {
+                  this.timeslots[a].state = 'blocked';
+                }
+              }
+            }
+
+            // TODO: only if segment.value 0 is equals date: today; 
             if (this.segment.value == '0') {
               let blckr = document.getElementsByClassName("blocker");
               blckr[0].classList.remove("collapsed");
@@ -782,7 +817,7 @@ export class Tab2Page implements OnInit {
 
       let index = await +this.segment.value;
       if (index === 0) {
-        index = this.daysRange;
+        index = this.days.length;
       }
       this.segment.value = (index - 1).toString();
       this.content.scrollToPoint((index - 1) * this.segmentWidth, 0, 200);
@@ -808,7 +843,7 @@ export class Tab2Page implements OnInit {
     if (this.slidingCount > 1) {
 
       let index = await +this.segment.value;
-      if (index === this.daysRange - 1) {
+      if (index === this.days.length - 1) {
         index = -1;
       }
       this.segment.value = (index + 1).toString();
@@ -892,7 +927,7 @@ export class Tab2Page implements OnInit {
 
   onTimeSlotClick(i) {
 
-    console.log(this.userBookingsSlotsArray);
+    //console.log(this.userBookingsSlotsArray);
     //console.clear();
     this.bookedArray_Up = [];
     this.bookedArray_Down = [];
@@ -1122,12 +1157,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.firstSelected - c_booked_up].state = true;
     }
 
-    if (this.firstSelected - c_booked_up >= 0 && 
+    if (this.firstSelected - c_booked_up >= 0 &&
       (this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Up.length +
-      this.bookedArray_Between.length) > 5) {
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Up.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.firstSelected - c_booked_up].state == true) {
         this.timeslots[this.firstSelected - c_booked_up].state = 'blocked';
       }
@@ -1145,12 +1180,12 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + c_booked_down].state = true;
     }
 
-    if (this.lastSelected + c_booked_down < this.timeslots.length && 
+    if (this.lastSelected + c_booked_down < this.timeslots.length &&
       (this.selectedCount +
-      this.bookedArray_Up.length +
-      this.bookedArray_Down.length +
-      this.bookedArray_AfterNext_Down.length +
-      this.bookedArray_Between.length) > 5) {
+        this.bookedArray_Up.length +
+        this.bookedArray_Down.length +
+        this.bookedArray_AfterNext_Down.length +
+        this.bookedArray_Between.length) > 5) {
       if (this.timeslots[this.lastSelected + c_booked_down].state == true) {
         this.timeslots[this.lastSelected + c_booked_down].state = 'blocked';
       }
@@ -1227,12 +1262,24 @@ export class Tab2Page implements OnInit {
 
 
     // blocke all slots when day limit reached
-    if(this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY - 1) {
+    if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
       for (let a = 0; a < this.timeslots.length; a++) {
         if (this.timeslots[a].state == true) {
           this.timeslots[a].state = 'blocked';
         }
       }
+    }
+
+    // Display minutes with leading zero
+    // Soure: https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
+
+    let date = new Date();
+    let currentTime = date.getHours()+ '' + (date.getMinutes()<10?'0':'')  + date.getMinutes();
+    //log('TIME CURRENT: ',currentTime);
+    //console.log('TIME SELECTED: ',this.timeService.getStartTime(i + 1).replace(':', ''));
+
+    if((this.firstSelected == i) && parseInt(currentTime) >= parseInt(this.timeService.getStartTime(i + 1).replace(':', ''))) {
+      this.presentAlertConfirm();
     }
 
 
@@ -1353,9 +1400,10 @@ export class Tab2Page implements OnInit {
           today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         this.localNotifications.schedule({
           id: parseInt(this.capId),
-          title: 'Paypal payment successful',
+          title: this.translateService.instant('NOTIFICATION_PAYPAL_SUCCESS'),
           icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-          text: 'At ' + dateTime + ' you booked Capsule ' + this.capName + ' for ' + this.selectedCount * this.PRICE_PER_SLOT + '€'
+          // tslint:disable-next-line:max-line-length
+          text: this.translateService.instant('NOTIFICATION_PAYPAL_AT') + dateTime + this.translateService.instant('NOTIFICATION_PAYPAL_BOOKED') + this.capName + this.translateService.instant('NOTIFICATION_PAYPAL_FOR') + this.selectedCount * this.PRICE_PER_SLOT + '€'
         });
         // loop through bookingsQueue
         for (let b = 0; b < this.bookingsQueue.length; b++) {
@@ -1385,7 +1433,7 @@ export class Tab2Page implements OnInit {
                   });
 
 
-              this.toast("booked: " + this.capName);
+              this.toast(this.translateService.instant('BOOKED') + this.capName);
               console.log(data);
             }
 
@@ -1480,7 +1528,7 @@ export class Tab2Page implements OnInit {
         if (index === -1) {
           impossibles.push(this.userBookingsSlotsArray[s]);
         }
-        
+
         let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
         if (index2 === -1) {
           impossibles.push(this.userBookingsSlotsArray[s + 1]);
@@ -1490,8 +1538,17 @@ export class Tab2Page implements OnInit {
       }
 
       if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-        this.timeslots[impossibles[0] - 2].state = 'impossible';
-        this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        
+        try {
+          this.timeslots[impossibles[0] - 2].state = 'impossible';
+        } catch {
+
+        }
+        try {
+          this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        } catch {
+
+        }
       }
 
       impossibles = [];
@@ -1722,7 +1779,7 @@ export class Tab2Page implements OnInit {
     for (let b in this.userBookingsArray) {
       let date2 = new Date(this.userBookingsArray[b].Date);
 
-      if (date.getFullYear() + '-' + (date.getMonth() + 1)+ '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1)+ '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+      if (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
         //console.log(this.userBookingsArray[b]);
         //console.log(this.userBookingsArray[b].capsule.Name);
 
@@ -1747,7 +1804,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('crossCapsuleBookingsArray',this.crossCapsuleBookingsArray);
+    console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
 
   }
 
@@ -1756,6 +1813,27 @@ export class Tab2Page implements OnInit {
     if (index === -1) {
       this.crossCapsuleBookingsArray.push(item);
     }
+  }
+
+  
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      mode: 'md',
+      cssClass: 'alert-dialog',
+      header: this.translateService.instant('WARNING'),
+      message: this.translateService.instant('WARNING_SLOTACTIVE'),
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
 

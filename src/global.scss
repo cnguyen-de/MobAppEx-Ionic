@@ -78,6 +78,10 @@
     min-height: 23% !important;
     top: 80% !important;
   }
+  .extend-capsule-modal .modal-wrapper {
+    min-height: 40% !important;
+    top: 57% !important;;
+  }
 }
 
 //Big phones
@@ -95,6 +99,10 @@
   .language-chooser-modal .modal-wrapper {
     min-height: 23% !important;
     top: 78% !important;
+  }
+  .extend-capsule-modal .modal-wrapper {
+    min-height: 40% !important;
+    top: 50% !important;;
   }
 }
 
@@ -124,12 +132,22 @@
   border-radius: 15px 15px 0 0 ;
   overflow: auto;
 }
+
 .paypal-modal .modal-wrapper {
   min-height: 50%;
-  top: 55%;
+  top: 50%;
   position: absolute;
   display: block;
   border-radius: 15px 15px 0 0 ;
+  overflow: auto;
+}
+
+.extend-capsule-modal .modal-wrapper {
+  min-height: 50%;
+  top: 39%;
+  position: absolute;
+  display: block;
+  border-radius: 15px 15px 0 0;
   overflow: auto;
 }
 

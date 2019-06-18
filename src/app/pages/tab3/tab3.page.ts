@@ -108,18 +108,18 @@ export class Tab3Page {
     const alert = await this.alertController.create({
       mode: 'md',
       cssClass: 'alert-dialog',
-      header: 'Are you sure?',
-      message: 'Your preferences are saved, you will need to log in again to use the app',
+      header: this.translateService.instant('LOG_OUT_PAGE_HEADER'),
+      message: this.translateService.instant('LOG_OUT_PAGE_TEXT'),
       buttons: [
         {
-          text: 'Cancel',
+          text: this.translateService.instant('CANCEL'),
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
 
           }
         }, {
-          text: 'Log out',
+          text: this.translateService.instant('LOG_OUT'),
           handler: () => {
             this.apiService.logOut()
                 .pipe(first())
@@ -189,7 +189,7 @@ export class Tab3Page {
       if (typeof value.data != 'undefined') {
         this.notificationTime = value.data;
         this.saveToStorage('notificationPref', this.notificationTime).then(() => {
-          this.toast("Notification preference saved");
+          this.toast(this.translateService.instant('NOTIFICATION_PREF_SAVED'));
         });
       }
     });
@@ -215,7 +215,7 @@ export class Tab3Page {
         this.volumePref = value.data.VolumenLevel;
         this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
-          this.toast("Volume preference set to: " + this.volumePref)
+          this.toast(this.translateService.instant('VOLUME_PREF_SAVED') + this.volumePref);
         });
       }
     });
@@ -241,7 +241,7 @@ export class Tab3Page {
         this.lightPref = value.data.LightLevel;
         this.user.capsulePreference = value.data;
         this.saveToStorage('user', this.user).then(() => {
-          this.toast("Light preference set to: " + this.lightPref)
+          this.toast(this.translateService.instant('LIGHT_PREF_SAVED') + this.lightPref);
         })
       }
     });
@@ -250,7 +250,7 @@ export class Tab3Page {
   }
 
   showContact() {
-    this.toast("Ask Snooze Team 😊")
+    this.toast(this.translateService.instant('ASK_CONTACT'));
   }
 
   transitionTo(path, direction) {

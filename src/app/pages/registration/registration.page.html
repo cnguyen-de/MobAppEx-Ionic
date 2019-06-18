@@ -20,67 +20,60 @@
 </ion-header> -->
 
 <ion-content>
-  <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-      <div class="container">
-        <ion-text>
-          <h5 class="sign-up-text">Create your account</h5>
-        </ion-text>
+  <div class="container">
+    <ion-text>
+      <h5 class="sign-up-text">{{ 'REGISTER_PAGE_HEADER' | translate }}</h5>
+    </ion-text>
 
-        <form [formGroup]="registrationForm">
-          <ion-list>
-            <ion-item lines="none">
-              <ion-icon name="contact" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="text" formControlName="username" placeholder="Username"></ion-input>
-            </ion-item>
+    <form [formGroup]="registrationForm">
+      <ion-list>
+        <ion-item lines="none">
+          <ion-icon name="contact" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="text" formControlName="username" placeholder="{{ 'USERNAME' | translate }}"></ion-input>
+        </ion-item>
 
-            <ion-item lines="none">
-              <ion-icon name="mail" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="email" formControlName="email" placeholder="Email"></ion-input>
-            </ion-item>
+        <ion-item lines="none">
+          <ion-icon name="mail" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="email" formControlName="email" placeholder="{{ 'EMAIL' | translate }}"></ion-input>
+        </ion-item>
 
-            <ion-item lines="none">
-              <ion-icon name="md-key" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="password" formControlName="password" placeholder="Password"></ion-input>
-            </ion-item>
+        <ion-item lines="none">
+          <ion-icon name="md-key" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="password" formControlName="password" placeholder="{{ 'PASSWORD' | translate }}"></ion-input>
+        </ion-item>
 
-            <ion-item lines="none">
-              <ion-icon name="repeat" class="login-icon"></ion-icon>
-              <ion-input class="login-input" type="password" formControlName="repeatPassword"
-                         (keyup.enter)="onSubmit()" placeholder="Repeat Password"></ion-input>
-            </ion-item>
+        <ion-item lines="none">
+          <ion-icon name="repeat" class="login-icon"></ion-icon>
+          <ion-input class="login-input" type="password" formControlName="repeatPassword"
+                     (keyup.enter)="onSubmit()" placeholder="{{ 'REPEAT_PASSWORD' | translate }}"></ion-input>
+        </ion-item>
 
-            <ion-button strong expand="block" color="primary" shape="round"
-                        class="sign-up-button ion-padding-horizontal" (click)="onSubmit()"
-                        [disabled]="registrationForm.invalid">
-              <ion-text *ngIf="!buttonPressed">Register</ion-text>
-              <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
-            </ion-button>
+        <ion-button strong expand="block" color="primary" shape="round" mode="ios"
+                    class="sign-up-button ion-padding-horizontal" (click)="onSubmit()"
+                    [disabled]="registrationForm.invalid">
+          <ion-text *ngIf="!buttonPressed">{{ 'REGISTER' | translate }}</ion-text>
+          <ion-spinner name="crescent" *ngIf="buttonPressed"></ion-spinner>
+        </ion-button>
 
-          </ion-list>
-        </form>
-      </div>
-      <div class="button-text">
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <ion-text color="primary" (click)="transitionTo('/recovery')">
-                Forgot password?
-              </ion-text>
-            </ion-col>
-            .
-            <ion-col>
-              <ion-text color="primary" (click)="transitionTo('/login')">
-                Login to Snooze
-              </ion-text>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-
-    </div>
-    <div class="col-md-4"></div>
+      </ion-list>
+    </form>
+  </div>
+  <div class="button-text">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-text color="primary" (click)="transitionTo('/recovery')">
+            {{ 'FORGOT_PASSWORD' | translate }}
+          </ion-text>
+        </ion-col>
+        .
+        <ion-col>
+          <ion-text color="primary" (click)="transitionTo('/login')">
+            {{ 'GO_TO_LOGIN' | translate }}
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 
 </ion-content>

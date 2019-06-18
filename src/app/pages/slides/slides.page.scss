@@ -40,7 +40,7 @@ img {
   
 }
 #snooze-logo {
-  top: 25%;
+  top: 23%;
   width: 55%;
 }
 h1 {
@@ -48,10 +48,12 @@ h1 {
   top: 8%;
 }
 
-h3 {
+p {
   position: absolute;
-  top: 60%;
+  top: 58%;
   max-width: 300px;
+  font-size: 1.3em;
+  opacity: 0.75;
 }
 
 ion-content {
@@ -67,5 +69,26 @@ ion-content {
 
 .slide-three {
   background: var(--ion-color-primary)
+}
+
+
+
+
+ion-chip {
+  background: rgba(255, 255, 255, 0.2);
+  
+}
+.theme-icon {
+  margin-left: 1px;
+  margin-right: 1px;
+}
+ion-label {
+  margin-left: 2px;
+}
+ion-footer, ion-toolbar {
+  position: absolute;
+}
+ion-toolbar {
+  --background: transparent;
 }
 
