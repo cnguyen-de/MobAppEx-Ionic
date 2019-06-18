@@ -70,6 +70,7 @@ export class Tab1Page {
     count: 0,
     slot: ''
   };
+  language: string;
 
   constructor(private apiService: ApiService,
               private storage: Storage,
@@ -88,6 +89,11 @@ export class Tab1Page {
   }
 
   ionViewWillEnter() {
+    this.storage.get('language').then(lang => {
+      if (lang != null) {
+        this.language = lang;
+      }
+    })
     this.getUserInfo();
     if (this.futureBookings.length == 0) {
       this.loading = true;
