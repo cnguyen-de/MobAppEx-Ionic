@@ -382,6 +382,8 @@ export class Tab1Page {
   }
 
   doRefresh($event) {
+    this.getUserInfo();
+    this.futureBookings = [];
     this.getFutureBookings();
     setTimeout(() => {
       $event.target.complete();
