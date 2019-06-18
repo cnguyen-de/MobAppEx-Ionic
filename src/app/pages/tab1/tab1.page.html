@@ -182,7 +182,7 @@
 
       <ion-text>{{ 'CAPSULE_PIN' | translate }}</ion-text>
       <ion-item *ngFor="let booking of futureBookings | slice:0:1" lines="none"
-                class="item-pin" class="controller ion-padding-start">
+                class="inside-pin controller ion-padding-start">
         <ion-icon name="ios-log-in" class="pin"></ion-icon>
         <ion-label color="primary" style="margin-bottom: 3px; margin-left: 5px;"><h1> {{booking.Pin}}</h1></ion-label>
       </ion-item>
