@@ -382,10 +382,18 @@ export class Tab1Page {
   }
 
   doRefresh($event) {
+    this.getUserInfo();
+    this.futureBookings = [];
+    if (this.futureBookings.length == 0) {
+      this.loading = true;
+    }
     this.getFutureBookings();
+    if (this.futureBookings.length == 0) {
+      setTimeout(() => this.loading = false, 100);
+    }
     setTimeout(() => {
       $event.target.complete();
-    }, 700);
+    }, 500);
   }
 
   sliderChange() {
@@ -417,7 +425,11 @@ export class Tab1Page {
           i++;
         }
         console.log(this.freeSlots);
-        this.presentExtendCapsuleModal();
+        if (this.freeSlots.length != 0) {
+          this.presentExtendCapsuleModal();
+        } else {
+          this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+        }
       } else {
         this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
       }
