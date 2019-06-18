@@ -22,7 +22,7 @@
   "NO_RESERVATION":"Keine Reservierungen gefunden!",
   "NO_RESERVATION_TEXT":"Deine gebuchten Kapseln werden hier auftauchen",
   "FIND_CAPSULE":"Finde eine Kapsel",
-  "CAPSULE_CONTROL":"KAPSELSTEUERUNG",
+  "CAPSULE_CONTROL":"Kapselsteurung",
   "CAPSULE_PIN":"PIN",
   "CAPSULE_LIGHT":"Licht",
   "CAPSULE_VOLUME":"Lautstärke",
@@ -93,12 +93,14 @@
   "LIGHT_PREF_SAVED":"Helligkeit gesetzt auf: ",
   "ABOUT": "Über uns",
   "REPORT_A_BUG": "Problem Berichten",
-  "THIS_APP": "Kredit",
+  "THIS_APP": "Credits & Entwickler",
   "THIS_APP_MAE":"Mobile Application Exercise - Group 9",
   "THIS_APP_SNOOZE":"ein Snooze Projekt",
   "THIS_APP_TEXT":"Diese Anwendung war Teil des Projekts für das Snooze Team, im Kurs Mobile Application Exercise unter die Betreuung von Prof. Dr. Jens Liebehenschel. Vielen Dank an das Server-Team für die Bereitstellung der Backend-Dienste.",
   "THIS_APP_GROUP":"Gruppe 9",
   "CONTACT": "Impressum",
   "ASK_CONTACT":"Fragt das Snooze Team 😊",
-  "LEGAL": "Legal"
+  "LEGAL": "Legal",
+  "LICENSES": "Lizenzen"
+
 }

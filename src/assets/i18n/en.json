@@ -22,7 +22,7 @@
   "NO_RESERVATION":"No reservation found!",
   "NO_RESERVATION_TEXT":"Your booked capsules will show up here",
   "FIND_CAPSULE":"Find a capsule now",
-  "CAPSULE_CONTROL":"CAPSULE CONTROL",
+  "CAPSULE_CONTROL":"Capsule Control",
   "CAPSULE_PIN":"PIN",
   "CAPSULE_LIGHT":"Light",
   "CAPSULE_VOLUME":"Volume",
@@ -93,12 +93,13 @@
   "LIGHT_PREF_SAVED":"Light preference set to: ",
   "ABOUT": "About",
   "REPORT_A_BUG": "Report a Bug",
-  "THIS_APP": "Acknowledgement",
+  "THIS_APP": "Credits & Developers",
   "THIS_APP_MAE":"Mobile Application Exercise - Group 9",
   "THIS_APP_SNOOZE":"A Snooze Project",
   "THIS_APP_TEXT":"This application was part of the project for Snooze Team in the course Mobile Application Exercise under the supervision of Prof. Dr. Jens Liebehenschel. Thanks to Server Team for providing the backend services.",
   "THIS_APP_GROUP":"Group 9",
   "CONTACT": "Contact",
   "ASK_CONTACT":"Ask Snooze Team 😊",
-  "LEGAL": "Legal"
+  "LEGAL": "Legal",
+  "LICENSES": "Licenses"
 }
