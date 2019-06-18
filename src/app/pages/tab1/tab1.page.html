@@ -26,8 +26,8 @@
 
   <!-- NO RESERVED CAPSULE WELCOME CARD -->
   <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !loading">
-    <div class="header">
-      <ion-icon class="close-icon" name="close" slot="end" size="large" color="warning"></ion-icon>
+    <div style="background: var(--ion-color-primary);">
+      <ion-icon class="close-icon" name="close" slot="end" size="large" color="primary"></ion-icon>
     </div>
     <ion-card-header>
       <ion-card-title class="text">{{ 'NO_RESERVATION' | translate }}</ion-card-title>
@@ -41,6 +41,8 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
+
+
   <!-- POWER NAP INFO -->
   <ion-card button="true" class="welcome-card" mode="ios" *ngIf="futureBookings.length == 0 && !loading"
             href="https://www.sleepfoundation.org/articles/napping">
@@ -60,8 +62,8 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- CAPSULE RESERVATION LIST -->
   <div *ngIf="!loading">
-    <!-- CAPSULE RESERVATION LIST -->
     <div class="capsules-info" *ngFor="let booking of futureBookings; let i = index">
 
       <!-- CARD VIEW: NEXT ACTIVE CAPSULE -->

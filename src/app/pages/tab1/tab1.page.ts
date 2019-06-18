@@ -348,7 +348,7 @@ export class Tab1Page {
       if (!isActive) {
         // comment this for live capsule control
         this.presentAlertConfirm();
-        this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
+        //this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
         return;
       }
     }
