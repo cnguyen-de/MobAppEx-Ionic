@@ -425,7 +425,11 @@ export class Tab1Page {
           i++;
         }
         console.log(this.freeSlots);
-        this.presentExtendCapsuleModal();
+        if (this.freeSlots.length != 0) {
+          this.presentExtendCapsuleModal();
+        } else {
+          this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+        }
       } else {
         this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
       }
