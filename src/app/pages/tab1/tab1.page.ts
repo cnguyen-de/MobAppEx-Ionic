@@ -89,6 +89,10 @@ export class Tab1Page {
   }
 
   ionViewWillEnter() {
+    this.initializeData();
+  }
+
+  initializeData() {
     this.storage.get('language').then(lang => {
       if (lang != null) {
         this.language = lang;
@@ -114,22 +118,6 @@ export class Tab1Page {
         setTimeout(() => this.loading = false, 100);
       }
     });
-  }
-
-  //Navigate to capsule control
-  capsuleControl() {
-    this.transitionTo('/capsule-control', 'left');
-  }
-
-  transitionTo(path, direction) {
-    let options: NativeTransitionOptions = {
-      direction: direction,
-      duration: 200,
-      slowdownfactor: 1,
-      androiddelay: 200,
-    };
-    this.nativePageTransitions.slide(options);
-    this.router.navigateByUrl(path);
   }
 
   getFutureBookings() {
@@ -252,34 +240,32 @@ export class Tab1Page {
     }
 
     // Get Notification Preference
-    this.storage.get('notificationPref').then(pref => {
-      if (typeof pref == 'number') {
-        if (pref > 0) {
-          this.localNotifications.requestPermission().then(accept => {
-            if (accept) {
-              //Check if booking exists
-              if (sortedBookings.length > 0) {
-                //Get list of ids (1-6 possible ids)
-                this.storage.get('pushNotificationID').then(notificationID => {
-                  if (notificationID != null) {
-                    let sameId = false;
-                    // Compare each ids
-                    for (let id of notificationID) {
-                      if (sortedBookings[0].id == id) {
-                        sameId = true;
-                      }
-                    }
-                    //If no matching id = new booking -> new notification
-                    if (!sameId) {
-                      this.createNotificationFor(sortedBookings[0]);
-                    }
-                  } else { //If no id, and booking exists -> create new notification for this new booking
-                    this.createNotificationFor(sortedBookings[0]);
+
+    if (this.MINUTES_BEFORE_START > 0) {
+      this.localNotifications.requestPermission().then(accept => {
+        if (accept) {
+          //Check if booking exists
+          if (sortedBookings.length > 0) {
+            //Get list of ids (1-6 possible ids)
+            this.storage.get('pushNotificationID').then(notificationID => {
+              if (notificationID != null) {
+                let sameId = false;
+                // Compare each ids
+                for (let id of notificationID) {
+                  if (sortedBookings[0].id == id) {
+                    sameId = true;
                   }
-                });
+                }
+                //If no matching id = new booking -> new notification
+                if (!sameId) {
+                  this.createNotificationFor(sortedBookings[0]);
+                }
+              } else { //If no id, and booking exists -> create new notification for this new booking
+                this.createNotificationFor(sortedBookings[0]);
               }
-            }
-          });
+            });
+          }
+
         } else {
           this.storage.get('pushNotificationID').then(notificationID => {
             if (notificationID != null) {
@@ -288,8 +274,9 @@ export class Tab1Page {
             }
           });
         }
-      }
-    });
+      });
+    }
+
 
     //Create countdown timer for most recent booking
     if (sortedBookings.length > 0) {
@@ -314,28 +301,42 @@ export class Tab1Page {
   createNotificationFor(closestBooking) {
     let dateArray = closestBooking.Date.split('-');
     let timeArray = closestBooking.FirstTimeFrame.split(':');
-    let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+    let notifyingMin = timeArray[1];
+
+    if (this.MINUTES_BEFORE_START < 60) {
+      if (timeArray[1] - this.MINUTES_BEFORE_START < 0) {
+        notifyingMin = 60 + Number(timeArray[1]) - Number(this.MINUTES_BEFORE_START);
+        timeArray[0] = timeArray[0] - 1;
+      } else {
+        notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+      }
+    } else if (this.MINUTES_BEFORE_START == 60) {
+      timeArray[0] = timeArray[0] - 1;
+    }
 
     console.log('created notification ' + this.MINUTES_BEFORE_START + ' min before, ID: ' + closestBooking.combinedIds);
     //Check if the time start is less than 10 minutes then set notification to now.
-    if (new Date(closestBooking.Date).getDate() == this.today.getDate()) {
-      if (timeArray[0] - this.today.getHours() == 0) {
-        if (timeArray[1] - this.today.getMinutes() <= this.MINUTES_BEFORE_START) {
-          notifyingMin = this.today.getMinutes();
-        }
-      }
+    let isActive = this.MINUTES_BEFORE_START * 60 >= this.countDownTime - this.today.getTime() / 1000;
+    console.log(this.countDownTime - this.today.getTime() / 1000 )
+    console.log(this.MINUTES_BEFORE_START * 60, isActive)
+    if (isActive) {
+      notifyingMin = this.today.getMinutes();
     }
+
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
+    console.log(date);
+
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
       icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-      text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
+      text: 'Your capsule is ready at ' + closestBooking.FirstTimeFrame,
       trigger: {
         at: date
       }
     });
     this.saveToStorage('pushNotificationID', closestBooking.id);
+
   }
 
   viewActiveCapsule() {
@@ -382,6 +383,11 @@ export class Tab1Page {
   }
 
   doRefresh($event) {
+    this.storage.get('notificationPref').then(notificationPref => {
+      if (typeof notificationPref == 'number') {
+        this.MINUTES_BEFORE_START = notificationPref;
+      }
+    });
     this.getUserInfo();
     this.futureBookings = [];
     if (this.futureBookings.length == 0) {

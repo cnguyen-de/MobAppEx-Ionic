@@ -123,7 +123,7 @@ export class Tab2Page implements OnInit {
   timeslots = [];
   segmentWidth: number = 100;
 
-  allowOnlyOneBooking = true;
+  allowOnlyOneBooking = false;
   MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
   PRICE_PER_SLOT = 3;

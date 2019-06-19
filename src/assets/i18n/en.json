@@ -12,7 +12,7 @@
   "ACCOUNT_RECOVERY_PAGE_HEADER":"Account Recovery",
   "ACCOUNT_RECOVERY_PAGE_TEXT":"Email address for account recovery",
   "RESET_PASSWORD": "Reset Password",
-  "GO_TO_LOGIN":"Go back to Login",
+  "GO_TO_LOGIN":"Go to Login",
 
   "TABS": "TABS PAGE",
 
@@ -38,6 +38,7 @@
   "CAPSULE_NOT_ACTIVE_HEADER":"Capsule not active",
   "CAPSULE_NOT_ACTIVE_TEXT":"View Capsule Control for Dev purpose?",
   "CAPSULE_PAYPAL_SEND":"Paypal payment successful, sending data to Server..",
+  "CAPSULE_READY": "Your capsule is ready at ",
 
   "TAB_2": "Find",
   "TODAY":"Today",
@@ -111,6 +112,9 @@
   "LICENSES": "Licenses",
 
   "LANGUAGE_CODE": "en-US",
+  "LANGUAGE_DE":"German",
+  "LANGUAGE_EN":"English",
+  "LANGUAGE_CHANGE":"Change Language",
 
   "SLIDES_WELCOME": "Welcome",
   "SLIDES_TEXT1": "The Snooze app lets you find, book and control Snooze sleeping capsules",
