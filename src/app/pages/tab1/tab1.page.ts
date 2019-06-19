@@ -322,7 +322,7 @@ export class Tab1Page {
     }
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
     console.log(date);
-    /*
+    
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
@@ -333,7 +333,7 @@ export class Tab1Page {
       }
     });
     this.saveToStorage('pushNotificationID', closestBooking.id);
-    */
+
   }
 
   viewActiveCapsule() {
