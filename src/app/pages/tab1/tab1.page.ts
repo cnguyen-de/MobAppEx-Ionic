@@ -300,10 +300,9 @@ export class Tab1Page {
   createNotificationFor(closestBooking) {
     let dateArray = closestBooking.Date.split('-');
     let timeArray = closestBooking.FirstTimeFrame.split(':');
-    let notifyingMin = timeArray[1] - 10;
-    if (this.MINUTES_BEFORE_START < 30) {
-      notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
-    } else if (this.MINUTES_BEFORE_START > 20 && this.MINUTES_BEFORE_START < 60) {
+    let notifyingMin = timeArray[1];
+
+    if (this.MINUTES_BEFORE_START < 60) {
       if (timeArray[1] - this.MINUTES_BEFORE_START < 0) {
         notifyingMin = 60 + timeArray[1] - this.MINUTES_BEFORE_START;
         timeArray[0] = timeArray[0] - 1;
