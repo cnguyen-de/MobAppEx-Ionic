@@ -242,31 +242,29 @@ export class Tab1Page {
     // Get Notification Preference
 
     if (this.MINUTES_BEFORE_START > 0) {
-      this.localNotifications.requestPermission().then(accept => {
-        if (accept) {
-          //Check if booking exists
-          if (sortedBookings.length > 0) {
-            //Get list of ids (1-6 possible ids)
-            this.storage.get('pushNotificationID').then(notificationID => {
-              if (notificationID != null) {
-                let sameId = false;
-                // Compare each ids
-                for (let id of notificationID) {
-                  if (sortedBookings[0].id == id) {
-                    sameId = true;
-                  }
-                }
-                //If no matching id = new booking -> new notification
-                if (!sameId) {
-                  this.createNotificationFor(sortedBookings[0]);
-                }
-              } else { //If no id, and booking exists -> create new notification for this new booking
-                this.createNotificationFor(sortedBookings[0]);
+
+      //Check if booking exists
+      if (sortedBookings.length > 0) {
+        //Get list of ids (1-6 possible ids)
+        this.storage.get('pushNotificationID').then(notificationID => {
+          if (notificationID != null) {
+            let sameId = false;
+            // Compare each ids
+            for (let id of notificationID) {
+              if (sortedBookings[0].id == id) {
+                sameId = true;
               }
-            });
+            }
+            //If no matching id = new booking -> new notification
+            if (!sameId) {
+              this.createNotificationFor(sortedBookings[0]);
+            }
+          } else { //If no id, and booking exists -> create new notification for this new booking
+            this.createNotificationFor(sortedBookings[0]);
           }
-        }
-      });
+        });
+      }
+
     } else {
       this.storage.get('pushNotificationID').then(notificationID => {
         if (notificationID != null) {
@@ -304,7 +302,7 @@ export class Tab1Page {
 
     if (this.MINUTES_BEFORE_START < 60) {
       if (timeArray[1] - this.MINUTES_BEFORE_START < 0) {
-        notifyingMin = 60 + timeArray[1] - this.MINUTES_BEFORE_START;
+        notifyingMin = 60 + Number(timeArray[1]) - Number(this.MINUTES_BEFORE_START);
         timeArray[0] = timeArray[0] - 1;
       } else {
         notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
@@ -323,16 +321,19 @@ export class Tab1Page {
       }
     }
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
+    console.log(date);
+    /*
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
       icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-      text: this.translateService.instant('CAPSULE_READY') + closestBooking.FirstTimeFrame,
+      text: 'Your capsule is ready at ' + closestBooking.FirstTimeFrame,
       trigger: {
         at: date
       }
     });
     this.saveToStorage('pushNotificationID', closestBooking.id);
+    */
   }
 
   viewActiveCapsule() {
