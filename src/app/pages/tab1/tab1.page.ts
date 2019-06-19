@@ -300,7 +300,19 @@ export class Tab1Page {
   createNotificationFor(closestBooking) {
     let dateArray = closestBooking.Date.split('-');
     let timeArray = closestBooking.FirstTimeFrame.split(':');
-    let notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+    let notifyingMin = timeArray[1] - 10;
+    if (this.MINUTES_BEFORE_START < 30) {
+      notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+    } else if (this.MINUTES_BEFORE_START > 20 && this.MINUTES_BEFORE_START < 60) {
+      if (timeArray[1] - this.MINUTES_BEFORE_START < 0) {
+        notifyingMin = 60 + timeArray[1] - this.MINUTES_BEFORE_START;
+        timeArray[0] = timeArray[0] - 1;
+      } else {
+        notifyingMin = timeArray[1] - this.MINUTES_BEFORE_START;
+      }
+    } else if (this.MINUTES_BEFORE_START == 60) {
+      timeArray[0] = timeArray[0] - 1;
+    }
 
     console.log('created notification ' + this.MINUTES_BEFORE_START + ' min before, ID: ' + closestBooking.combinedIds);
     //Check if the time start is less than 10 minutes then set notification to now.
@@ -316,7 +328,7 @@ export class Tab1Page {
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
       icon: 'https://mobappex.web.app/assets/icon/favicon.png',
-      text: 'Your Capsule is ready at ' + closestBooking.FirstTimeFrame,
+      text: this.translateService.instant('CAPSULE_READY') + closestBooking.FirstTimeFrame,
       trigger: {
         at: date
       }

@@ -38,6 +38,7 @@
   "CAPSULE_NOT_ACTIVE_HEADER":"Kapsel nicht activ",
   "CAPSULE_NOT_ACTIVE_TEXT":"Kapselkontrolle für Entwicklerzwecke anzeigen?",
   "CAPSULE_PAYPAL_SEND":"Paypal Zahlung erfolgreich, sende die daten an den Server..",
+  "CAPSULE_READY": "Dein Kapsel ist bereit um ",
 
   "TAB_2": "Suchen",
   "TODAY":"Heute",

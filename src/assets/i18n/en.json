@@ -38,6 +38,7 @@
   "CAPSULE_NOT_ACTIVE_HEADER":"Capsule not active",
   "CAPSULE_NOT_ACTIVE_TEXT":"View Capsule Control for Dev purpose?",
   "CAPSULE_PAYPAL_SEND":"Paypal payment successful, sending data to Server..",
+  "CAPSULE_READY": "Your capsule is ready at ",
 
   "TAB_2": "Find",
   "TODAY":"Today",
