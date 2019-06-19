@@ -89,6 +89,10 @@ export class Tab1Page {
   }
 
   ionViewWillEnter() {
+    this.initializeData();
+  }
+
+  initializeData() {
     this.storage.get('language').then(lang => {
       if (lang != null) {
         this.language = lang;
@@ -114,22 +118,6 @@ export class Tab1Page {
         setTimeout(() => this.loading = false, 100);
       }
     });
-  }
-
-  //Navigate to capsule control
-  capsuleControl() {
-    this.transitionTo('/capsule-control', 'left');
-  }
-
-  transitionTo(path, direction) {
-    let options: NativeTransitionOptions = {
-      direction: direction,
-      duration: 200,
-      slowdownfactor: 1,
-      androiddelay: 200,
-    };
-    this.nativePageTransitions.slide(options);
-    this.router.navigateByUrl(path);
   }
 
   getFutureBookings() {
@@ -252,44 +240,42 @@ export class Tab1Page {
     }
 
     // Get Notification Preference
-    this.storage.get('notificationPref').then(pref => {
-      if (typeof pref == 'number') {
-        if (pref > 0) {
-          this.localNotifications.requestPermission().then(accept => {
-            if (accept) {
-              //Check if booking exists
-              if (sortedBookings.length > 0) {
-                //Get list of ids (1-6 possible ids)
-                this.storage.get('pushNotificationID').then(notificationID => {
-                  if (notificationID != null) {
-                    let sameId = false;
-                    // Compare each ids
-                    for (let id of notificationID) {
-                      if (sortedBookings[0].id == id) {
-                        sameId = true;
-                      }
-                    }
-                    //If no matching id = new booking -> new notification
-                    if (!sameId) {
-                      this.createNotificationFor(sortedBookings[0]);
-                    }
-                  } else { //If no id, and booking exists -> create new notification for this new booking
-                    this.createNotificationFor(sortedBookings[0]);
+
+    if (this.MINUTES_BEFORE_START > 0) {
+      this.localNotifications.requestPermission().then(accept => {
+        if (accept) {
+          //Check if booking exists
+          if (sortedBookings.length > 0) {
+            //Get list of ids (1-6 possible ids)
+            this.storage.get('pushNotificationID').then(notificationID => {
+              if (notificationID != null) {
+                let sameId = false;
+                // Compare each ids
+                for (let id of notificationID) {
+                  if (sortedBookings[0].id == id) {
+                    sameId = true;
                   }
-                });
+                }
+                //If no matching id = new booking -> new notification
+                if (!sameId) {
+                  this.createNotificationFor(sortedBookings[0]);
+                }
+              } else { //If no id, and booking exists -> create new notification for this new booking
+                this.createNotificationFor(sortedBookings[0]);
               }
-            }
-          });
-        } else {
-          this.storage.get('pushNotificationID').then(notificationID => {
-            if (notificationID != null) {
-              console.log('deleted notification id: ' + notificationID);
-              this.localNotifications.clear(notificationID);
-            }
-          });
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.storage.get('pushNotificationID').then(notificationID => {
+        if (notificationID != null) {
+          console.log('deleted notification id: ' + notificationID);
+          this.localNotifications.clear(notificationID);
+        }
+      });
+    }
+
 
     //Create countdown timer for most recent booking
     if (sortedBookings.length > 0) {
@@ -382,6 +368,11 @@ export class Tab1Page {
   }
 
   doRefresh($event) {
+    this.storage.get('notificationPref').then(notificationPref => {
+      if (typeof notificationPref == 'number') {
+        this.MINUTES_BEFORE_START = notificationPref;
+      }
+    });
     this.getUserInfo();
     this.futureBookings = [];
     if (this.futureBookings.length == 0) {
