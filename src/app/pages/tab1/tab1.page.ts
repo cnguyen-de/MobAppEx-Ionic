@@ -242,34 +242,37 @@ export class Tab1Page {
     // Get Notification Preference
 
     if (this.MINUTES_BEFORE_START > 0) {
-
-      //Check if booking exists
-      if (sortedBookings.length > 0) {
-        //Get list of ids (1-6 possible ids)
-        this.storage.get('pushNotificationID').then(notificationID => {
-          if (notificationID != null) {
-            let sameId = false;
-            // Compare each ids
-            for (let id of notificationID) {
-              if (sortedBookings[0].id == id) {
-                sameId = true;
+      this.localNotifications.requestPermission().then(accept => {
+        if (accept) {
+          //Check if booking exists
+          if (sortedBookings.length > 0) {
+            //Get list of ids (1-6 possible ids)
+            this.storage.get('pushNotificationID').then(notificationID => {
+              if (notificationID != null) {
+                let sameId = false;
+                // Compare each ids
+                for (let id of notificationID) {
+                  if (sortedBookings[0].id == id) {
+                    sameId = true;
+                  }
+                }
+                //If no matching id = new booking -> new notification
+                if (!sameId) {
+                  this.createNotificationFor(sortedBookings[0]);
+                }
+              } else { //If no id, and booking exists -> create new notification for this new booking
+                this.createNotificationFor(sortedBookings[0]);
               }
-            }
-            //If no matching id = new booking -> new notification
-            if (!sameId) {
-              this.createNotificationFor(sortedBookings[0]);
-            }
-          } else { //If no id, and booking exists -> create new notification for this new booking
-            this.createNotificationFor(sortedBookings[0]);
+            });
           }
-        });
-      }
 
-    } else {
-      this.storage.get('pushNotificationID').then(notificationID => {
-        if (notificationID != null) {
-          console.log('deleted notification id: ' + notificationID);
-          this.localNotifications.clear(notificationID);
+        } else {
+          this.storage.get('pushNotificationID').then(notificationID => {
+            if (notificationID != null) {
+              console.log('deleted notification id: ' + notificationID);
+              this.localNotifications.clear(notificationID);
+            }
+          });
         }
       });
     }
@@ -313,16 +316,16 @@ export class Tab1Page {
 
     console.log('created notification ' + this.MINUTES_BEFORE_START + ' min before, ID: ' + closestBooking.combinedIds);
     //Check if the time start is less than 10 minutes then set notification to now.
-    if (new Date(closestBooking.Date).getDate() == this.today.getDate()) {
-      if (timeArray[0] - this.today.getHours() == 0) {
-        if (timeArray[1] - this.today.getMinutes() <= this.MINUTES_BEFORE_START) {
-          notifyingMin = this.today.getMinutes();
-        }
-      }
+    let isActive = this.MINUTES_BEFORE_START * 60 >= this.countDownTime - this.today.getTime() / 1000;
+    console.log(this.countDownTime - this.today.getTime() / 1000 )
+    console.log(this.MINUTES_BEFORE_START * 60, isActive)
+    if (isActive) {
+      notifyingMin = this.today.getMinutes();
     }
+
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
     console.log(date);
-    
+
     this.localNotifications.schedule({
       id: closestBooking.combinedIds,
       title: 'Snooze Capsule',
