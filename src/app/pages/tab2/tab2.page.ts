@@ -157,7 +157,7 @@ export class Tab2Page implements OnInit {
 
     // Set current date
     let currentDate = new Date();
-    console.log(currentDate);
+    //console.log(currentDate);
 
     this.maxDate.setDate(currentDate.getDate() + this.daysRange - 1);
 
@@ -717,9 +717,9 @@ export class Tab2Page implements OnInit {
 
 
             if(this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
-              console.log('userBookings: ', this.userBookingsSlotsArray);
-              console.log('userBookings: ', this.userBookingsSlotsArray[0] - 1);
-              console.log('userBookings: ', this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] - 1);
+              //console.log('userBookings: ', this.userBookingsSlotsArray);
+              //console.log('userBookings: ', this.userBookingsSlotsArray[0] - 1);
+              //console.log('userBookings: ', this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] - 1);
                 for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
                   if (this.timeslots[a].state == true) {
                     this.timeslots[a].state = 'blocked';
@@ -1552,7 +1552,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
+    //console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
   }
 
 
@@ -1637,7 +1637,7 @@ export class Tab2Page implements OnInit {
       .subscribe(
         user => {
           this.userBookingsArray = user.bookings;
-          console.log('userBookingsArray @ getUserBookings()', user.bookings);
+          //console.log('userBookingsArray @ getUserBookings()', user.bookings);
           this.findOwnBookingsForActiveCapsule();
           this.findFutureBookingsForAllCapsules();
         },
@@ -1676,7 +1676,7 @@ export class Tab2Page implements OnInit {
       this.bookingsQueue.push(booking);
 
     }
-    console.log(this.bookingsQueue);
+    // console.log(this.bookingsQueue);
   }
 
 
@@ -1795,7 +1795,7 @@ export class Tab2Page implements OnInit {
       //let date = new Date(this.userBookingsArray[b].Date);
       //console.log(bookingStartDate.toISOString());
     }
-    console.log('future: ', this.futureBookings);
+    // console.log('future: ', this.futureBookings);
     this.setBookedLabel()
   }
 
@@ -1849,7 +1849,7 @@ export class Tab2Page implements OnInit {
         }
       }
     }
-    console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
+    // console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
 
   }
 
