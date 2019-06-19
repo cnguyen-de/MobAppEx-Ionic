@@ -4,6 +4,9 @@ ion-header {
 ion-toolbar {
    --background: var(--ion-item-background-color)
 }
+ion-buttons {
+   --ion-background-color: var(--ion-item-background-color)
+}
 .expansion{
    padding: 10px; 
 }
@@ -14,6 +17,7 @@ mat-expansion-panel {
 
 .button{
    //color: var(--ion-text-color);
+   padding-top: 6px;
    background: var(--ion-background-color);
 }
 
