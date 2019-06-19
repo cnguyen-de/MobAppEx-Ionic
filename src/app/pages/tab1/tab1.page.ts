@@ -42,7 +42,7 @@ import {ExtendCapsuleModalPage} from '../../modals/extend-capsule-modal/extend-c
 export class Tab1Page {
   MINUTES_BEFORE_START = 10;
   bookings: booking[] = [];
-  today = new Date();
+  today: any;
   futureBookings: booking[] = [];
   isFirstTime: boolean = true;
   loading: boolean = true;
@@ -93,6 +93,7 @@ export class Tab1Page {
   }
 
   initializeData() {
+    this.today = new Date()
     this.storage.get('language').then(lang => {
       if (lang != null) {
         this.language = lang;
@@ -383,6 +384,7 @@ export class Tab1Page {
   }
 
   doRefresh($event) {
+    this.today = new Date()
     this.storage.get('notificationPref').then(notificationPref => {
       if (typeof notificationPref == 'number') {
         this.MINUTES_BEFORE_START = notificationPref;
