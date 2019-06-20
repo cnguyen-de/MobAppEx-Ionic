@@ -63,7 +63,7 @@
   "NOTIFICATION_PAYPAL_BOOKED":" you booked Capsule ",
   "NOTIFICATION_PAYPAL_FOR":" for ",
   "WARNING": "Warning",
-  "WARNING_SLOTACTIVE": "This time slots time is already active. You'll be charged for a full time slots!",
+  "WARNING_SLOTACTIVE": "This time slots time is already active. You'll be charged for full price!",
 
   "TAB_3": "Information",
   "ACCOUNT": "Account",
