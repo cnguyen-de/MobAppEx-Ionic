@@ -353,8 +353,8 @@ export class Tab1Page {
     if (this.currentState === 'initial') {
       if (!isActive) {
         // comment this for live capsule control
-        this.presentAlertConfirm();
-        //this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
+        //this.presentAlertConfirm();
+        this.toast(this.translateService.instant('CAPSULE_NOT_YET_ACTIVE'));
         return;
       }
     }
@@ -439,7 +439,7 @@ export class Tab1Page {
 
     this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data => {
       // checks if you're in your last time slot of your booking
-      // this.lastTimeslot = false;
+      this.lastTimeslot = false;
       if(nowTimeFrame + 1 == this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '') || this.lastTimeslot == false){
         // checks if the next time slots are free or already booked
         if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')]){
