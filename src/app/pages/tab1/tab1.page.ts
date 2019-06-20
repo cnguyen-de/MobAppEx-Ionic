@@ -424,17 +424,20 @@ export class Tab1Page {
     this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data => {
       if (data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')]) {
 
+        console.log(this.futureBookings);
+        var firstFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].FirstTimeFrame + ''));
         var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
+        var activeSlots = lastFrame - firstFrame;
         var i = 0;
         this.freeSlots = [];
-        while (data[lastFrame] && i < 6 && this.maxTimeBooked(this.user.bookings) <= 15) {
+        while (data[lastFrame] && i < (6 - activeSlots) && this.maxTimeBooked(this.user.bookings) <= 15) {
 
           this.freeSlots.push(this.timeService.getEndTime(lastFrame));
 
           lastFrame++;
           i++;
         }
-        console.log(this.freeSlots);
+        // console.log(this.freeSlots);
         if (this.freeSlots.length != 0) {
           this.presentExtendCapsuleModal();
         } else {
