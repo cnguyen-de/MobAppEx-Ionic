@@ -346,7 +346,7 @@ export class Tab1Page {
     //console.log(date, this.countDownTime);
     let nowTimeStamp = this.today.getTime() / 1000;
     let isActive = nowTimeStamp - this.countDownTime >= 0;
-    console.log(isActive);
+    // console.log(isActive);
 
     if (this.currentState === 'initial') {
       if (!isActive) {
@@ -421,31 +421,57 @@ export class Tab1Page {
   }
 
   pickSlots() {
+    var nowTimeFrame = 0;
+    var now = new Date(Date.now());
+    var dat = new Date, time = "09:00:00".split(/\:|\-/g);
+    dat.setHours(Number(time[0]));
+    dat.setMinutes(Number(time[1]));
+    dat.setSeconds(Number(time[2]));
+
+    while(now > dat){
+      dat.setTime(dat.getTime() + 20*60000);
+    }
+
+    dat.setTime(dat.getTime() - 20*60000);
+    nowTimeFrame = this.timeService.getIntSlot(dat.toTimeString().split(' ')[0].slice(0,5));
+
+    console.log(nowTimeFrame + 1 == this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
+    
+
     this.apiService.getCapsuleAvailability(this.futureBookings[0].capsule.id, this.futureBookings[0].Date).subscribe(data => {
-      if (data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')]) {
+    
+      // checks if you're in your last time slot of your booking
+      if(nowTimeFrame + 1 == this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')){
+        // checks if the next time slots are free or already booked
+        if(data[this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + '')]){
 
-        console.log(this.futureBookings);
-        var firstFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].FirstTimeFrame + ''));
-        var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
-        var activeSlots = lastFrame - firstFrame;
-        var i = 0;
-        this.freeSlots = [];
-        while (data[lastFrame] && i < (6 - activeSlots) && this.maxTimeBooked(this.user.bookings) <= 15) {
-
-          this.freeSlots.push(this.timeService.getEndTime(lastFrame));
-
-          lastFrame++;
-          i++;
-        }
-        // console.log(this.freeSlots);
-        if (this.freeSlots.length != 0) {
-          this.presentExtendCapsuleModal();
-        } else {
+          // console.log(this.futureBookings);
+          var firstFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].FirstTimeFrame + ''));
+          var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
+          var i = 0;
+          this.freeSlots = [];
+          while (data[lastFrame] && i < 6 && this.maxTimeBooked(this.user.bookings) <= 15) {
+  
+            this.freeSlots.push(this.timeService.getEndTime(lastFrame));
+  
+            lastFrame++;
+            i++;
+          }
+          // console.log(this.freeSlots);
+          if (this.freeSlots.length != 0) {
+            this.presentExtendCapsuleModal();
+          } else {
+            this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+            console.log("zweites if");
+          }
+        }else{
           this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+          console.log("erstes if");
         }
-      } else {
-        this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+      }else{
+        this.toast("You are not in your last time slot");
       }
+
     });
   }
 
