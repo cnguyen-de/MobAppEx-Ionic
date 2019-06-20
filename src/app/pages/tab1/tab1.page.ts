@@ -316,6 +316,7 @@ export class Tab1Page {
     }
 
     console.log('created notification ' + this.MINUTES_BEFORE_START + ' min before, ID: ' + closestBooking.combinedIds);
+    /*
     //Check if the time start is less than 10 minutes then set notification to now.
     let isActive = this.MINUTES_BEFORE_START * 60 >= this.countDownTime - this.today.getTime() / 1000;
     console.log(this.countDownTime - this.today.getTime() / 1000 )
@@ -323,6 +324,7 @@ export class Tab1Page {
     if (isActive) {
       notifyingMin = this.today.getMinutes();
     }
+    */
 
     let date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], notifyingMin);
     console.log(date);
