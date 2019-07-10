@@ -45,7 +45,7 @@
     </ion-slides>
 </ion-content> -->
 
-<ion-content>
+<ion-content id="root-content">
   <div id="mapdiv" [@animatemapup]="cardTSS_state">
     <agm-map [latitude]="latMapCenter + 0.0003" [longitude]="lngMapCenter" [zoom]="mapZoomLevel" [zoomControl]="false"
       [streetViewControl]="false" [fitBounds]="false" [styles]="mapStyle" (boundsChange)="onBoundsChanged($event)">
@@ -95,7 +95,7 @@
                , {{ item.FirstFreeDate | date : "MMM dd"}}
                </h6>
           </ion-card-subtitle>
-          <ion-button shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'CAPSULE_SELECT' | translate }}
+          <ion-button id="btn-select-capsule" shape="round" size="default" expand="block" (click)="animateTSS_Click(item)">{{ 'CAPSULE_SELECT' | translate }}
           </ion-button>
       </ion-card>
     </ion-slide>
@@ -128,7 +128,7 @@
 </ion-card>
 
 
-<ion-content id="root" style="visibility: hidden">
+<ion-content id="root">
 
   <ion-card id="headr" mode="ios" style="visibility:collapse">
     <ion-card-header>
@@ -284,3 +284,8 @@
     </ion-button>
   </ion-card>
 </ion-content>
+
+
+<aside>
+
+</aside>
