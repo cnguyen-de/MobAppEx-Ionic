@@ -64,10 +64,6 @@ ion-button {
   margin: 10px;
 }
 
-#fab {
-  top: calc(100% - 216px);
-}
-
 #btn_Position {
   position: absolute;
   bottom: 16px;
@@ -90,7 +86,7 @@ ion-button {
   padding: 0px 0px 0px 0px;
 }
 
-#hallo {
+#timeslots-content {
   --padding-bottom: 50px;
 }
 
@@ -215,61 +211,61 @@ mat-datepicker {
 }
 
 
-@media (min-width: 1024px) and (min-height: 768px) and (orientation: landscape) {
+// @media (min-width: 768px) and (min-height: 640px) and (orientation: landscape) {
 
 
-  #mapdiv {
-    position: absolute;
-    height: 100%;
-    width: 60%;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-  }
+//   #mapdiv {
+//     position: absolute;
+//     height: 100%;
+//     width: 60%;
+//     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+//     z-index: 1000;
+//   }
 
-  #slider {
-    top: 0;
-    right: 0;
-    position: absolute;
-    height: 136px;
-    width: 40%;
-  }
+//   #slides {
+//     margin-top: 0;
+//   }
 
-  .slideCards {
-    height: 110px;
-  }
+//   #slider {
+//     top: 0;
+//     right: 0;
+//     position: absolute;
+//     height: 136px;
+//     width: 40%;
+//   }
 
-  #testre {
-    height: 64px;
-  }
+//   .slideCards {
+//     height: 110px;
+//   }
 
-  #listr {
-    height: calc(100% - 120px - 90px - 40px);
-    padding: 0px 0px 0px 0px;
+//   #testre {
+//     height: 64px;
+//   }
+
+//   #listr {
+//     //height: calc(100% - 120px - 90px - 40px);
+//     padding: 0px 0px 0px 0px;
     
-  }
+//   }
 
-  #root {
-    position: absolute;
-    right: 0;
-    visibility: visible;
-    width: 40%;
-    top: 116px;
-    z-index: 0;
-    --background: transparent;
-  }
+//   #root {
+//     position: absolute;
+//     right: 0;
+//     visibility: visible;
+//     width: 40%;
+//     top: 116px;
+//     z-index: 0;
+//     --background: transparent;
+//   }
 
-  #headr {
-    height: 0px;
-  }
-  .odd, .even {
-    display: block;
-  }
-
-  #btn-select-capsule {
-    visibility: hidden;
-  }
-
+//   #headr {
+//     height: 0px;
+//   }
   
+
+//   #btn-select-capsule {
+//     visibility: hidden;
+//   }
   
-}
+// }
 
