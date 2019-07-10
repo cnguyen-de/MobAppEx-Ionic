@@ -378,8 +378,7 @@ export class Tab2Page implements OnInit {
   setBookedLabel() {
     if (this.capsules.length > 0 && this.futureBookings.length > 0) {
 
-
-      // Find capsule id in futire bookings and apply booked label to capsule
+      // Find capsule id in future bookings and apply booked label to capsule
       for (let book in this.futureBookings) {
         var result = this.capsules.find(obj => {
           return obj.id == this.futureBookings[book].capsuleId;
@@ -391,7 +390,7 @@ export class Tab2Page implements OnInit {
   }
 
   /**
-   * Calculating the distance two lat/lng positions
+   * Calculating the distance between two lat/lng positions
    * @param lat1 Latitude of Postion 1
    * @param lng1 Longitude of Postion 1
    * @param lat2 Latitude of Postion 2
@@ -722,18 +721,21 @@ export class Tab2Page implements OnInit {
             //removing the dummy object from the array
             this.timeslots.splice(0, 1);
 
+
+            // Setting time-slot as booked
             for (let val in this.userBookingsSlotsArray) {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
             }
 
+            // Setting time-slot as crossbooked
             for (let val in this.crossCapsuleBookingsArray) {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
             }
 
-
+            // Setting time-slot as blocked if option 'allowOnlyOneBooking' is set
             if (this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
               //console.log('userBookings: ', this.userBookingsSlotsArray);
               //console.log('userBookings: ', this.userBookingsSlotsArray[0] - 1);
@@ -1447,7 +1449,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  // Show a waring if start-time of the selected time-slot already in the past
+  // Show a warning if start-time of the selected time-slot is already in the past
   async presentAlert_TS_Active() {
     const alert = await this.alertController.create({
       mode: 'md',
@@ -1713,7 +1715,7 @@ export class Tab2Page implements OnInit {
     //console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
   }
 
-  // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
+  // Impossibles are time slots above or below a timeslots-group that reaches the maximums booking limit
   findImpossibles() {
 
     // sort slot numbers to be in line
@@ -1762,6 +1764,7 @@ export class Tab2Page implements OnInit {
     }
   }
 
+  // finding own bookings to prevent booking another capsule at the same time as already booked a capsule.
   crossCapsuleBookingsArray = [];
   setTimeSlotsCrossCapsuleBooking() {
     this.crossCapsuleBookingsArray = [];
