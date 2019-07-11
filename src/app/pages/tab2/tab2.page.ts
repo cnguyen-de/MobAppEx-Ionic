@@ -10,7 +10,7 @@ import { LightModalPage } from '../../modals/light-modal/light-modal.page';
 import { CheckoutModalPage } from '../../modals/checkout-modal/checkout-modal.page';
 import { first } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { booking } from '../../_services/booking';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
@@ -112,9 +112,9 @@ export class Tab2Page implements OnInit {
   capsules = [];
 
   //Day Segments
-  excludeSundays = false;
+  excludeSundays = true;
   days = [];
-  daysRange: number = 30;
+  DAYSRANGE: number = 30;
 
   // Current Time
   currentTime;
@@ -122,7 +122,6 @@ export class Tab2Page implements OnInit {
   //Timeslots
   timeslots = [];
   segmentWidth: number = 100;
-
   allowOnlyOneBooking = false;
   MAX_SLOTS_PER_DAY = 15;
   MAX_SLOTS_PER_BOOKING = 6;
@@ -147,25 +146,30 @@ export class Tab2Page implements OnInit {
   activeDate = new Date();
   activeDate_String = '';
 
-  test = false;
 
+  //Calendar
   minDate = new Date();
   maxDate = new Date();
   datePickerFilter: any;
 
+
+  /**
+   * View Lifecycle: Triggered once when view is being inititialized
+   */
   ngOnInit() {
 
     // Set current date
     let currentDate = new Date();
     //console.log(currentDate);
 
-    this.maxDate.setDate(currentDate.getDate() + this.daysRange - 1);
+    //Set max date -> today + daysRange (30days)
+    this.maxDate.setDate(currentDate.getDate() + this.DAYSRANGE - 1);
 
 
     this.activeDate_String = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
     //Create 30 days for days-segment
-    for (let i = 0; i < this.daysRange; i++) {
+    for (let i = 0; i < this.DAYSRANGE; i++) {
       var date = new Date();
       date.setDate(date.getDate() + i);
 
@@ -186,12 +190,16 @@ export class Tab2Page implements OnInit {
         formattedDate = this.translateService.instant('TOMORROW');
         formattedDay = '';
       }
+
+      // creating day object
       let day = {
         dateRAW: date,
         date: formattedDate,
         day: formattedDay,
         value: i.toString()
       }
+
+      // adding days to days-array; excluding sundays if option set
       if (this.excludeSundays == true) {
         if (day.dateRAW.getDay() != 0) {
           this.days.push(day);
@@ -201,21 +209,14 @@ export class Tab2Page implements OnInit {
       }
     }
 
-
+    // setting sundays as not selectable in 'Angular Material' calendar view 
     if (this.excludeSundays == true) {
-      // for (let i = 0; i < this.days.length; i++) {
-      //   if(this.days[i].dateRAW.getDay() == 0) {
-      //     this.days.splice(i, 1);
-      //   }
-      // }
-
       this.datePickerFilter = (d: Date): boolean => {
         const day = d.getDay();
-        // Prevent Saturday and Sunday from being selected.
+        // Prevent Sundays from being selected.
         return day !== 0;
       }
     }
-
 
     // set first segment of days-segment as checked
     this.segment.value = '0';
@@ -244,11 +245,13 @@ export class Tab2Page implements OnInit {
     //   }
     // ];
 
+
+
     // get User.Bookings from server
     this.getUserBookings();
 
 
-
+    // Hardware backbutton
     this.platform.backButton.subscribe(() => {
       if (this.picker.opened == true) {
         this.picker.close();
@@ -261,16 +264,13 @@ export class Tab2Page implements OnInit {
   }
 
 
+  /**
+   * View Lifecycle: Triggerd everytime view is being entererd. 
+   * Used for loading or setting up data, which may have changed
+   */
   ionViewDidEnter() {
-    // this.storage.get('futureBookings').then(bookings => {
-    //   try {
-    //     this.futureBookings = bookings;
-    //   } catch {
-    //     console.error('Error getting future bookings');
-    //   }
 
-    // });
-
+    // loading dark map style if dark theme selected
     this.storage.get('dark').then(dark => {
       if (typeof dark == 'boolean') {
         if (dark) {
@@ -281,7 +281,9 @@ export class Tab2Page implements OnInit {
       }
     });
 
-
+    /**
+     * getting capsules from server if apsules equal to chached 
+     */ 
     this.apiService.getCapsules().subscribe(data => {
       this.storage.get('capsules').then(savedCaps => {
         //console.log('saved', savedCaps);
@@ -298,12 +300,13 @@ export class Tab2Page implements OnInit {
               //this.capsules.push(data[cap]);
             }
             this.capsules.sort(this.compare_Distance);
-    this.getUserBookings();
+            this.getUserBookings();
 
+            //Open marker-popup for first marker
+            this.capsules[0].isOpen = true;
           }
         } else {
-          console.log('caps from server');
-
+          //console.log('caps from server');
           this.storage.set('capsules', data).then(data => {
             this.capsules = [];
             for (let cap in data) {
@@ -318,19 +321,9 @@ export class Tab2Page implements OnInit {
             //Open marker-popup for first marker
             this.capsules[0].isOpen = true;
           });
-
         }
       });
-
     });
-
-
-
-
-    // get User.Bookings from server
-
-
-
 
     /** 
      * Retrieve Current Position
@@ -357,164 +350,61 @@ export class Tab2Page implements OnInit {
 
 
 
+  
+  // * * * * * * * * * * * * *
+  // C A P S U L E - C A R D S
+  // * * * * * * * * * * * * *
 
-  clickedMarker(label: string, index: number) {
-    console.log(`clicked the marker: ${label || index}`);
-    this.hideAll();
-    this.slider.slideTo(index);
-  }
-
-  onBoundsChanged(event?) {
-    //console.log(event);
-  }
-
-  cardClicked(i) {
-    this.hideAll();
+  /**
+   * Reacting to click by moving capsule card into view and show popup of active marker on the map
+   * @param i index of the clicked card
+   */
+  capsuleCardClicked(i) {
+    this.hideAllMarkerPopUs();
     this.slider.slideTo(i);
     this.capsules[i].isOpen = true;
   }
 
-  hideAll() {
-    for (const item of this.capsules) {
-      item.isOpen = false;
-    }
-  }
-
+  /**
+   * Reacting to sliding the capsule cards by showing the popup of the active marker on the map
+   */
   onSlideChanged() {
-    this.hideAll();
+    this.hideAllMarkerPopUs();
     this.slider.getActiveIndex().then(data => {
       this.capsules[data].isOpen = true;
     });
   }
 
+  setBookedLabel() {
+    if (this.capsules.length > 0 && this.futureBookings.length > 0) {
+
+      // Find capsule id in future bookings and apply booked label to capsule
+      for (let book in this.futureBookings) {
+        var result = this.capsules.find(obj => {
+          return obj.id == this.futureBookings[book].capsuleId;
+        });
+
+        this.capsules[this.capsules.indexOf(result)].isBooked = true;
+      }
+    }
+  }
+
+  /**
+   * Calculating the distance between two lat/lng positions
+   * @param lat1 Latitude of Postion 1
+   * @param lng1 Longitude of Postion 1
+   * @param lat2 Latitude of Postion 2
+   * @param lng2 Longitude of Postion 2
+   */
   getDistance(lat1, lng1, lat2, lng2) {
     return this.locationService.getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
   }
 
-
-  async animatecardtotopDone(event) {
-    let animState: string = event.toState;
-    if (animState == 'bottom') {
-
-      let elem = await document.getElementById("cardTSS_top");
-      elem.setAttribute("style", "visibility: hidden");
-      let elem2 = await document.getElementById("slider");
-      elem2.setAttribute("style", "visibility: visible");
-
-
-    } else {
-      //this.test = true;
-      //this.timeslots = [{ content: 'pull to refresh', status: '' }];
-
-
-      setTimeout(() => {
-        let elem2 = document.getElementById("root");
-        elem2.setAttribute("style", "visibility: visible");
-
-        let elem: HTMLElement = document.getElementById('segmt');
-        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.days.length).toString() + "px");
-
-
-        try {
-          let elem1 = document.getElementsByClassName("even");
-          elem1[0].setAttribute("style", "visibility:visible");
-          //elem1[1].setAttribute("style", "visibility:visible");
-
-          let elemx = document.getElementsByClassName("even2");
-          elemx[0].setAttribute("style", "visibility:visible");
-          //elemx[1].setAttribute("style", "visibility:visible");
-
-
-          let elem21 = document.getElementsByClassName("odd");
-          elem21[0].setAttribute("style", "visibility:visible");
-          //elem21[1].setAttribute("style", "visibility:visible");
-
-          let elemx2 = document.getElementsByClassName("odd2");
-          elemx2[0].setAttribute("style", "visibility:visible");
-          //elemx2[1].setAttribute("style", "visibility:visible");
-
-
-
-        } catch {
-          console.error('dynamic elements not rendered yet, catched by us!')
-        }
-
-        this.updateClock();
-        setInterval(() => {
-          this.updateClock();
-        }, 1000 * 60);
-
-
-      }, 100);
-
-      // setTimeout(() => {
-      //   let listelem = document.getElementById('listr');
-      //   if((listelem.offsetHeight - 40) < this.timepixels) {
-      //   this.tscontent.scrollByPoint(0, (this.timepixels + listelem.offsetHeight - 40), 1000);
-      //   } else {
-      //     this.tscontent.scrollByPoint(0, (this.timepixels - 20), 1000);
-      //   }
-      // }, 500);
-
-
-      if (this.timeslots.length == 0) {
-        this.timeslots = [{ content: 'pull to refresh', status: '' }];
-      } else {
-        await this.getTimeSlots(this.activeDate);
-      }
-    }
-  }
-  timepixels = 0;
-  timeitems = 0;
-  updateClock() {
-
-    let h = new Date().getHours();
-    let m = new Date().getMinutes();
-
-    this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-
-    this.timeitems = ((h - 9) * 60) + m;
-
-    let percent = 100 / 540 * this.timeitems;
-    console.log(this.timeitems);
-    this.timepixels = 1328 * percent / 100;
-
-    console.log('timeslotsrounded: ', ((this.timeitems / 20) | 0));
-
-    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
-      try {
-        let blckr = document.getElementsByClassName("blocker");
-        blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
-        let blckrline = document.getElementsByClassName("blocker-line");
-        blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
-        let blckrttime = document.getElementsByClassName("blocker-time");
-        blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 12) + "px;");
-
-
-        this.blurTimeSlots();
-
-      } catch {
-
-      }
-    } else if (this.timepixels > 1328 && this.segment.value == '0') {
-      let blckr = document.getElementsByClassName("blocker");
-      blckr[0].setAttribute("style", "height:1328px;");
-      let blckrline = document.getElementsByClassName("blocker-line");
-      blckrline[0].setAttribute("style", "top:1328px;");
-      let blckrttime = document.getElementsByClassName("blocker-time");
-      blckrttime[0].setAttribute("style", "top:" + (1328 - 12) + "px;");
-
-
-      this.blurTimeSlots();
-    }
-
-
-
-  }
-
+  /**
+   * Executes the animation when clicked and prpares UI accordingly to the new state
+   * @param item is the capsule
+   */
   async animateTSS_Click(item?) {
-
-
     if (item) {
       this.capName = item.Name;
       this.capId = item.id;
@@ -525,8 +415,6 @@ export class Tab2Page implements OnInit {
     elemo.setAttribute("style", "visibility: hidden");
 
 
-
-
     let elem = await document.getElementById("cardTSS_top");
     let elem3 = await document.getElementById("slideCard");
     console.log('cardTSS_top-width: ' + elem3.offsetWidth)
@@ -534,6 +422,10 @@ export class Tab2Page implements OnInit {
     let elem2 = await document.getElementById("slider");
     elem2.setAttribute("style", "visibility: hidden");
 
+
+    /**
+     * Actual execution of the animation, by changing the state of the animation; see @Component at line ~25
+     */
     this.cardTSS_state = this.cardTSS_state == 'top' ? 'bottom' : 'top';
 
 
@@ -571,32 +463,156 @@ export class Tab2Page implements OnInit {
       let blckrttime = document.getElementsByClassName("blocker-time");
       blckrttime[0].classList.remove("visible");
       blckrttime[0].classList.add("collapsed");
-
-
     }
-
   }
 
-  getPositionClick() {
-    this.spinBtnPositionPressed = true;
-    this.locationService.getCurrentPosition().then(data => {
-      console.log('Result getting location in Component', data);
-      this.latMapCenter = data.coords.latitude;
-      this.lngMapCenter = data.coords.longitude;
 
-      this.spinBtnPositionPressed = false;
+  /**
+   * Triggered if the animation finished
+   * @param event data provided by the eventhandler
+   */
+  async animatecardtotopDone(event) {
+    let animState: string = event.toState;
+    if (animState == 'bottom') {
 
-      for (let cap in this.capsules) {
-        this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+      let elem = await document.getElementById("cardTSS_top");
+      elem.setAttribute("style", "visibility: hidden");
+      let elem2 = await document.getElementById("slider");
+      elem2.setAttribute("style", "visibility: visible");
+
+    } else {
+
+      setTimeout(() => {
+        let elem2 = document.getElementById("root");
+        elem2.setAttribute("style", "visibility: visible");
+
+        let elem: HTMLElement = document.getElementById('segmt');
+        elem.setAttribute("style", "min-width: " + (this.segmentWidth * this.days.length).toString() + "px");
+
+
+        try {
+          let elem1 = document.getElementsByClassName("even");
+          elem1[0].setAttribute("style", "visibility:visible");
+          //elem1[1].setAttribute("style", "visibility:visible");
+
+          let elemx = document.getElementsByClassName("even2");
+          elemx[0].setAttribute("style", "visibility:visible");
+          //elemx[1].setAttribute("style", "visibility:visible");
+
+
+          let elem21 = document.getElementsByClassName("odd");
+          elem21[0].setAttribute("style", "visibility:visible");
+          //elem21[1].setAttribute("style", "visibility:visible");
+
+          let elemx2 = document.getElementsByClassName("odd2");
+          elemx2[0].setAttribute("style", "visibility:visible");
+          //elemx2[1].setAttribute("style", "visibility:visible");
+
+        } catch {
+          console.error('dynamic elements not rendered yet, catched by us!')
+        }
+
+        /**
+         * Setting a clock timer to update the Timeslot-blocker for the passed time of the current day
+         */
+        this.updateClock();
+        setInterval(() => {
+          this.updateClock();
+        }, 1000 * 60);
+
+
+      }, 100);
+
+
+      if (this.timeslots.length == 0) {
+        this.timeslots = [{ content: 'pull to refresh', status: '' }];
+      } else {
+        await this.getTimeSlots(this.activeDate);
       }
-      this.capsules.sort(this.compare_Distance);
-    }).catch((error) => {
-      console.log('Error getting location', error);
-      this.spinBtnPositionPressed = false;
-    });
+    }
   }
 
 
+
+
+
+  // * * * * * * * * * * * * * *
+  // T I M E S l O T S - L I S T
+  // * * * * * * * * * * * * * *
+
+  /**
+   * Logic for the times-slot blocker. Calculating the needed height and bluring timeslots 
+   */
+  timepixels = 0;
+  timeitems = 0;
+  updateClock() {
+
+    let h = new Date().getHours();
+    let m = new Date().getMinutes();
+
+    this.currentTime = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+
+    this.timeitems = ((h - 9) * 60) + m;
+
+    let percent = 100 / 540 * this.timeitems;
+    console.log(this.timeitems);
+    this.timepixels = 1328 * percent / 100;
+
+    console.log('timeslotsrounded: ', ((this.timeitems / 20) | 0));
+
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
+      try {
+        let blckr = document.getElementsByClassName("blocker");
+        blckr[0].setAttribute("style", "height:" + (this.timepixels) + "px;");
+        let blckrline = document.getElementsByClassName("blocker-line");
+        blckrline[0].setAttribute("style", "top:" + (this.timepixels) + "px;");
+        let blckrttime = document.getElementsByClassName("blocker-time");
+        blckrttime[0].setAttribute("style", "top:" + (this.timepixels - 12) + "px;");
+
+        this.blurTimeSlots();
+
+      } catch {
+
+      }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let blckr = document.getElementsByClassName("blocker");
+      blckr[0].setAttribute("style", "height:1328px;");
+      let blckrline = document.getElementsByClassName("blocker-line");
+      blckrline[0].setAttribute("style", "top:1328px;");
+      let blckrttime = document.getElementsByClassName("blocker-time");
+      blckrttime[0].setAttribute("style", "top:" + (1328 - 12) + "px;");
+
+      this.blurTimeSlots();
+    }
+  }
+
+  /**
+   * Function to blur the relevant time-slots
+   */
+  blurTimeSlots() {
+    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
+      try {
+        if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
+          let tselem = document.getElementsByClassName("tsitem");
+          for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
+            tselem[t].classList.add("blurred");
+          }
+        }
+      } catch {
+
+      }
+    } else if (this.timepixels > 1328 && this.segment.value == '0') {
+      let tselem = document.getElementsByClassName("tsitem");
+      for (let t = 0; t <= 26; t++) {
+        tselem[t].classList.add("blurred");
+      }
+    }
+  }
+
+  /**
+   * Pull to Refresh on time-slots list to refresh data
+   * @param event 
+   */
   doRefresh(event) {
     setTimeout(() => {
       // Slowing down operation for better refresher UX
@@ -605,9 +621,11 @@ export class Tab2Page implements OnInit {
       event.target.complete();
     }, 500);
   }
+  
 
-
-
+  /**
+   * Everything relevant to show the time slots in the list, incl. all detections for free, taken, own-bookings, etc
+   */
   working = false;
   getTimeSlots(date?) {
 
@@ -618,7 +636,7 @@ export class Tab2Page implements OnInit {
     this.working = true;
     /**
      * reseting relevant variables
-     * IMPORTANT: this.timeslots MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
+     * IMPORTANT: 'this.timeslots' MUST have 1 item in order to avoid triggering ngIf=timeslots in ion-slides
      * @author Dave
      */
     this.timeslots = [{ content: 'pull to refresh', status: '' }]; // <--- Don't delete!!!
@@ -634,29 +652,27 @@ export class Tab2Page implements OnInit {
     this.bookingsQueue = [];
 
 
+    /**
+     * Getting the user-bookings data from the server
+     */
     this.apiService.getUser()
       .pipe(first())
       .subscribe(
         user => {
           this.userBookingsArray = user.bookings;
-          console.log('userBookingsArray', user.bookings);
-
+          //console.log('userBookingsArray', user.bookings);
 
           this.findOwnBookingsForActiveCapsule();
           this.findFutureBookingsForAllCapsules();
           this.setTimeSlotsCrossCapsuleBooking();
 
-
           if (date != null) {
             this.activeDate_String = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
           }
 
-
-          //formattedDateString = '2019-6-7';
-
           //this.findBookings();
 
-          // get data from server
+          // get data for avaialble time-slots from server
           this.apiService.getCapsuleAvailability(parseInt(this.capId), this.activeDate_String).subscribe(data => {
             // data from server not formatted properly; using workaround:
             // https://stackoverflow.com/questions/85992/how-do-i-enumerate-the-properties-of-a-javascript-object
@@ -702,38 +718,42 @@ export class Tab2Page implements OnInit {
               }
 
             }
+            //removing the dummy object from the array
             this.timeslots.splice(0, 1);
 
+
+            // Setting time-slot as booked
             for (let val in this.userBookingsSlotsArray) {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.userBookingsSlotsArray[val]) - 1].state = 'booked';
             }
 
+            // Setting time-slot as crossbooked
             for (let val in this.crossCapsuleBookingsArray) {
               // Getting TimeSlotsValues -1 to be on array level which is starting at 0 and not at 1 like timeslots on server!
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].state = 'crossbooked';
               this.timeslots[parseInt(this.crossCapsuleBookingsArray[val].slot) - 1].capName = this.crossCapsuleBookingsArray[val].capName;
             }
 
-
-            if(this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
+            // Setting time-slot as blocked if option 'allowOnlyOneBooking' is set
+            if (this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
               //console.log('userBookings: ', this.userBookingsSlotsArray);
               //console.log('userBookings: ', this.userBookingsSlotsArray[0] - 1);
               //console.log('userBookings: ', this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] - 1);
-                for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
-                  if (this.timeslots[a].state == true) {
-                    this.timeslots[a].state = 'blocked';
-                  }
-                }
-                for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] + 1; a < this.timeslots.length; a++) {
-                  if (this.timeslots[a].state == true) {
-                    this.timeslots[a].state = 'blocked';
-                  }
+              for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
+                if (this.timeslots[a].state == true) {
+                  this.timeslots[a].state = 'blocked';
                 }
               }
+              for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length - 1] + 1; a < this.timeslots.length; a++) {
+                if (this.timeslots[a].state == true) {
+                  this.timeslots[a].state = 'blocked';
+                }
+              }
+            }
 
 
-            // blocke all slots when day limit reached
+            // block all slots when day limit reached
             if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
               for (let a = 0; a < this.timeslots.length; a++) {
                 if (this.timeslots[a].state == true) {
@@ -742,7 +762,7 @@ export class Tab2Page implements OnInit {
               }
             }
 
-            // TODO: only if segment.value 0 is equals date: today; 
+            // if day is today, show blocker and scroll to timeslots accoring to current time
             if (this.segment.value == '0') {
               let blckr = document.getElementsByClassName("blocker");
               blckr[0].classList.remove("collapsed");
@@ -755,11 +775,12 @@ export class Tab2Page implements OnInit {
               blckrttime[0].classList.add("visible");
 
 
-              // TODO: Make proper async
+              // TODO: Better reacting to a promise
               setTimeout(() => {
                 this.blurTimeSlots();
               }, 300);
 
+              // Scroll to the 
               setTimeout(() => {
                 let listelem = document.getElementById('listr');
 
@@ -781,8 +802,8 @@ export class Tab2Page implements OnInit {
               blckrttime[0].classList.add("collapsed");
             }
 
+            // impossible time-slots: before and after a 6 time-slots booking, when 6 is the booking limit.
             this.findImpossibles();
-
 
             this.working = false;
           },
@@ -791,14 +812,15 @@ export class Tab2Page implements OnInit {
             });
         },
         error => {
-          console.log(error);
+          console.error(error);
         });
-
-
   }
 
 
-
+  /**
+   * Triggered, when swiping the time-slots list horizontally finished
+   * @param event 
+   */
   async onIonSlideDidChange(event?) {
 
     this.slides.length().then(data => {
@@ -826,6 +848,9 @@ export class Tab2Page implements OnInit {
 
   }
 
+  /**
+   * Triggered, when swiping the time-slots list horizontally to the previous slide started
+   */
   slidingCount = 0;
   async onIonSlidePrevStart() {
     // console.log('prev start')
@@ -844,6 +869,9 @@ export class Tab2Page implements OnInit {
 
   }
 
+  /**
+   * Triggered, when swiping the time-slots list horizontally to the previous slide ended
+   */
   onIonSlidePrevEnd() {
     console.log('prev ended')
 
@@ -855,6 +883,9 @@ export class Tab2Page implements OnInit {
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
+  /**
+   * Triggered, when swiping the time-slots list horizontally to the next slide started
+   */
   async onIonSlideNextStart() {
     console.log('next start')
     this.slidingCount++;
@@ -877,6 +908,9 @@ export class Tab2Page implements OnInit {
     // this.content.scrollToPoint((index + 1) * this.segmentWidth, 0, 200);
   }
 
+  /**
+   * Triggered, when swiping the time-slots list horizontally to the next slide started
+   */
   onIonSlideNextEnd() {
     //console.log('next ended')
 
@@ -889,6 +923,9 @@ export class Tab2Page implements OnInit {
     this.getTimeSlots(this.days[this.segment.value].dateRAW);
   }
 
+  /**
+   * Triggered, when touching the time-slots list started
+   */
   async onIonSlideTouchStart() {
     //let indexp = await this.slides.getPreviousIndex();
     let indexc = await this.slides.getActiveIndex();
@@ -937,12 +974,21 @@ export class Tab2Page implements OnInit {
 
   }
 
-  onIonSlideTransitionEnd() {
-    console.log('onIonSlideTransitionEnd');
-  }
 
-
-
+  /**
+   * This is one of the key-functions of the whole time-slot-selection.
+   * This function makes sure, that the user is able to select time-slots by not exceeding the booking-limit and day-limit.
+   * This functions checks whether time-slot are selectable and changes the states of the time-slots accordingly.
+   * Counting the time-slots is done for direct neighbours but also the after-next ones when own (already booked) time-slots are inbetween
+   * Example 1: a - Time-slots 2,4,6 are already booked by us. 
+   *            b - Now selecting time-slot 5; Expected result: slot 3 and slot 7 should be now selectable, because 3 and 7 are the next possible ones
+   *            c - Now selecting time-slot 3; Expected result: slot 1 and slot 7 should be now selectable
+   *            d - now selecting time-slot 7; Expected result: slot 1 and slot 8 should be NOT selectable, because limit of 6 times-lots (2,3,4,5,6,7) in a row reached
+   * 
+   * Example 2: a - Time-slots 2,4,6,7,8,9,10, are already booked by us. 
+   *            b - Now selecting time-slot 3; Expected result: slot 1 should be now selectable and slot 5 NOT, because selecting slot 5 would exceed the limit
+   * 
+   */
   onTimeSlotClick(i) {
 
     //console.log(this.userBookingsSlotsArray);
@@ -1061,9 +1107,7 @@ export class Tab2Page implements OnInit {
     }
 
 
-
-
-    // mark 1 slot before and 1 slot after selected to extend selection
+    // mark 1 slot before and 1 slot after selected as free to extend selection, all other free ones are blocked
     if (this.firstSelected > 0 &&
       this.timeslots[this.firstSelected - 1].state == 'blocked') {
       this.timeslots[this.firstSelected - 1].state = true;
@@ -1072,8 +1116,6 @@ export class Tab2Page implements OnInit {
       this.timeslots[this.lastSelected + 1].state == 'blocked') {
       this.timeslots[this.lastSelected + 1].state = true;
     }
-
-
 
 
 
@@ -1279,7 +1321,7 @@ export class Tab2Page implements OnInit {
     //   this.bookedArray_Between.length);
 
 
-    
+
     // blocke all slots when day limit reached
     if (this.userBookingsSlotsArray.length + this.selectedCount >= this.MAX_SLOTS_PER_DAY) {
       for (let a = 0; a < this.timeslots.length; a++) {
@@ -1294,19 +1336,19 @@ export class Tab2Page implements OnInit {
 
     let date = new Date();
     let date2 = this.days[this.segment.value].dateRAW;
-    let currentTime = date.getHours()+ '' + (date.getMinutes()<10?'0':'')  + date.getMinutes();
+    let currentTime = date.getHours() + '' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     //log('TIME CURRENT: ',currentTime);
     //console.log('TIME SELECTED: ',this.timeService.getStartTime(i + 1).replace(':', ''));
 
-    if((date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate()) &&
+    if ((date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate()) &&
       (this.firstSelected == i) && parseInt(currentTime) >= parseInt(this.timeService.getStartTime(i + 1).replace(':', ''))) {
-      this.presentAlertConfirm();
+      this.presentAlert_TS_Active();
     }
 
 
 
-    
-      
+
+
     // mark all blocked as free if no slot is selected
     if (this.selectedCount == 0) {
       for (let a = 0; a < this.timeslots.length; a++) {
@@ -1322,30 +1364,30 @@ export class Tab2Page implements OnInit {
       this.bookedArray_AfterNext_Down = [];
       this.bookedArray_Between = [];
 
-      if(this.allowOnlyOneBooking == true  && this.userBookingsSlotsArray.length > 0) {
-          for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
-            try {
-              if (this.timeslots[a].state == true) {
-                this.timeslots[a].state = 'blocked';
-              }
-            } catch {
-              console.error('catched by us, out of bounds as intended');
+      if (this.allowOnlyOneBooking == true && this.userBookingsSlotsArray.length > 0) {
+        for (let a = 0; a < this.userBookingsSlotsArray[0] - 2; a++) {
+          try {
+            if (this.timeslots[a].state == true) {
+              this.timeslots[a].state = 'blocked';
             }
-            
+          } catch {
+            console.error('catched by us, out of bounds as expected');
           }
-          for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length -1] + 1; a < this.timeslots.length; a++) {
-            try {
-              if (this.timeslots[a].state == true) {
-                this.timeslots[a].state = 'blocked';
-              }
-            } catch {
-              console.error('catched by us, out of bounds as intended');
+
+        }
+        for (let a = this.userBookingsSlotsArray[this.userBookingsSlotsArray.length - 1] + 1; a < this.timeslots.length; a++) {
+          try {
+            if (this.timeslots[a].state == true) {
+              this.timeslots[a].state = 'blocked';
             }
+          } catch {
+            console.error('catched by us, out of bounds as expected');
           }
         }
+      }
 
     }
-  
+
 
     setTimeout(() => {
       this.blurTimeSlots();
@@ -1353,6 +1395,8 @@ export class Tab2Page implements OnInit {
 
   }
 
+
+  // Helper function to add time-slot indexes to specitfic array, and avoid duplicates
   // https://stackoverflow.com/questions/1988349/array-push-if-does-not-exist
   addItem(array, item) {
     if (array == 'booked_afternext_up') {
@@ -1405,19 +1449,34 @@ export class Tab2Page implements OnInit {
   }
 
 
+  // Show a warning if start-time of the selected time-slot is already in the past
+  async presentAlert_TS_Active() {
+    const alert = await this.alertController.create({
+      mode: 'md',
+      cssClass: 'alert-dialog',
+      header: this.translateService.instant('WARNING'),
+      message: this.translateService.instant('WARNING_SLOTACTIVE'),
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
 
-  onSegmentClick(day) {
-
-
-    this.tscontent.scrollToTop();
-
-    let date = new Date();
-    date.setDate(date.getDate() + parseInt(day.value));
-
-
-    this.activeDate = date;
-    this.getTimeSlots(day.dateRAW);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
+
+
+
+
+  
+  // * * * * * * * *
+  // C H E C K O U T
+  // * * * * * * * *
 
   proceedToCheckoutClick() {
     this.createBookings();
@@ -1524,6 +1583,7 @@ export class Tab2Page implements OnInit {
     });
     toast.present();
   }
+
   canProceedCheckout(): boolean {
     if (this.selectedCount > 0 && this.selectedCount <= this.MAX_SLOTS_PER_BOOKING) {
       return true;
@@ -1532,106 +1592,15 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  // finds own bookings to mark time slots as YOURS
-  findOwnBookingsForActiveCapsule() {
-    //let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
-    let datestring = this.days[this.segment.value].dateRAW.getFullYear().toString() + (this.days[this.segment.value].dateRAW.getMonth() + 1).toString() + this.days[this.segment.value].dateRAW.getDate().toString();
-
-    //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
-    for (let a = 0; a < this.userBookingsArray.length; a++) {
-
-      let date = new Date(Date.parse(this.userBookingsArray[a].Date));
-      //console.log(date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() + ':' + datestring);
-      //console.log(this.userBookingsArray[a].Capsule_id + ':' + this.capId);
-      if (this.userBookingsArray[a].Capsule_id == this.capId && datestring == date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString()) {
-        this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame);
-        this.addBookedSlot(this.userBookingsArray[a].LastTimeFrame);
-
-        for (let s = this.userBookingsArray[a].FirstTimeFrame + 1; s <= this.userBookingsArray[a].LastTimeFrame - 1; s++) {
-          this.addBookedSlot(s);
-        }
-      }
-    }
-    //console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
-  }
 
 
 
-  // Impossibles are time slots above or below a timeslots group reching the maximums booking limit
-  findImpossibles() {
-
-    // sort slot numbers to be in line
-    this.userBookingsSlotsArray.sort(this.compare_Numbers);
-
-    let impossibles = [];
-    for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
-
-      while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
-        console.log('hello: ', this.userBookingsSlotsArray[s]);
-
-        let index = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s])
-        if (index === -1) {
-          impossibles.push(this.userBookingsSlotsArray[s]);
-        }
-
-        let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
-        if (index2 === -1) {
-          impossibles.push(this.userBookingsSlotsArray[s + 1]);
-        }
-
-        s++;
-      }
-
-      if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
-        
-        try {
-          this.timeslots[impossibles[0] - 2].state = 'impossible';
-        } catch {
-
-        }
-        try {
-          this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
-        } catch {
-
-        }
-      }
-
-      impossibles = [];
-    }
-  }
-
-  // Sort function for numbers
-  // Quelle: Javascript - Das umfassende Handbuch, Rheinwerk Verlag
-  compare_Numbers(value1, value2) {
-    if (value1 < value2) {
-      return -1; // Der erste Wert ist kleiner als der zweite Wert.
-    } else if (value1 > value2) {
-      return 1; // Der erste Wert ist größer als der zweite Wert.
-    } else {
-      return 0; // Beide Werte sind gleich groß.
-    }
-  }
-
-  compare_Distance(value1, value2) {
-    if (value1.calculatedDistance < value2.calculatedDistance) {
-      return -1; // Der erste Wert ist kleiner als der zweite Wert.
-    } else if (value1.calculatedDistance > value2.calculatedDistance) {
-      return 1; // Der erste Wert ist größer als der zweite Wert.
-    } else {
-      return 0; // Beide Werte sind gleich groß.
-    }
-  }
-
-  addBookedSlot(item) {
-    var index = this.userBookingsSlotsArray.findIndex(x => x == item)
-    if (index === -1) {
-      this.userBookingsSlotsArray.push(item);
-    }
-  }
+  
+  // * * * * * * * *
+  // B O O K I N G S
+  // * * * * * * * *
 
   async getUserBookings() {
-
-
     await this.apiService.getUser()
       .pipe(first())
       .subscribe(
@@ -1646,7 +1615,7 @@ export class Tab2Page implements OnInit {
         });
   }
 
-  // analyzes the time slot selction and slits it into single bookings if already booked slots are inbetween this selection
+  // analyzes the time slot selction and splits it into single bookings if already booked slots are inbetween this selection
   createBookings() {
 
     this.bookingsQueue = [];
@@ -1679,33 +1648,179 @@ export class Tab2Page implements OnInit {
     // console.log(this.bookingsQueue);
   }
 
+  findFutureBookingsForAllCapsules() {
 
-  blurTimeSlots() {
-    if (this.timepixels >= 0 && this.timepixels <= 1328 && this.segment.value == '0') {
-      try {
-        if (((this.timeitems / 20) | 0) > 0 && ((this.timeitems / 20) | 0) <= 26) {
-          let tselem = document.getElementsByClassName("tsitem");
-          for (let t = 0; t < ((this.timeitems / 20) | 0); t++) {
-            tselem[t].classList.add("blurred");
+    this.futureBookings = [];
+    for (let b = 0; b < this.userBookingsArray.length; b++) {
+
+      let date = new Date(this.userBookingsArray[b].Date);
+      let dateToday = new Date();
+
+      let futureBooking = {
+        date: new Date(this.userBookingsArray[b].Date).toISOString(),
+        startingTime: this.timeService.getEndTime(this.userBookingsArray[b].FirstTimeFrame),
+        endingTime: this.timeService.getEndTime(this.userBookingsArray[b].LastTimeFrame),
+        capsuleId: this.userBookingsArray[b].Capsule_id
+      }
+
+      // let bookingStartDate = new Date(this.userBookingsArray[b].Date);
+      // bookingStartDate.setHours(futureBooking.startingTime.split(':')[0]);
+      // bookingStartDate.setMinutes(futureBooking.startingTime.split(':')[0]);
+
+      // Source: tab1.page.ts, author: Chi
+      if (date > dateToday) {
+        this.futureBookings.push(futureBooking);
+      } else if (date.getDate() == dateToday.getDate()) {
+        let hourNow = new Date().getHours();
+        let endTime = futureBooking.endingTime.split(':');
+        // compare the hours, if bigger then add to future booking
+        if (endTime[0] > hourNow) {
+          this.futureBookings.push(futureBooking);
+          // if same hour, compare minutes
+        } else if (endTime[0] == hourNow) {
+          if (endTime[1] >= new Date().getMinutes()) {
+            this.futureBookings.push(futureBooking);
           }
         }
-      } catch {
+      }
 
+      //if(new Date(this.userBookingsArray[b].Date).setHours(futureBooking.startingTime.split(':')[0]))
+      //let date = new Date(this.userBookingsArray[b].Date);
+      //console.log(bookingStartDate.toISOString());
+    }
+    // console.log('future: ', this.futureBookings);
+    this.setBookedLabel()
+  }
+
+  // finds own bookings to mark time slots as YOURS
+  findOwnBookingsForActiveCapsule() {
+    //let datestring = this.activeDate.getFullYear().toString() + (this.activeDate.getMonth() + 1).toString() + this.activeDate.getDate().toString();
+    let datestring = this.days[this.segment.value].dateRAW.getFullYear().toString() + (this.days[this.segment.value].dateRAW.getMonth() + 1).toString() + this.days[this.segment.value].dateRAW.getDate().toString();
+
+    //console.log(this.activeDate.getFullYear().toString()+(this.activeDate.getMonth()+1).toString()+ this.activeDate.getDate().toString());
+    for (let a = 0; a < this.userBookingsArray.length; a++) {
+
+      let date = new Date(Date.parse(this.userBookingsArray[a].Date));
+      //console.log(date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString() + ':' + datestring);
+      //console.log(this.userBookingsArray[a].Capsule_id + ':' + this.capId);
+      if (this.userBookingsArray[a].Capsule_id == this.capId && datestring == date.getFullYear().toString() + (date.getMonth() + 1).toString() + date.getDate().toString()) {
+        this.addBookedSlot(this.userBookingsArray[a].FirstTimeFrame);
+        this.addBookedSlot(this.userBookingsArray[a].LastTimeFrame);
+
+        for (let s = this.userBookingsArray[a].FirstTimeFrame + 1; s <= this.userBookingsArray[a].LastTimeFrame - 1; s++) {
+          this.addBookedSlot(s);
+        }
       }
-    } else if (this.timepixels > 1328 && this.segment.value == '0') {
-      let tselem = document.getElementsByClassName("tsitem");
-      for (let t = 0; t <= 26; t++) {
-        tselem[t].classList.add("blurred");
+    }
+    //console.log('userBookingsSlotsArray', this.userBookingsSlotsArray);
+  }
+
+  // Impossibles are time slots above or below a timeslots-group that reaches the maximums booking limit
+  findImpossibles() {
+
+    // sort slot numbers to be in line
+    this.userBookingsSlotsArray.sort(this.compare_Numbers);
+
+    let impossibles = [];
+    for (let s = 0; s < this.userBookingsSlotsArray.length; s++) {
+
+      while ((((this.userBookingsSlotsArray[s])) == (this.userBookingsSlotsArray[s + 1] - 1))) {
+        console.log('hello: ', this.userBookingsSlotsArray[s]);
+
+        let index = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s])
+        if (index === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s]);
+        }
+
+        let index2 = impossibles.findIndex(x => x == this.userBookingsSlotsArray[s + 1])
+        if (index2 === -1) {
+          impossibles.push(this.userBookingsSlotsArray[s + 1]);
+        }
+
+        s++;
       }
+
+      if (impossibles.length >= this.MAX_SLOTS_PER_BOOKING) {
+
+        try {
+          this.timeslots[impossibles[0] - 2].state = 'impossible';
+        } catch {
+
+        }
+        try {
+          this.timeslots[impossibles[impossibles.length - 1]].state = 'impossible';
+        } catch {
+
+        }
+      }
+
+      impossibles = [];
+    }
+  }
+  addBookedSlot(item) {
+    var index = this.userBookingsSlotsArray.findIndex(x => x == item)
+    if (index === -1) {
+      this.userBookingsSlotsArray.push(item);
     }
   }
 
+  // finding own bookings to prevent booking another capsule at the same time as already booked a capsule.
+  crossCapsuleBookingsArray = [];
+  setTimeSlotsCrossCapsuleBooking() {
+    this.crossCapsuleBookingsArray = [];
+
+    let date = this.days[this.segment.value].dateRAW;
+
+    for (let b in this.userBookingsArray) {
+      let date2 = new Date(this.userBookingsArray[b].Date);
+
+      if (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
+        //console.log(this.userBookingsArray[b]);
+        //console.log(this.userBookingsArray[b].capsule.Name);
+
+        let crossCapsuleBooking = {
+          capName: this.userBookingsArray[b].capsule.Name,
+          slot: this.userBookingsArray[b].FirstTimeFrame
+        }
+        this.addBookedCapsuleSlot(crossCapsuleBooking);
+
+        let crossCapsuleBooking2 = {
+          capName: this.userBookingsArray[b].capsule.Name,
+          slot: this.userBookingsArray[b].LastTimeFrame
+        }
+        this.addBookedCapsuleSlot(crossCapsuleBooking2);
+
+        for (let s = this.userBookingsArray[b].FirstTimeFrame + 1; s <= this.userBookingsArray[b].LastTimeFrame - 1; s++) {
+          let crossCapsuleBooking3 = {
+            capName: this.userBookingsArray[b].capsule.Name,
+            slot: s
+          }
+          this.addBookedCapsuleSlot(crossCapsuleBooking3);
+        }
+      }
+    }
+    // console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
+
+  }
+  addBookedCapsuleSlot(item) {
+    var index = this.crossCapsuleBookingsArray.findIndex(x => x.slot == item.slot)
+    if (index === -1) {
+      this.crossCapsuleBookingsArray.push(item);
+    }
+  }
+
+
+
+
+  
+  // * * * * * * * * * * * * * * * * * * * * * * * *
+  // C A L E N D A R / D A T E P I C K E R / D A Y S
+  // * * * * * * * * * * * * * * * * * * * * * * * *
+
   async onDatePickerChanged(value) {
+    console.log(value);
 
     this.tscontent.scrollToTop();
-
-
-    console.log(value);
 
     let date;
     let datePortions;
@@ -1755,135 +1870,109 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  findFutureBookingsForAllCapsules() {
+  /**
+   * Executed when clicked on a day above the time-slots-list
+   * @param day 
+   */
+  onSegmentClick(day) {
+    // scroll time-slot-list-content to top
+    this.tscontent.scrollToTop();
 
-    this.futureBookings = [];
-    for (let b = 0; b < this.userBookingsArray.length; b++) {
+    let date = new Date();
+    date.setDate(date.getDate() + parseInt(day.value));
 
-      let date = new Date(this.userBookingsArray[b].Date);
-      let dateToday = new Date();
-
-      let futureBooking = {
-        date: new Date(this.userBookingsArray[b].Date).toISOString(),
-        startingTime: this.timeService.getEndTime(this.userBookingsArray[b].FirstTimeFrame),
-        endingTime: this.timeService.getEndTime(this.userBookingsArray[b].LastTimeFrame),
-        capsuleId: this.userBookingsArray[b].Capsule_id
-      }
-
-      // let bookingStartDate = new Date(this.userBookingsArray[b].Date);
-      // bookingStartDate.setHours(futureBooking.startingTime.split(':')[0]);
-      // bookingStartDate.setMinutes(futureBooking.startingTime.split(':')[0]);
-
-      // Source: tab1.page.ts, author: Chi
-      if (date > dateToday) {
-        this.futureBookings.push(futureBooking);
-      } else if (date.getDate() == dateToday.getDate()) {
-        let hourNow = new Date().getHours();
-        let endTime = futureBooking.endingTime.split(':');
-        // compare the hours, if bigger then add to future booking
-        if (endTime[0] > hourNow) {
-          this.futureBookings.push(futureBooking);
-          // if same hour, compare minutes
-        } else if (endTime[0] == hourNow) {
-          if (endTime[1] >= new Date().getMinutes()) {
-            this.futureBookings.push(futureBooking);
-          }
-        }
-      }
-
-      //if(new Date(this.userBookingsArray[b].Date).setHours(futureBooking.startingTime.split(':')[0]))
-      //let date = new Date(this.userBookingsArray[b].Date);
-      //console.log(bookingStartDate.toISOString());
-    }
-    // console.log('future: ', this.futureBookings);
-    this.setBookedLabel()
+    this.activeDate = date;
+    this.getTimeSlots(day.dateRAW);
   }
 
-  setBookedLabel() {
-    if (this.capsules.length > 0 && this.futureBookings.length > 0) {
 
 
-      // Find capsule id in futire bookings and apply booked label to capsule
-      for (let book in this.futureBookings) {
-        var result = this.capsules.find(obj => {
-          return obj.id == this.futureBookings[book].capsuleId;
-        });
 
-        this.capsules[this.capsules.indexOf(result)].isBooked = true;
-      }
-    }
-  }
-
-  crossCapsuleBookingsArray = [];
-  setTimeSlotsCrossCapsuleBooking() {
-    this.crossCapsuleBookingsArray = [];
-
-
-    let date = this.days[this.segment.value].dateRAW;
-
-    for (let b in this.userBookingsArray) {
-      let date2 = new Date(this.userBookingsArray[b].Date);
-
-      if (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() == date2.getFullYear() + '-' + (date2.getMonth() + 1) + '-' + date2.getDate() && this.userBookingsArray[b].Capsule_id != this.capId) {
-        //console.log(this.userBookingsArray[b]);
-        //console.log(this.userBookingsArray[b].capsule.Name);
-
-        let crossCapsuleBooking = {
-          capName: this.userBookingsArray[b].capsule.Name,
-          slot: this.userBookingsArray[b].FirstTimeFrame
-        }
-        this.addBookedCapsuleSlot(crossCapsuleBooking);
-
-        let crossCapsuleBooking2 = {
-          capName: this.userBookingsArray[b].capsule.Name,
-          slot: this.userBookingsArray[b].LastTimeFrame
-        }
-        this.addBookedCapsuleSlot(crossCapsuleBooking2);
-
-        for (let s = this.userBookingsArray[b].FirstTimeFrame + 1; s <= this.userBookingsArray[b].LastTimeFrame - 1; s++) {
-          let crossCapsuleBooking3 = {
-            capName: this.userBookingsArray[b].capsule.Name,
-            slot: s
-          }
-          this.addBookedCapsuleSlot(crossCapsuleBooking3);
-        }
-      }
-    }
-    // console.log('crossCapsuleBookingsArray', this.crossCapsuleBookingsArray);
-
-  }
-
-  addBookedCapsuleSlot(item) {
-    var index = this.crossCapsuleBookingsArray.findIndex(x => x.slot == item.slot)
-    if (index === -1) {
-      this.crossCapsuleBookingsArray.push(item);
-    }
-  }
 
   
-  async presentAlertConfirm() {
-    const alert = await this.alertController.create({
-      mode: 'md',
-      cssClass: 'alert-dialog',
-      header: this.translateService.instant('WARNING'),
-      message: this.translateService.instant('WARNING_SLOTACTIVE'),
-      buttons: [
-        {
-          text: 'OK',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
+  // * * * * * * * * * * * * * *
+  // S O R T I N G - H E L P E R
+  // * * * * * * * * * * * * * *
 
-          }
-        }
-      ]
-    });
-    await alert.present();
+  // Quelle: Javascript - Das umfassende Handbuch, Rheinwerk Verlag
+  compare_Numbers(value1, value2) {
+    if (value1 < value2) {
+      return -1; // Der erste Wert ist kleiner als der zweite Wert.
+    } else if (value1 > value2) {
+      return 1; // Der erste Wert ist größer als der zweite Wert.
+    } else {
+      return 0; // Beide Werte sind gleich groß.
+    }
+  }
+
+  compare_Distance(value1, value2) {
+    if (value1.calculatedDistance < value2.calculatedDistance) {
+      return -1; // Der erste Wert ist kleiner als der zweite Wert.
+    } else if (value1.calculatedDistance > value2.calculatedDistance) {
+      return 1; // Der erste Wert ist größer als der zweite Wert.
+    } else {
+      return 0; // Beide Werte sind gleich groß.
+    }
   }
 
 
 
+  // * * * * * * * * * * *
+  // G O O G L E - M A P S
+  // * * * * * * * * * * *
 
+  /**
+   * Retrieve the current GPS position, recalclate distances and sort capsules list accordingly
+   */
+  getPositionClick() {
+    this.spinBtnPositionPressed = true;
+    this.locationService.getCurrentPosition().then(data => {
+      console.log('Result getting location in Component', data);
+      this.latMapCenter = data.coords.latitude;
+      this.lngMapCenter = data.coords.longitude;
+
+      this.spinBtnPositionPressed = false;
+
+      for (let cap in this.capsules) {
+        this.capsules[cap].calculatedDistance = this.locationService.getDistanceFromLatLonInKm(this.latMapCenter, this.lngMapCenter, this.capsules[cap].Latitude, this.capsules[cap].Longitude);
+      }
+      this.capsules.sort(this.compare_Distance);
+    }).catch((error) => {
+      console.log('Error getting location', error);
+      this.spinBtnPositionPressed = false;
+    });
+  }
+
+  /**
+   * 
+   * @param label text of the marker
+   * @param index of the marker
+   */
+  clickedMarker(label: string, index: number) {
+    console.log(`clicked the marker: ${label || index}`);
+    this.hideAllMarkerPopUs();
+    this.slider.slideTo(index);
+  }
+
+  /**
+   * Hides/closes all marker popups on the map
+   */
+  hideAllMarkerPopUs() {
+    for (const item of this.capsules) {
+      item.isOpen = false;
+    }
+  }
+
+  /**
+   * Triggered if map was moved; could be used to determine which capsules are visible on the map 
+   * and filter the capsules list, the user can choose capsukes from.
+   * @param event inforamtion about map bounds
+   */
+  onBoundsChanged(event?) {
+    //console.log(event);
+  }
+
+  // Source: https://mapstyle.withgoogle.com/
   mapDarkStyle = [
     {
       "elementType": "geometry",
@@ -2117,6 +2206,7 @@ export class Tab2Page implements OnInit {
       ]
     }
   ]
+
 
 
 

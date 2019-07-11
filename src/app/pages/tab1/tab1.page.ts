@@ -447,20 +447,17 @@ export class Tab1Page {
           var lastFrame = Number(this.timeService.getIntSlot(this.futureBookings[0].LastTimeFrame + ''));
           var i = 0;
           this.freeSlots = [];
-          console.log(this.user.bookings);
           this.maxTimeBooked(this.user.bookings);
-          console.log(this.maxBookingsCount);
           while (data[lastFrame] && i < 6 && this.maxBookingsCount <= 15) {
             this.freeSlots.push(this.timeService.getEndTime(lastFrame));
             lastFrame++;
             i++;
             this.maxBookingsCount ++;
-            // this.maxTimeBooked(this.user.bookings);
           }
           if (this.freeSlots.length != 0) {
             this.presentExtendCapsuleModal();
           } else {
-            this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
+            this.toast("You already booked more than 15 Timeslots");
           }
         }else{
           this.toast(this.translateService.instant('CAPSULE_EXTEND_TAKEN'));
