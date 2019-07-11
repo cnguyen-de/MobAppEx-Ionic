@@ -17,6 +17,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import isEqual from 'lodash.isequal';
 import { MatDatepicker } from '@angular/material/datepicker';
+import { Network } from '@ionic-native/network/ngx';
 
 @Component({
   selector: "app-tab2",
@@ -71,7 +72,8 @@ export class Tab2Page implements OnInit {
     private translateService: TranslateService,
     private localNotifications: LocalNotifications,
     private _adapter: DateAdapter<any>,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private network: Network) { }
 
   //payment ID from paypal
   paymentID: string;
@@ -157,7 +159,11 @@ export class Tab2Page implements OnInit {
    * View Lifecycle: Triggered once when view is being inititialized
    */
   ngOnInit() {
+    this.isOffline = this.initOfflineHandler();
 
+    if (this.isOffline) {
+      return;
+    }
     // Set current date
     let currentDate = new Date();
     //console.log(currentDate);
@@ -269,6 +275,11 @@ export class Tab2Page implements OnInit {
    * Used for loading or setting up data, which may have changed
    */
   ionViewDidEnter() {
+    this.isOffline = this.checkOnlineOffline();
+
+    if (this.isOffline) {
+      return;
+    }
 
     // loading dark map style if dark theme selected
     this.storage.get('dark').then(dark => {
@@ -283,7 +294,7 @@ export class Tab2Page implements OnInit {
 
     /**
      * getting capsules from server if apsules equal to chached 
-     */ 
+     */
     this.apiService.getCapsules().subscribe(data => {
       this.storage.get('capsules').then(savedCaps => {
         //console.log('saved', savedCaps);
@@ -350,7 +361,7 @@ export class Tab2Page implements OnInit {
 
 
 
-  
+
   // * * * * * * * * * * * * *
   // C A P S U L E - C A R D S
   // * * * * * * * * * * * * *
@@ -621,7 +632,7 @@ export class Tab2Page implements OnInit {
       event.target.complete();
     }, 500);
   }
-  
+
 
   /**
    * Everything relevant to show the time slots in the list, incl. all detections for free, taken, own-bookings, etc
@@ -1473,7 +1484,7 @@ export class Tab2Page implements OnInit {
 
 
 
-  
+
   // * * * * * * * *
   // C H E C K O U T
   // * * * * * * * *
@@ -1595,7 +1606,7 @@ export class Tab2Page implements OnInit {
 
 
 
-  
+
   // * * * * * * * *
   // B O O K I N G S
   // * * * * * * * *
@@ -1812,7 +1823,7 @@ export class Tab2Page implements OnInit {
 
 
 
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * *
   // C A L E N D A R / D A T E P I C K E R / D A Y S
   // * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1889,7 +1900,7 @@ export class Tab2Page implements OnInit {
 
 
 
-  
+
   // * * * * * * * * * * * * * *
   // S O R T I N G - H E L P E R
   // * * * * * * * * * * * * * *
@@ -2209,6 +2220,65 @@ export class Tab2Page implements OnInit {
 
 
 
+  // * * * * * * *
+  // O F F L I N E
+  // * * * * * * *
 
+  isOffline = false;
+  initOfflineHandler() {
+
+    // Source: https://ionicframework.com/docs/native/network
+
+    // watch network for a disconnection
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      console.log('network was disconnected :-(');
+      this.isOffline = true;
+    });
+
+    // stop disconnect watch
+    //disconnectSubscription.unsubscribe();
+
+
+    // watch network for a connection
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      console.log('network connected!');
+      this.isOffline = false;
+
+      // We just got a connection but we need to wait briefly
+      // before we determine the connection type. Might need to wait.
+      // prior to doing any api requests as well.
+      setTimeout(() => {
+        if(this.capsules.length === 0) {
+          this.ionViewDidEnter();
+        }
+        // if (this.network.type === 'wifi') {
+        //   console.log('we got a wifi connection, woohoo!');
+        // }
+      }, 3000);
+    });
+
+    // stop connect watch
+    //connectSubscription.unsubscribe();
+
+    return this.checkOnlineOffline();
+  }
+
+  // setUIOnline() {
+  //   console.log('online');
+  //   this.isOffline = false;
+  // }
+
+  // setUIOffline() {
+  //   console.log('offline');
+  //   this.isOffline = true;
+  // }
+
+  checkOnlineOffline() {
+    if (navigator.onLine) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
 }

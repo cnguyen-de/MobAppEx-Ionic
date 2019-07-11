@@ -17,6 +17,8 @@
     </ion-button>
   </div>
 
+  <ion-spinner id="caps-loading-spinner" name="crescent" *ngIf="capsules.length == 0"></ion-spinner>
+
 
   <ion-slides #slider id="slider" [options]="slidesConfig" (ionSlideDidChange)="onSlideChanged()">
     <ion-slide *ngFor="let item of capsules; let i = index">
@@ -80,7 +82,7 @@
 </ion-card>
 
 
-<ion-content id="root">
+<ion-content id="root" >
 
   <ion-card id="headr" mode="ios" style="visibility:collapse">
     <ion-card-header>
@@ -90,7 +92,7 @@
 
   <ion-card id="listr" mode="ios">
 
-    <ion-content id="testre" #content scrollX="true" scrollY="false">
+    <ion-content id="days-segment-container" #content scrollX="true" scrollY="false">
       <ion-segment id="segmt" #segment mode="ios">
         <ion-segment-button *ngFor="let day of days; let i = index" [value]="i" checked (click)="onSegmentClick(day)">
           <span style="font-size: 10px;">{{ day.day }}</span>
@@ -246,6 +248,11 @@
 </ion-content>
 
 
-<aside>
+<div *ngIf="isOffline" style="width: 100%; height: 100%; background: var(--ion-background-color); text-align: center">
+  <h1 style="margin-top: 25vh; color: var(--ion-text-color)">Offline</h1>
+  <div id="offline-ico"></div>
 
-</aside>
+  <h5 style="margin-left: 64px; margin-right: 64px; color: var(--ion-text-color)">{{ 'OFFLINE_DESC' | translate}} </h5>
+</div>
+
+

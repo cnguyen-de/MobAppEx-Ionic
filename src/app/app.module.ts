@@ -28,6 +28,7 @@ import { MatExpansionModule } from '@angular/material';
 
 import { Animation, NavOptions } from '@ionic/core'
 import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import { Network } from '@ionic-native/network/ngx';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -68,7 +69,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     LocalNotifications,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, multi: false},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    Network
 
   ],
   bootstrap: [AppComponent]

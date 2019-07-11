@@ -58,6 +58,7 @@ export class ThemeService {
       --ion-text-color-step-600: #fff;
 
       --snooze-logo: url('../../../assets/images/SnoozeLogo_Dark2.svg');
+      --disconnected-ico: url('../../../assets/images/icons/za_disconnected_w.svg');
     `
   }
 
@@ -82,7 +83,7 @@ export class ThemeService {
       --ion-text-color-step-600: #222;
 
       --snooze-logo: url('../../../assets/images/SnoozeLogo_Light2.svg');
-
+      --disconnected-ico: url('../../../assets/images/icons/za_disconnected.svg');
     `
   }
 }

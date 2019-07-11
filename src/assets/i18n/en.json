@@ -64,6 +64,7 @@
   "NOTIFICATION_PAYPAL_FOR":" for ",
   "WARNING": "Warning",
   "WARNING_SLOTACTIVE": "This time slots time is already active. You'll be charged for full price!",
+  "OFFLINE_DESC": "Please make sure, you're connected to the interent.",
 
   "TAB_3": "Information",
   "ACCOUNT": "Account",
