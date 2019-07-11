@@ -20,7 +20,7 @@ export class SlidesGuard implements CanActivate {
     if (!isComplete) {
       this.router.navigateByUrl('/slides');
     } else if (this.token != null) {
-      this.router.navigateByUrl('/tabs/tab1');
+      this.router.navigateByUrl('/snooze/capsules');
     }
     return isComplete;
   }

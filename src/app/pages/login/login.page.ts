@@ -80,7 +80,7 @@ export class LoginPage implements OnInit {
                   .pipe(first())
                   .subscribe(
                       data => {
-                        this.transitionTo('/tabs/tab1');
+                        this.transitionTo('/snooze/capsules');
                         console.log(data)
                       },
                       error => {

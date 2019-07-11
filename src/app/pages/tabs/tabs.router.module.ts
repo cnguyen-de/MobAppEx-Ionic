@@ -4,11 +4,11 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
+    path: 'snooze',
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
+        path: 'capsules',
         children: [
           {
             path: '',
@@ -17,7 +17,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab2',
+        path: 'find',
         children: [
           {
             path: '',
@@ -26,7 +26,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab3',
+        path: 'settings',
         children: [
           {
             path: '',
@@ -35,15 +35,15 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tabs',
-        redirectTo: 'tabs/tab1',
+        path: 'snooze',
+        redirectTo: 'snooze/capsules',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: 'tabs',
-    redirectTo: 'tabs/tab1',
+    redirectTo: 'snooze/capsules',
     pathMatch: 'full'
   }
 ];
