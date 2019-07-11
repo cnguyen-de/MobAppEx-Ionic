@@ -64,6 +64,7 @@
   "NOTIFICATION_PAYPAL_FOR":" gebucht für ",
   "WARNING": "Warnung",
   "WARNING_SLOTACTIVE": "Dieses Zeitfenster ist schon aktiv. Du musst trotzdem den vollen Preis zahlen!",
+  "OFFLINE_DESC": "Bitte stelle eine Verbindung mit dem Internet her.",
 
   "TAB_3": "Information",
   "ACCOUNT": "Konto",
