@@ -154,9 +154,30 @@
 .swiper-pagination {
   bottom: 40px !important;
 }
-
+/*
 ion-content {
   max-width: 700px;
   display: table;
   margin: auto;
+
+}*/
+
+@media (min-width: 768px) and (min-height: 640px) and (orientation: landscape) {
+  html,
+  body {
+    height: 100%;
+    width: 768px;
+    background: var(--ion-background-color);
+    box-shadow: 0 10px 5px 5px var(--shadow-color);
+  }
+
+  html {
+    display: table;
+    margin: auto;
+  }
+
+  body {
+    display: table-cell;
+    vertical-align: middle;
+  }
 }

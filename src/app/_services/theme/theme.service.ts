@@ -43,6 +43,7 @@ export class ThemeService {
       --ion-toolbar-background: #243447;
       --ion-border-color: #243447;
       
+      --shadow-color: #0a0a0a;
       --darker-ripple-color: #141d26;    
       --darker-color: #141d26;
       --background-surface-color: #243447;
@@ -67,6 +68,7 @@ export class ThemeService {
       --ion-toolbar-background: #fff;
       --ion-border-color: #d8d8d8;
       
+      --shadow-color: #d8d8d8;
       --darker-ripple-color: #cecece;
       --darker-color: #efefef;
       --background-surface-color: #efefef;

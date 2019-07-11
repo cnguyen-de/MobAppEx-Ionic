@@ -26,12 +26,12 @@ import {ExtendCapsuleModalPage} from '../../modals/extend-capsule-modal/extend-c
     trigger('changeDivSize', [
       state('initial', style({
         //backgroundColor: 'green',
-        width: 'calc(100vw - 24px)',
+        width: 'calc(100% - 24px)',
         height: '210px'
       })),
       state('final', style({
         //backgroundColor: 'red',
-        width: 'calc(100vw)',
+        width: 'calc(100%)',
         height: 'calc(100vh - 57px)'
       })),
       transition('initial=>final', animate('300ms ease-in')),
