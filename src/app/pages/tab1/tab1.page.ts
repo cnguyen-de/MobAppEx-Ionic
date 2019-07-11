@@ -181,17 +181,22 @@ export class Tab1Page {
       booking.Date = booking.Date.substring(0, 10);
       booking.combinedIds = [booking.id];
       if (date > dateToday) {
+        console.log("BOOKING DATE IS BIGGER?")
+        console.log(date);
+        console.log(dateToday);
         sortedBookings.push(booking);
-      } else if (date.getDate() == dateToday.getDate()) {
-        let hourNow = this.today.getHours();
-        let endTime = booking.LastTimeFrame.split(':');
-        // compare the hours, if bigger then add to future booking
-        if (endTime[0] > hourNow) {
-          sortedBookings.push(booking);
-          // if same hour, compare minutes
-        } else if (endTime[0] == hourNow) {
-          if (endTime[1] >= this.today.getMinutes()) {
+      } else if (date.getMonth() == dateToday.getMonth()) {
+        if (date.getDate() == dateToday.getDate()) {
+          let hourNow = this.today.getHours();
+          let endTime = booking.LastTimeFrame.split(':');
+          // compare the hours, if bigger then add to future booking
+          if (endTime[0] > hourNow) {
             sortedBookings.push(booking);
+            // if same hour, compare minutes
+          } else if (endTime[0] == hourNow) {
+            if (endTime[1] >= this.today.getMinutes()) {
+              sortedBookings.push(booking);
+            }
           }
         }
       }
@@ -241,6 +246,7 @@ export class Tab1Page {
       }
       i++;
     }
+/*
 
     // Get Notification Preference
 
@@ -297,6 +303,7 @@ export class Tab1Page {
       //console.log(endDateTime, this.endCountDownTime);
 
     }
+*/
 
     return sortedBookings;
   }
