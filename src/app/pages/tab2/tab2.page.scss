@@ -211,7 +211,7 @@ mat-datepicker {
 }
 
 
-// @media (min-width: 768px) and (min-height: 640px) and (orientation: landscape) {
+@media (min-width: 768px) and (min-height: 640px) and (orientation: landscape) {
 
 
 //   #mapdiv {
@@ -238,9 +238,13 @@ mat-datepicker {
 //     height: 110px;
 //   }
 
-//   #testre {
-//     height: 64px;
-//   }
+  #testre {
+    height: 64px;
+  }
+
+  #timeslots-content {
+    --padding-bottom: 64px;
+  }
 
 //   #listr {
 //     //height: calc(100% - 120px - 90px - 40px);
@@ -267,5 +271,5 @@ mat-datepicker {
 //     visibility: hidden;
 //   }
   
-// }
+}
 
