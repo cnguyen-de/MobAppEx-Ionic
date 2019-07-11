@@ -75,6 +75,15 @@ export class Tab2Page implements OnInit {
     private alertController: AlertController,
     private network: Network) { }
 
+
+
+
+
+
+  // * * * * * * * * *
+  // V A R I A B L E S
+  // * * * * * * * * *
+
   //payment ID from paypal
   paymentID: string;
   // set to false to use GPS location!
@@ -154,6 +163,14 @@ export class Tab2Page implements OnInit {
   maxDate = new Date();
   datePickerFilter: any;
 
+
+
+
+
+
+  // * * * * * * * * * * * * * *
+  // I N I T I A L I Z A T I O N
+  // * * * * * * * * * * * * * *
 
   /**
    * View Lifecycle: Triggered once when view is being inititialized
@@ -412,7 +429,7 @@ export class Tab2Page implements OnInit {
   }
 
   /**
-   * Executes the animation when clicked and prpares UI accordingly to the new state
+   * Executes the animation when select button was clicked and prpares UI accordingly to the new state
    * @param item is the capsule
    */
   async animateTSS_Click(item?) {
@@ -548,7 +565,7 @@ export class Tab2Page implements OnInit {
 
 
   // * * * * * * * * * * * * * *
-  // T I M E S l O T S - L I S T
+  // T I M E S L O T S - L I S T
   // * * * * * * * * * * * * * *
 
   /**
